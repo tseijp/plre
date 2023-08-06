@@ -67,7 +67,6 @@ export interface SeparatorProps extends SeparateProps {
 
 const Separator = (props: SeparatorProps) => {
         const { i, gap, row, size, rate, refs } = props
-        console.log('RERENDER')
         const drag = useDragEvent((drag) => {
                 if (!drag.active) return
                 const move = drag.offset[row ? 0 : 1]

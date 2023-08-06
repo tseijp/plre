@@ -9,7 +9,7 @@ export const self = event<{
 }>({
         mount() {
                 self.callback()
-                // window.addEventListener('resize', self.callback)
+                window.addEventListener('resize', self.callback)
         },
         clean() {
                 window.removeEventListener('resize', self.callback)
