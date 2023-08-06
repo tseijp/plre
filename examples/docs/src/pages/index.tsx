@@ -1,32 +1,8 @@
 import React from 'react'
-import Head from '@docusaurus/Head'
-import LayoutImpl from '@theme/Layout'
-import { Layout } from '../..//ui/templates/Layout'
-import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import { Layout } from '../../ui/templates/Layout'
 
 export default function Home() {
-        const { siteConfig } = useDocusaurusContext()
-        return (
-                <LayoutImpl noFooter>
-                        <Head>
-                                <title>
-                                        {siteConfig.title}{' '}
-                                        {siteConfig.titleDelimiter}{' '}
-                                        {siteConfig.tagline}
-                                </title>
-                        </Head>
-                        {/* <img
-                                src="/img/debug.png"
-                                style={{
-                                        position: 'fixed',
-                                        width: `${1279}px`,
-                                        opacity: 0,
-                                        top: `10px`,
-                                }}
-                        /> */}
-                        <Layout />
-                </LayoutImpl>
-        )
+        return <Layout />
 }
 
 const _P = `
