@@ -9,7 +9,7 @@ export const useResizeEvent = (self: PL = pl) => {
         }>({
                 observer: null,
                 ref(target) {
-                        if (!target) return cache.observer.unobserve(target)
+                        if (!target) return
 
                         cache.observer = new ResizeObserver((entries) => {
                                 entries.forEach((entry) => {
