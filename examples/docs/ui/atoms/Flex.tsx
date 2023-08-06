@@ -1,19 +1,17 @@
-import { ReactNode, CSSProperties, createElement } from 'react'
+import { ReactNode, CSSProperties, createElement, forwardRef } from 'react'
 
 export interface FlexProps extends CSSProperties {
         children?: ReactNode
         style?: CSSProperties
         as?: any
-        ref?: any
         row?: boolean
         wrap?: boolean
 }
 
-export const Flex = (props: FlexProps) => {
+export const Flex = forwardRef((props: FlexProps, ref) => {
         const {
                 children,
                 as = 'div',
-                ref,
                 wrap = false,
                 row = false,
                 gap = 0,
@@ -56,4 +54,4 @@ export const Flex = (props: FlexProps) => {
         }
 
         return createElement(as, { ref, style }, children)
-}
+})

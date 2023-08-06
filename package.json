@@ -11,6 +11,7 @@
                 "build": "cd examples/docs && npm run build",
                 "serve": "cd examples/docs && npm run serve",
                 "write": "cd examples/docs && docusaurus write-translations",
+                "dev": "cd examples/docs && npm run start",
                 "ls": "cd packages/core && npm publish --dry-run",
                 "pub": "npm run rollup && cd packages/core && yarn publish",
                 "rollup": "cd packages/core && npx rollup -c ../../rollup.config.ts --configPlugin typescript --bundleConfigAsCjs"

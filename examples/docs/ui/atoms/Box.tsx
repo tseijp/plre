@@ -1,20 +1,18 @@
-import { ReactNode, CSSProperties, createElement } from 'react'
+import { ReactNode, CSSProperties, createElement, forwardRef } from 'react'
 
 export interface BoxProps extends CSSProperties {
         children?: ReactNode
         style?: CSSProperties
         as?: any
-        ref?: any
         grow?: number
         shrink?: number
         basis?: CSSProperties['flexBasis']
 }
 
-export const Box = (props: BoxProps) => {
+export const Box = forwardRef((props: BoxProps, ref) => {
         const {
                 children,
                 as = 'div',
-                ref,
                 grow: flexGrow = 1,
                 shrink: flexShrink = 1,
                 basis: flexBasis = 'auto',
@@ -23,6 +21,7 @@ export const Box = (props: BoxProps) => {
                 left = 0,
                 width = '100%',
                 height = '100%',
+                cursor = 'default',
                 margin = 0,
                 padding = 0,
                 position = 'relative',
@@ -30,7 +29,7 @@ export const Box = (props: BoxProps) => {
                 overflowX = 'hidden',
                 overflowY = 'hidden',
                 alignItems = 'center',
-                borderRadius = 10,
+                borderRadius = 5,
                 flexDirection = 'column',
                 justifyContent = 'center',
                 ...other
@@ -42,6 +41,7 @@ export const Box = (props: BoxProps) => {
                 left,
                 width,
                 height,
+                cursor,
                 margin,
                 padding,
                 position,
@@ -58,4 +58,4 @@ export const Box = (props: BoxProps) => {
         }
 
         return createElement(as, { ref, style }, children)
-}
+})
