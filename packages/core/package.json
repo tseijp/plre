@@ -13,7 +13,7 @@
                 "access": "public"
         },
         "dependencies": {
-                "glre": "0.15.0",
+                "glre": "0.16.0",
                 "reev": "0.10.0",
                 "refr": "0.3.0"
         },

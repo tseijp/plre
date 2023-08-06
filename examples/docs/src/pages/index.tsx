@@ -1,12 +1,13 @@
 import React from 'react'
 import Head from '@docusaurus/Head'
-import Layout from '@theme/Layout'
+import LayoutImpl from '@theme/Layout'
+import { Layout } from '../..//ui/templates/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 
 export default function Home() {
         const { siteConfig } = useDocusaurusContext()
         return (
-                <Layout noFooter>
+                <LayoutImpl noFooter>
                         <Head>
                                 <title>
                                         {siteConfig.title}{' '}
@@ -14,18 +15,20 @@ export default function Home() {
                                         {siteConfig.tagline}
                                 </title>
                         </Head>
-                        <img
+                        {/* <img
                                 src="/img/debug.png"
                                 style={{
-                                        position: 'absolute',
+                                        position: 'fixed',
                                         width: `${1279}px`,
-                                        // opacity: 0.5,
+                                        opacity: 0,
                                         top: `10px`,
                                 }}
-                        />
-                </Layout>
+                        /> */}
+                        <Layout />
+                </LayoutImpl>
         )
 }
+
 const _P = `
 # # # # # # _
 # # _ _ _ # #

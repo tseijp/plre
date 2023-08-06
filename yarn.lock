@@ -6258,10 +6258,10 @@ globby@^13.1.1:
     merge2 "^1.4.1"
     slash "^4.0.0"
 
-glre@0.15.0:
-  version "0.15.0"
-  resolved "https://registry.yarnpkg.com/glre/-/glre-0.15.0.tgz#de014b8842b9f53a581fd07c085323fcb64d9999"
-  integrity sha512-9kuco/6O2+sXu3oc8Yu42IQp2BnenvEt+gS+j9P/2eo7Xq+ZShmhcO5tWh+YatLq1pmBVIcfSVMRreD5TZO9fQ==
+glre@0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/glre/-/glre-0.16.0.tgz#90887969d97812e1c267b96ee1d1dc29d2437a5c"
+  integrity sha512-cni0d7UpI7a01WjpmqCXN+05HOLjYuVho1j3LRqz0xU11zCrLH/HYj4iT2OZBw1DkdB3B/KcMcNeguifXZc78g==
   dependencies:
     reev "0.10.0"
     refr "0.3.0"
