@@ -67,6 +67,7 @@ export interface SeparatorProps extends SeparateProps {
 
 const Separator = (props: SeparatorProps) => {
         const { i, gap, row, size, rate, refs } = props
+        console.log('RERENDER')
         const drag = useDragEvent((drag) => {
                 if (!drag.active) return
                 const move = drag.offset[row ? 0 : 1]
@@ -81,6 +82,7 @@ const Separator = (props: SeparatorProps) => {
                         ref={drag.ref}
                         cursor={`${!row ? 'row' : 'col'}-resize`}
                         basis={`${gap}px`}
+                        grow={0}
                         // ref: https://stackoverflow.com/questions/15381172/how-can-i-make-flexbox-children-100-height-of-their-parent
                         height="auto"
                         display="flex"
