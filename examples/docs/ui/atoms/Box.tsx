@@ -29,7 +29,6 @@ export const Box = forwardRef((props: BoxProps, ref) => {
                 overflowX = 'hidden',
                 overflowY = 'hidden',
                 alignItems = 'center',
-                borderRadius = 5,
                 flexDirection = 'column',
                 justifyContent = 'center',
                 ...other
@@ -52,7 +51,6 @@ export const Box = forwardRef((props: BoxProps, ref) => {
                 flexBasis,
                 flexShrink,
                 alignItems,
-                borderRadius,
                 justifyContent,
                 ...other,
         }

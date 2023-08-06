@@ -49,6 +49,7 @@ export const Separate = (props: SeparateProps) => {
                                                 key={i}
                                                 ref={refs(i)}
                                                 basis={size * r}
+                                                borderRadius={5}
                                                 cursor="auto"
                                         >
                                                 {children[i]}
