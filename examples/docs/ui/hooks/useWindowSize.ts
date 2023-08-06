@@ -9,7 +9,7 @@ export const self = event<{
 }>({
         mount() {
                 self.callback()
-                window.addEventListener('resize', self.callback)
+                // window.addEventListener('resize', self.callback)
         },
         clean() {
                 window.removeEventListener('resize', self.callback)
@@ -17,6 +17,7 @@ export const self = event<{
         callback() {
                 self.snapshot = [window.innerWidth, window.innerHeight]
         },
+        snapshot: [1280, 800],
 })
 
 const subscribe = (callback) => {
@@ -24,10 +25,8 @@ const subscribe = (callback) => {
         return () => self.clean()
 }
 
-const getSnapshot = () => self.snapshot || [0, 0]
-
-const getServerSnapshot = () => [0, 0]
+const getSnapshot = () => self.snapshot
 
 export const useWindowSize = () => {
-        return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)
+        return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)
 }

@@ -24,7 +24,7 @@ export interface DragEvent {
         ref(traget: Element): void
 }
 
-export const useDragEvent = (on: () => void) => {
+export const useDragEvent = (on: (self: EventState<DragEvent>) => void) => {
         const [self] = useState(() => {
                 return event({
                         move(e: any) {

@@ -8,9 +8,11 @@ export interface Refs {
 export const useRefs = () => {
         const refs = useRef((i: number) => {
                 if (!refs.current[i]) refs.current[i] = null
-                return (target: Element | null) => {
-                        refs.current[i] = target
-                }
+                if (!refs[i])
+                        refs[i] = (target: Element | null) => {
+                                refs.current[i] = target
+                        }
+                return refs[i]
         }).current as Refs
 
         if (!refs.current) refs.current = {}

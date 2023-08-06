@@ -6,6 +6,7 @@ import { Box } from '../atoms/Box'
 import { useRefs } from '../hooks/useRefs'
 import { useDragEvent } from '../hooks/useDragEvent'
 import { useWindowSize } from '../hooks/useWindowSize'
+import type { Refs } from '../hooks/useRefs'
 
 export interface SeparateProps {
         rate?: number[]
@@ -28,20 +29,22 @@ export const Separate = (props: SeparateProps) => {
         return (
                 <Flex
                         row={row}
-                        gap={g}
                         padding={top ? `${g}px ${g}px` : void 0}
                         backgroundColor={top ? '#161616' : void 0}
                         background="#161616"
                 >
                         {rate.map((r, i) => (
-                                <>
-                                        {/* {i && (
+                                <Fragment key={i}>
+                                        {!i || (
                                                 <Separator
-                                                        on={console.log}
-                                                        row={row}
+                                                        i={i}
                                                         gap={g}
+                                                        row={row}
+                                                        size={size}
+                                                        rate={rate}
+                                                        refs={refs}
                                                 />
-                                        )} */}
+                                        )}
                                         <Box
                                                 key={i}
                                                 ref={refs(i)}
@@ -50,30 +53,38 @@ export const Separate = (props: SeparateProps) => {
                                         >
                                                 {children[i]}
                                         </Box>
-                                </>
+                                </Fragment>
                         ))}
                 </Flex>
         )
 }
 
 export interface SeparatorProps extends SeparateProps {
-        on: () => void
+        i: number
+        size: number
+        refs: Refs
 }
 
-// const Separator = (props: SeparatorProps) => {
-//         const { gap, row, on } = props
-//         const ref = useDragEvent(on)
+const Separator = (props: SeparatorProps) => {
+        const { i, gap, row, size, rate, refs } = props
+        const drag = useDragEvent((drag) => {
+                if (!drag.active) return
+                const move = drag.offset[row ? 0 : 1]
+                const [da, db] = [rate[i - 1], rate[i]]
+                const [_a, _b] = [refs.current[i - 1], refs.current[i]]
+                gsap.to(_a, { flexBasis: size * da + move })
+                gsap.to(_b, { flexBasis: size * db - move })
+        })
 
-//         return (
-//                 <Box
-//                         ref={ref}
-//                         display="flex"
-//                         cursor={`${!row ? 'row' : 'col'}-resize`}
-//                         basis={`${gap}px`}
-//                         alignItems="stretch"
-//                         backgroundColor="red"
-//                 >
-//                         HI
-//                 </Box>
-//         )
-// }
+        return (
+                <Box
+                        ref={drag.ref}
+                        cursor={`${!row ? 'row' : 'col'}-resize`}
+                        basis={`${gap}px`}
+                        // ref: https://stackoverflow.com/questions/15381172/how-can-i-make-flexbox-children-100-height-of-their-parent
+                        height="auto"
+                        display="flex"
+                        alignSelf="stretch"
+                />
+        )
+}
