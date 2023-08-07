@@ -10,10 +10,6 @@ import { Viewport } from '../organisms/Viewport'
 
 export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
-        // let [w, h, g = 3] = useWindowSize()
-        // h -= 60 // header
-        // h -= g * 2 // padding
-        // w -= g * 2 // padding
         return (
                 <LayoutImpl noFooter>
                         <Head>
@@ -33,16 +29,16 @@ export const Layout = () => {
                                         <Properties />
                                 </Separate>
                         </Separate>
-                        {/* <img
+                        <img
                                 src="/img/debug.png"
                                 style={{
                                         position: 'fixed',
                                         width: `${1279}px`,
                                         pointerEvents: 'none',
-                                        opacity: 0.5,
+                                        opacity: 0,
                                         top: `10px`,
                                 }}
-                        /> */}
+                        />
                 </LayoutImpl>
         )
 }
