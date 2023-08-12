@@ -20,7 +20,7 @@ export const self = event<{
         snapshot: [1280, 800],
 })
 
-const subscribe = (callback) => {
+const subscribe = (callback = () => {}) => {
         self({ callback }).mount()
         return () => self.clean()
 }

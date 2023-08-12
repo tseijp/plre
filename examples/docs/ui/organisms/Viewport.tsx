@@ -11,6 +11,7 @@ export const Viewport = () => {
                         self.drawArrays()
                 },
         })
+
         const ref = useResizeEvent()
 
         return (
