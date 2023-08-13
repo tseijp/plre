@@ -30,7 +30,7 @@ export const Layout = () => {
                                         <Properties />
                                 </Separate>
                         </Separate>
-                        {/* <Debug /> */}
+                        <Debug />
                 </LayoutImpl>
         )
 }

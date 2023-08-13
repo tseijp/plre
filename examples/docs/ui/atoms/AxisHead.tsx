@@ -8,6 +8,8 @@ export interface AxisHeadProps {
         s: number
 }
 
+export const HEAD_POS = 2
+
 export const AxisHead = forwardRef((props: AxisHeadProps, ref) => {
         const { x, y, s } = props
         const X = x ? 'X' : y ? 'Y' : 'Z'
@@ -16,10 +18,10 @@ export const AxisHead = forwardRef((props: AxisHeadProps, ref) => {
                 <div
                         style={{
                                 position: 'absolute',
-                                transform: `translate${X}(${
-                                        s * 5 * (y ? -1 : 1)
-                                }px)`,
                                 transformStyle: 'preserve-3d',
+                                transform: `translate${X}(${
+                                        s * (x ? 1 : -1) * HEAD_POS
+                                }px)`,
                         }}
                 >
                         <div
@@ -29,6 +31,7 @@ export const AxisHead = forwardRef((props: AxisHeadProps, ref) => {
                                         borderRadius: 9999,
                                         width: s,
                                         height: s,
+                                        fontSize: s * 0.8,
                                         textAlign: 'center',
                                         lineHeight: 'normal',
                                 }}

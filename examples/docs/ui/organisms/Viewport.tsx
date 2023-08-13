@@ -11,7 +11,7 @@ const { cos, sin } = Math
 export const Viewport = () => {
         let phi = 0.12
         let tht = 1
-        let r = 15
+        let r = 30
         const move = useCallback(() => {
                 const x = r * sin(tht) * cos(phi)
                 const z = r * sin(tht) * sin(phi)
@@ -51,7 +51,7 @@ export const Viewport = () => {
                         transformStyle="preserve-3d"
                 >
                         <canvas ref={self.ref} />
-                        <Viewpoint s={10} wheel={wheel} />
+                        <Viewpoint s={16} wheel={wheel} />
                 </Flex>
         )
 }

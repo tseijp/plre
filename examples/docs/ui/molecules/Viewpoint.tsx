@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useEffect } from 'react'
+import { useEffect, forwardRef } from 'react'
 import { Flex } from '../atoms/Flex'
 import { useRefs } from '../hooks/useRefs'
 import { useCallback } from '../hooks/useCallback'
@@ -10,6 +10,8 @@ import { AxisTail } from '../atoms/AxisTail'
 import type { EventState } from 'reev/types'
 import type { WheelState } from '../hooks/useWheelEvent'
 import type { FlexProps } from '../atoms/Flex'
+import type { ReactNode } from 'react'
+import { range } from '../utils'
 
 export interface ViewpointProps extends FlexProps {
         s: number
@@ -25,13 +27,12 @@ export const Viewpoint = (props: ViewpointProps) => {
         const rotate = () => {
                 // @ts-ignore
                 drag.target.style.transform = `rotateY(${tht}rad) rotateX(${phi}rad)`
-                console.log(refs.len)
-                Array.from({ length: 6 }).forEach((_, i) => {
+                range(6).forEach((i) => {
                         const el = refs[i]?.current as any
                         if (el)
                                 el.style.transform = `rotateX(${-phi}rad) rotateY(${-tht}rad)`
                 })
-                Array.from({ length: 3 }).forEach((_, i) => {
+                range(3).forEach((i) => {
                         const el = refs[6 + i]?.current as any
                         const X = ['X', 'Y', 'Z'][i]
                         const rad = [-phi, -tht, 0][i]
@@ -57,30 +58,51 @@ export const Viewpoint = (props: ViewpointProps) => {
 
         useEffect(() => {
                 wheel({ on })
-                return () => void wheel({ on })
+                return () => {
+                        wheel({ on })
+                }
         }, [])
 
         return (
                 <Flex
-                        ref={drag.ref}
-                        top={50}
-                        left="initial"
-                        right={50}
-                        width="10%"
-                        height="10%"
+                        ref={wheel.ref}
                         position="absolute"
-                        transformStyle="preserve-3d"
+                        top={s * 3.4}
+                        left="initial"
+                        right={0}
+                        fontSize={s}
+                        width={s * 6}
+                        height={s * 6}
                         {...other}
                 >
-                        <AxisHead x s={s} ref={refs(0)} />
-                        <AxisHead y s={s} ref={refs(1)} />
-                        <AxisHead z s={s} ref={refs(2)} />
-                        <AxisTail x s={s} ref={refs(3)} />
-                        <AxisTail y s={s} ref={refs(4)} />
-                        <AxisTail z s={s} ref={refs(5)} />
-                        <AxisLine x s={s} ref={refs(6)} />
-                        <AxisLine y s={s} ref={refs(7)} />
-                        <AxisLine z s={s} ref={refs(8)} />
+                        <Wrap ref={drag.ref}>
+                                <AxisHead x s={s} ref={refs(0)} />
+                                <AxisHead y s={s} ref={refs(1)} />
+                                <AxisHead z s={s} ref={refs(2)} />
+                                <AxisTail x s={s} ref={refs(3)} />
+                                <AxisTail y s={s} ref={refs(4)} />
+                                <AxisTail z s={s} ref={refs(5)} />
+                                <AxisLine x s={s} ref={refs(6)} />
+                                <AxisLine y s={s} ref={refs(7)} />
+                                <AxisLine z s={s} ref={refs(8)} />
+                        </Wrap>
                 </Flex>
         )
 }
+
+const Wrap = forwardRef((props: { children: ReactNode }, ref) => {
+        return (
+                <div
+                        {...props}
+                        ref={ref as any}
+                        style={{
+                                display: 'flex',
+                                position: 'relative',
+                                background: '#fff',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transformStyle: 'preserve-3d',
+                        }}
+                />
+        )
+})

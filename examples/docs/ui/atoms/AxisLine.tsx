@@ -1,12 +1,16 @@
 import * as React from 'react'
 import { forwardRef } from 'react'
-
+import { HEAD_POS } from './AxisHead'
 export interface AxisLineProps {
         x?: boolean
         y?: boolean
         z?: boolean
         s: number
 }
+
+const LINE_WIDTH = HEAD_POS * 0.8
+
+const LINE_HEIGHT = 0.2
 
 export const AxisLine = forwardRef((props: AxisLineProps, ref) => {
         const { x, y, z, s } = props
@@ -16,11 +20,14 @@ export const AxisLine = forwardRef((props: AxisLineProps, ref) => {
                 <div
                         style={{
                                 position: 'absolute',
+                                transformStyle: 'preserve-3d',
                                 transform:
                                         `translate${X}(${
-                                                s * 2.5 * (y ? -1 : 1)
+                                                s *
+                                                (x ? 1 : -1) *
+                                                LINE_WIDTH *
+                                                0.5
                                         }px)` + (z ? ' rotateX(90deg)' : ''),
-                                transformStyle: 'preserve-3d',
                         }}
                 >
                         <div
@@ -28,8 +35,12 @@ export const AxisLine = forwardRef((props: AxisLineProps, ref) => {
                                 style={{
                                         perspective: '1000px',
                                         background: color,
-                                        width: x ? s * 5 : s / 5,
-                                        height: x ? s / 5 : s * 5,
+                                        width: x
+                                                ? s * LINE_WIDTH
+                                                : s * LINE_HEIGHT,
+                                        height: x
+                                                ? s * LINE_HEIGHT
+                                                : s * LINE_WIDTH,
                                 }}
                         />
                 </div>

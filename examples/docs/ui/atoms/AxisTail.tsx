@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { forwardRef } from 'react'
-
+import { HEAD_POS } from './AxisHead'
 export interface AxisTailProps {
         x?: boolean
         y?: boolean
@@ -16,14 +16,14 @@ export const AxisTail = forwardRef((props: AxisTailProps, ref) => {
                 <div
                         style={{
                                 position: 'absolute',
-                                transform: `translate${X}(${
-                                        s * 5 * (y ? 1 : -1)
-                                }px)`,
                                 transformStyle: 'preserve-3d',
+                                transform: `translate${X}(${
+                                        s * (x ? -1 : 1) * HEAD_POS
+                                }px)`,
                         }}
                 >
                         <div
-                                ref={ref}
+                                ref={ref as any}
                                 style={{
                                         background: color,
                                         borderRadius: 9999,
