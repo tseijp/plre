@@ -1,34 +1,46 @@
 import { pl } from 'plre'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import type { PL } from 'plre/types'
+import event from 'reev'
 
 const DELAY = 100
 
-export const useResizeEvent = (self: PL = pl) => {
-        const cache = useRef({
+const resizeEvent = () => {
+        const self = event<{
+                on?: () => void
+                ref(target: Element): void
+                listener(): void
+                observer: ResizeObserver | null
+        }>({
                 observer: null,
                 listener: () => {},
                 ref(target: Element) {
                         if (!target) return
                         const callback = (entry: ResizeObserverEntry) => () => {
-                                self.width = entry.contentRect.width
-                                self.height = entry.contentRect.height
-                                self.resize()
+                                pl.width = entry.contentRect.width
+                                pl.height = entry.contentRect.height
+                                pl.resize()
+                                self.on?.()
                         }
                         const register = (entry: ResizeObserverEntry) => {
                                 if (entry.target !== target) return
                                 const id = setTimeout(callback(entry), DELAY)
-                                cache.listener()
-                                cache.listener = () => clearTimeout(id)
+                                self.listener()
+                                self.listener = () => clearTimeout(id)
                         }
 
-                        cache.observer = new ResizeObserver((entries) => {
+                        self.observer = new ResizeObserver((entries) => {
                                 entries.forEach(register)
                         })
 
-                        cache.observer.observe(target)
+                        self.observer.observe(target)
                 },
-        }).current
+        })
+        return self
+}
 
-        return cache.ref
+export const useResizeEvent = (on = () => {}) => {
+        const [self] = useState(() => resizeEvent())
+        self.on = on
+        return self.ref
 }

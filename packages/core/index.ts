@@ -20,7 +20,8 @@ uniform vec3 colorC;
 uniform vec3 floorColor;
 uniform vec3 cameraPosition;
 
-#define AA 2
+// #define AA 2
+#define AA 1
 #define ITERATION 64 // 256
 #define opU(d1, d2) d1.x < d2.x ? d1 : d2
 #define opI(d1, d2) d1.x > d2.x ? d1 : d2
