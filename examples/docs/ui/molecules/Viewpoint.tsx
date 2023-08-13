@@ -51,6 +51,7 @@ export const Viewpoint = (props: ViewpointProps) => {
         const on = useCallback((state) => {
                 if (!state.active) return
                 const [dx, dy] = state.delta
+                if (state.e.ctrlKey) return
                 tht += dx / 200
                 phi -= dy / 400
                 rotate()
