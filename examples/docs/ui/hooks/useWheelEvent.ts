@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useCallback } from './useCallback'
 import event from 'reev'
 import { Vec2, addV, wheelValues } from './utils'
 import type { EventState } from 'reev/types'
 
-interface WheelState {
+export interface WheelState {
         _active: boolean
         active: boolean
         _value: Vec2
@@ -22,7 +23,7 @@ interface WheelState {
         on(self: WheelState): void
 }
 
-const wheelEvent = () => {
+export const wheelEvent = () => {
         const self = event({
                 active: false,
                 _active: false,
@@ -71,8 +72,12 @@ const wheelEvent = () => {
         return self
 }
 
-export const useWheelEvent = (on: (self: WheelState) => void) => {
+export const useWheelEvent = (_on: (self: WheelState) => void) => {
         const [self] = useState(wheelEvent)
-        self.on = on
+        const on = useCallback(_on)
+        useEffect(() => {
+                self({ on })
+                return () => void self({ on })
+        })
         return self
 }

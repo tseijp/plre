@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useCallback } from './useCallback'
 import { event } from 'reev'
 import { Vec2, addV, subV } from './utils'
 import type { EventState } from 'reev'
@@ -21,7 +22,7 @@ export interface DragState {
         on(self: DragState): void
 }
 
-const dragEvent = () => {
+export const dragEvent = () => {
         const self = event({
                 active: false,
                 _active: false,
@@ -75,8 +76,13 @@ const dragEvent = () => {
         return self
 }
 
-export const useDragEvent = (on: (self: DragState) => void) => {
+export const useDragEvent = (_on: (self: DragState) => void) => {
         const [self] = useState(dragEvent)
-        self.on = on
+        const on = useCallback(_on)
+        useEffect(() => {
+                self({ on })
+                return () => void self({ on })
+        })
+
         return self
 }

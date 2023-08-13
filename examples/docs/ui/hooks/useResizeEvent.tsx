@@ -1,11 +1,10 @@
 import { pl } from 'plre'
-import { useRef, useState } from 'react'
-import type { PL } from 'plre/types'
+import { useState } from 'react'
 import event from 'reev'
 
 const DELAY = 100
 
-const resizeEvent = () => {
+export const resizeEvent = () => {
         const self = event<{
                 on?: () => void
                 ref(target: Element): void

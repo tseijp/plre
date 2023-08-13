@@ -81,7 +81,7 @@ const Separator = (props: SeparatorProps) => {
         const move = (duration = 0) => {
                 const delta = drag.offset[row ? 0 : 1]
                 const [da, db] = [rate[i - 1], rate[i]]
-                const [_a, _b] = [refs.current[i - 1], refs.current[i]]
+                const [_a, _b] = [refs[i - 1]?.current, refs[i]?.current]
                 gsap.to(_a, { flexBasis: size * da + delta, duration })
                 gsap.to(_b, { flexBasis: size * db - delta, duration })
         }

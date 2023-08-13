@@ -8,7 +8,7 @@ const LINE_HEIGHT = 40
 
 const PAGE_HEIGHT = 800
 
-export const wheelValues = (event) => {
+export const wheelValues = (event: WheelEvent) => {
         let { deltaX, deltaY, deltaMode } = event
         if (deltaMode === 1) {
                 deltaX *= LINE_HEIGHT

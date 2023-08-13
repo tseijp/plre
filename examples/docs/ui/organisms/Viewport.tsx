@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { usePL } from 'plre/react'
 import { Flex } from '../atoms/Flex'
+import { Viewpoint } from '../molecules/Viewpoint'
 import { useCallback } from '../hooks/useCallback'
 import { useWheelEvent } from '../hooks/useWheelEvent'
 import { useResizeEvent } from '../hooks/useResizeEvent'
@@ -44,8 +45,13 @@ export const Viewport = () => {
         })
 
         return (
-                <Flex ref={ref} background="#3A3A3A">
+                <Flex
+                        ref={ref}
+                        background="#3A3A3A"
+                        transformStyle="preserve-3d"
+                >
                         <canvas ref={self.ref} />
+                        <Viewpoint s={10} wheel={wheel} />
                 </Flex>
         )
 }

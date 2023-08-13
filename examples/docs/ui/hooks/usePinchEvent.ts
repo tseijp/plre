@@ -1,18 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useCallback } from './useCallback'
 import { event } from 'reev'
-import { Vec2, addV, subV } from './utils'
 import type { EventState } from 'reev'
 
-interface PinchState {
+export interface PinchState {
         target: Element
         move: any
-        on: <E = EventState<PinchState>>(self: E) => void
+        on: (self: PinchState) => void
         mount(el: Element): void
         clean(el?: null): void
         ref(el: Element | null): void
 }
 
-const pinchEvent = () => {
+export const pinchEvent = () => {
         const self = event({
                 move(e: Event) {
                         console.log(e)
@@ -33,10 +33,14 @@ const pinchEvent = () => {
         return self
 }
 
-export const usePinchEvent = (
-        on: <E = EventState<PinchState>>(self: E) => void
-) => {
+export const usePinchEvent = (_on: (self: PinchState) => void) => {
         const [self] = useState(pinchEvent)
-        self.on = on
+        const on = useCallback(_on)
+
+        useEffect(() => {
+                self({ on })
+                return () => void self({ on })
+        }, [])
+
         return self
 }

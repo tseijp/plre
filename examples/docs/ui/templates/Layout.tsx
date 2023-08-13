@@ -2,6 +2,7 @@ import * as React from 'react'
 import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
+import { Debug } from '../atoms/Debug'
 import { Separate } from '../molecules/Separate'
 import { Properties } from '../organisms/Properties'
 import { Timeline } from '../organisms/Timeline'
@@ -29,16 +30,7 @@ export const Layout = () => {
                                         <Properties />
                                 </Separate>
                         </Separate>
-                        <img
-                                src="/img/debug.png"
-                                style={{
-                                        position: 'fixed',
-                                        width: `${1279}px`,
-                                        pointerEvents: 'none',
-                                        opacity: 0,
-                                        top: `10px`,
-                                }}
-                        />
+                        {/* <Debug /> */}
                 </LayoutImpl>
         )
 }
