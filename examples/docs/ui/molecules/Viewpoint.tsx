@@ -9,11 +9,10 @@ import { AxisLine } from '../atoms/AxisLine'
 import { AxisTail } from '../atoms/AxisTail'
 import type { EventState } from 'reev/types'
 import type { WheelState } from '../hooks/useWheelEvent'
-import type { FlexProps } from '../atoms/Flex'
 import type { ReactNode, CSSProperties } from 'react'
 import { range } from '../utils'
 
-export interface ViewpointProps extends FlexProps {
+export interface ViewpointProps extends CSSProperties {
         s: number
         wheel: EventState<WheelState>
 }
@@ -60,7 +59,7 @@ export const Viewpoint = (props: ViewpointProps) => {
         }, [])
 
         return (
-                <Wrap ref={drag.ref} s={s}>
+                <Wrap ref={drag.ref} s={s} {...other}>
                         <AxisHead x s={s} ref={refs(0)} />
                         <AxisHead y s={s} ref={refs(1)} />
                         <AxisHead z s={s} ref={refs(2)} />
@@ -95,6 +94,7 @@ const Wrap = forwardRef((props: WrapProps, ref) => {
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
+                                color: 'black',
                                 transformStyle: 'preserve-3d',
                                 ...other,
                         }}

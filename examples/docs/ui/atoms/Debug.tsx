@@ -34,7 +34,7 @@ export const Debug = () => {
                                 width: `${1279}px`,
                                 pointerEvents: 'none',
                                 opacity,
-                                filter: 'invert(100%)',
+                                // filter: 'invert(100%)',
                                 top: `10px`,
                         }}
                 />

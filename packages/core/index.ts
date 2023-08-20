@@ -9,7 +9,7 @@ void main() {
 }
 `.trim()
 
-const fs = /* ts */ `
+const fs = /* cpp */ `
 #version 300 es
 precision highp float;
 uniform float iTime;
@@ -53,7 +53,7 @@ float sdBoxFrame( vec3 p, vec3 b, float e) {
 }
 
 float sdPlane(vec3 p) {
-	return dot(p, vec3(1., 1., 0.));
+        return dot(p, vec3(1., 1., 0.));
 }
 
 float evalFunction(vec3 p) {
@@ -113,17 +113,16 @@ vec3 render(vec3 ro, vec3 rd) {
                 col = mix(col, colorC, nor.z);
                 col *= grid(pos.x);
                 col *= grid(pos.z);
-
         }
 
-	return col;
+        return col;
 }
 
 mat3 setCamera(vec3 ro, vec3 ta, float cr) {
-	vec3 cw = normalize(ta - ro);
-	vec3 cp = normalize(vec3(sin(cr), cos(cr), 0.0));
-	vec3 cu = normalize( cross(cw,cp) );
-	vec3 cv =          ( cross(cu,cw) );
+        vec3 cw = normalize(ta - ro);
+        vec3 cp = normalize(vec3(sin(cr), cos(cr), 0.0));
+        vec3 cu = normalize( cross(cw,cp) );
+        vec3 cv =          ( cross(cu,cw) );
         return mat3(cu, cv, cw);
 }
 

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useState } from 'react'
 import { usePL } from 'plre/react'
 import { Flex } from '../atoms/Flex'
 import { quat, vec3, mat4 } from 'gl-matrix'
@@ -6,17 +7,19 @@ import { Viewpoint } from '../molecules/Viewpoint'
 import { useCallback } from '../hooks/useCallback'
 import { useWheelEvent } from '../hooks/useWheelEvent'
 import { useResizeEvent } from '../hooks/useResizeEvent'
-
-let r = 30
-let rot = quat.create()
-let pos = mat4.create()
-let ini = vec3.fromValues(0, 0, -r)
-let vec = vec3.fromValues(0, 0, 0)
+import { clamp } from '../utils'
 
 export const Viewport = () => {
+        const [_] = useState(() => ({
+                rot: quat.create(),
+                mat: mat4.create(),
+                ini: vec3.fromValues(0, 0, -30),
+                vec: vec3.fromValues(0, 0, 0),
+        }))
+
         const move = useCallback(() => {
                 // @ts-ignore
-                const [x, y, z] = vec
+                const [x, y, z] = _.vec
                 self.uniform({ cameraPosition: [x, y, z] })
                 self.clear()
                 self.viewport()
@@ -27,14 +30,15 @@ export const Viewport = () => {
                 if (!state.active) return
                 let [dx, dy] = state.delta
                 if (state.e.ctrlKey) {
-                        r += dy / 25
+                        _.ini[2] = clamp(_.ini[2] + dy / 5, 0, 100)
+                        vec3.transformMat4(_.vec, _.ini, _.mat)
                 } else {
                         const tmp = quat.create()
                         quat.rotateX(tmp, tmp, -dy / 600)
                         quat.rotateY(tmp, tmp, dx / 300)
-                        quat.multiply(rot, tmp, rot)
-                        mat4.fromQuat(pos, rot)
-                        vec3.transformMat4(vec, ini, pos)
+                        quat.multiply(_.rot, tmp, _.rot)
+                        mat4.fromQuat(_.mat, _.rot)
+                        vec3.transformMat4(_.vec, _.ini, _.mat)
                 }
                 move()
         })
@@ -52,10 +56,13 @@ export const Viewport = () => {
         return (
                 <Flex
                         ref={ref}
-                        background="#3A3A3A"
+                        backgroundColor="#303030"
                         transformStyle="preserve-3d"
                 >
-                        <canvas ref={self.ref} />
+                        <Flex backgroundColor="#303030" height="25px"></Flex>
+                        <Flex background="#3A3A3A">
+                                <canvas ref={self.ref} />
+                        </Flex>
                         <Viewpoint s={16} wheel={wheel} />
                 </Flex>
         )

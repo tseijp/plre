@@ -4,8 +4,9 @@ import { randColor } from '../utils'
 
 export const Timeline = () => {
         return (
-                <Flex opacity={0.5} background={randColor()}>
-                        Timeline
+                <Flex backgroundColor="#303030">
+                        <Flex height="43px"></Flex>
+                        <Flex backgroundColor="#3A3A3A">Timeline</Flex>
                 </Flex>
         )
 }
