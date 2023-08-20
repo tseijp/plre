@@ -24,7 +24,7 @@ export const AxisLine = forwardRef((props: AxisLineProps, ref) => {
                                 transform:
                                         `translate${X}(${
                                                 s *
-                                                (x ? 1 : -1) *
+                                                (y ? -1 : 1) *
                                                 LINE_WIDTH *
                                                 0.5
                                         }px)` + (z ? ' rotateX(90deg)' : ''),

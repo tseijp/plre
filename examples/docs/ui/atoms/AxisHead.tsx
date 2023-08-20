@@ -20,7 +20,7 @@ export const AxisHead = forwardRef((props: AxisHeadProps, ref) => {
                                 position: 'absolute',
                                 transformStyle: 'preserve-3d',
                                 transform: `translate${X}(${
-                                        s * (x ? 1 : -1) * HEAD_POS
+                                        s * (y ? -1 : 1) * HEAD_POS
                                 }px)`,
                         }}
                 >

@@ -1,21 +1,22 @@
 import * as React from 'react'
 import { usePL } from 'plre/react'
 import { Flex } from '../atoms/Flex'
+import { quat, vec3, mat4 } from 'gl-matrix'
 import { Viewpoint } from '../molecules/Viewpoint'
 import { useCallback } from '../hooks/useCallback'
 import { useWheelEvent } from '../hooks/useWheelEvent'
 import { useResizeEvent } from '../hooks/useResizeEvent'
 
-const { cos, sin } = Math
+let r = 30
+let rot = quat.create()
+let pos = mat4.create()
+let ini = vec3.fromValues(0, 0, -r)
+let vec = vec3.fromValues(0, 0, 0)
 
 export const Viewport = () => {
-        let phi = 0.12
-        let tht = 1
-        let r = 30
         const move = useCallback(() => {
-                const x = r * sin(tht) * cos(phi)
-                const z = r * sin(tht) * sin(phi)
-                const y = r * cos(tht)
+                // @ts-ignore
+                const [x, y, z] = vec
                 self.uniform({ cameraPosition: [x, y, z] })
                 self.clear()
                 self.viewport()
@@ -28,8 +29,12 @@ export const Viewport = () => {
                 if (state.e.ctrlKey) {
                         r += dy / 25
                 } else {
-                        phi -= dx / 300
-                        tht -= dy / 600
+                        const tmp = quat.create()
+                        quat.rotateX(tmp, tmp, -dy / 600)
+                        quat.rotateY(tmp, tmp, dx / 300)
+                        quat.multiply(rot, tmp, rot)
+                        mat4.fromQuat(pos, rot)
+                        vec3.transformMat4(vec, ini, pos)
                 }
                 move()
         })

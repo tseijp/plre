@@ -19,6 +19,7 @@ uniform vec3 colorB;
 uniform vec3 colorC;
 uniform vec3 floorColor;
 uniform vec3 cameraPosition;
+uniform vec3 lookAt;
 
 // #define AA 2
 #define AA 1
@@ -121,8 +122,8 @@ vec3 render(vec3 ro, vec3 rd) {
 mat3 setCamera(vec3 ro, vec3 ta, float cr) {
 	vec3 cw = normalize(ta - ro);
 	vec3 cp = normalize(vec3(sin(cr), cos(cr), 0.0));
-	vec3 cu = cross(cw, cp);
-	vec3 cv = cross(cu, cw);
+	vec3 cu = normalize( cross(cw,cp) );
+	vec3 cv =          ( cross(cu,cw) );
         return mat3(cu, cv, cw);
 }
 
@@ -134,7 +135,7 @@ void main() {
         vec2 p = (2.0 * gl_FragCoord.xy - iResolution.xy) / maxAxis;
 
         // Define camera position
-        vec3 ta = vec3(0.0, 0.5, 0.0);
+        vec3 ta = lookAt;
         vec3 ro = cameraPosition;
         mat3 ca = setCamera(ro, ta, 0.0);
 
@@ -165,6 +166,7 @@ export const createPL = (props?: Partial<PL>) => {
                         self(props)
                         self.uniform({
                                 cameraPosition: [-10, 15, 25],
+                                lookAt: [0, 0, 0],
                                 colorA: [
                                         192.0 / 255.0,
                                         78.0 / 255.0,
