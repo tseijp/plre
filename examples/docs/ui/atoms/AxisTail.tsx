@@ -12,11 +12,7 @@ export const AxisTail = forwardRef((props: AxisTailProps, ref) => {
         const { x, y, s } = props
         const X = x ? 'X' : y ? 'Y' : 'Z'
         const color = x ? 'red' : y ? 'blue' : 'green'
-        const rgba = x
-                ? 'rgba(255, 0, 0, 0.1)'
-                : y
-                ? 'rgba(0, 0, 255, 0.1)'
-                : 'rgba(0, 255, 0, 0.1)'
+        const rgba = x ? '#493B3D' : y ? '#35485A' : '#4D652A'
         return (
                 <div
                         style={{
@@ -30,14 +26,22 @@ export const AxisTail = forwardRef((props: AxisTailProps, ref) => {
                         <div
                                 ref={ref as any}
                                 style={{
+                                        color: 'transparent',
                                         background: rgba,
                                         borderRadius: 9999,
-                                        boxSizing: 'border-box',
-                                        border: `solid ${s / 10}px ${color}`,
                                         width: s,
                                         height: s,
+                                        textAlign: 'center',
+                                        fontSize: s * 0.7,
+                                        lineHeight: 1 / 0.7,
+                                        fontWeight: 500,
+                                        userSelect: 'none',
+                                        boxSizing: 'border-box',
+                                        outline: `solid ${s / 10}px ${color}`,
                                 }}
-                        />
+                        >
+                                -{X}
+                        </div>
                 </div>
         )
 })

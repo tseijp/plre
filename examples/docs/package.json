@@ -21,7 +21,6 @@
                 "@uiw/codemirror-theme-github": "4.21.9",
                 "@codemirror/state": "6.2.1",
                 "clsx": "^1.2.1",
-                "gl-matrix": "3.4.3",
                 "gsap": "3.12.2",
                 "leva": "0.9.34",
                 "reev": "0.10.0",

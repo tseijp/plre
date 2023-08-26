@@ -20,6 +20,7 @@ uniform vec3 colorC;
 uniform vec3 floorColor;
 uniform vec3 cameraPosition;
 uniform vec3 lookAt;
+uniform float cameraAngle;
 
 // #define AA 2
 #define AA 1
@@ -113,6 +114,7 @@ vec3 render(vec3 ro, vec3 rd) {
                 col = mix(col, colorC, nor.z);
                 col *= grid(pos.x);
                 col *= grid(pos.z);
+                col = vec3(dot(col, vec3(0., 0., 1)));
         }
 
         return col;
@@ -121,8 +123,8 @@ vec3 render(vec3 ro, vec3 rd) {
 mat3 setCamera(vec3 ro, vec3 ta, float cr) {
         vec3 cw = normalize(ta - ro);
         vec3 cp = normalize(vec3(sin(cr), cos(cr), 0.0));
-        vec3 cu = normalize( cross(cw,cp) );
-        vec3 cv =          ( cross(cu,cw) );
+        vec3 cu = normalize( cross(cw, cp) );
+        vec3 cv =          ( cross(cu, cw) );
         return mat3(cu, cv, cw);
 }
 
@@ -136,7 +138,7 @@ void main() {
         // Define camera position
         vec3 ta = lookAt;
         vec3 ro = cameraPosition;
-        mat3 ca = setCamera(ro, ta, 0.0);
+        mat3 ca = setCamera(ro, ta, cameraAngle);
 
         // Focal length
         const float fl = 2.25;
@@ -164,7 +166,6 @@ export const createPL = (props?: Partial<PL>) => {
                 mount() {
                         self(props)
                         self.uniform({
-                                cameraPosition: [-10, 15, 25],
                                 lookAt: [0, 0, 0],
                                 colorA: [
                                         192.0 / 255.0,

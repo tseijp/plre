@@ -36,5 +36,5 @@ export const usePL = (props: Partial<PL> = {}, self = pl) => {
                 },
         }) as Partial<PL>
 
-        return useMemo(() => self(memo2)(memo1), [self, memo1, memo2])
+        return useMemo(() => self(memo2)(memo1), [self, memo1, memo2]) as PL
 }

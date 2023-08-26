@@ -21,6 +21,7 @@ export interface WheelState {
         ref(traget: Element): void
         scroll: () => void
         on(self: WheelState): void
+        memo: any
 }
 
 export const wheelEvent = () => {

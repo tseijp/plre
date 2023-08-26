@@ -27,13 +27,16 @@ export const AxisHead = forwardRef((props: AxisHeadProps, ref) => {
                         <div
                                 ref={ref as any}
                                 style={{
+                                        color: 'black',
                                         background: color,
                                         borderRadius: 9999,
                                         width: s,
                                         height: s,
-                                        fontSize: s * 0.8,
                                         textAlign: 'center',
-                                        lineHeight: 'normal',
+                                        fontSize: s * 0.7,
+                                        lineHeight: 1 / 0.7,
+                                        fontWeight: 500,
+                                        userSelect: 'none',
                                 }}
                         >
                                 {X}

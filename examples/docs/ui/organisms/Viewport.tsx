@@ -1,57 +1,57 @@
 import * as React from 'react'
-import { useState } from 'react'
 import { usePL } from 'plre/react'
 import { Flex } from '../atoms/Flex'
-import { quat, vec3, mat4 } from 'gl-matrix'
 import { Viewpoint } from '../molecules/Viewpoint'
 import { useCallback } from '../hooks/useCallback'
 import { useWheelEvent } from '../hooks/useWheelEvent'
 import { useResizeEvent } from '../hooks/useResizeEvent'
 import { clamp } from '../utils'
 
+const { cos, sin, PI } = Math
+
 export const Viewport = () => {
-        const [_] = useState(() => ({
-                rot: quat.create(),
-                mat: mat4.create(),
-                ini: vec3.fromValues(0, 0, -30),
-                vec: vec3.fromValues(0, 0, 0),
-        }))
-
-        const move = useCallback(() => {
-                // @ts-ignore
-                const [x, y, z] = _.vec
-                self.uniform({ cameraPosition: [x, y, z] })
-                self.clear()
-                self.viewport()
-                self.drawArrays()
-        })
-
         const wheel = useWheelEvent((state) => {
-                if (!state.active) return
+                if (!state.active) return update()
                 let [dx, dy] = state.delta
+                const _ = wheel.memo
                 if (state.e.ctrlKey) {
-                        _.ini[2] = clamp(_.ini[2] + dy / 5, 0, 100)
-                        vec3.transformMat4(_.vec, _.ini, _.mat)
+                        _.rad += dy / 10
                 } else {
-                        const tmp = quat.create()
-                        quat.rotateX(tmp, tmp, -dy / 600)
-                        quat.rotateY(tmp, tmp, dx / 300)
-                        quat.multiply(_.rot, tmp, _.rot)
-                        mat4.fromQuat(_.mat, _.rot)
-                        vec3.transformMat4(_.vec, _.ini, _.mat)
+                        _.tht += dy / 300
+                        _.phi -= (dx / 300) * (sin(_.tht) < 0 ? -1 : 1)
                 }
-                move()
+                update()
         })
+
+        const update = useCallback(() => {
+                self.frame(() => {
+                        let { tht, phi, rad } = wheel.memo
+                        phi += Math.PI / 2
+                        // @ts-ignore
+                        const x = rad * sin(tht) * cos(phi)
+                        const z = rad * sin(tht) * sin(phi)
+                        const y = rad * cos(tht)
+                        self.uniform({
+                                cameraAngle: sin(tht) > 0 ? 0 : PI,
+                                cameraPosition: [x, y, z],
+                        })
+                        self.clear()
+                        self.viewport()
+                        self.drawArrays()
+                })
+        })
+
+        if (!wheel.memo) wheel.memo = { tht: 1, phi: 0.12, rad: 30 }
 
         const self = usePL({
+                update,
                 ref(el: Element) {
                         wheel.ref(el)
+                        update()
                 },
         })
 
-        const ref = useResizeEvent(() => {
-                self.frame(() => move())
-        })
+        const ref = useResizeEvent(self.update)
 
         return (
                 <Flex

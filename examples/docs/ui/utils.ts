@@ -1,3 +1,21 @@
+import type { EventState } from 'reev/types'
+
+export const once = <
+        T extends object,
+        K extends keyof T = keyof T,
+        F extends T[keyof T] = T[keyof T]
+>(
+        self: EventState<T>,
+        key: K,
+        fun: F
+) => {
+        const callback = () => {
+                self(key, fun)
+                self(key, callback as F)
+        }
+        callback()
+}
+
 export const rand = (n = 1) => (Math.random() * n) << 0
 
 export const randColor = () =>
