@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { gsap } from 'gsap/gsap-core'
 import { Refs } from './useRefs'
-import { range } from '../utils'
+import { range, rot } from '../utils'
 import { EventState, event } from 'reev'
 import { WheelState } from './useWheelEvent'
 
@@ -9,24 +9,23 @@ const { PI } = Math
 
 // prettier-ignore
 const THT_PHI = [
-        [PI / 2, -PI / 2], // X
-        [0.0001,       0], // Y
-        [PI / 2,       0], // Z
-        [PI / 2,  PI / 2], // -X
-        [PI    ,       0], // -Y
-        [PI / 2,      PI], // -Z
+        {tht: PI / 2, phi: -PI / 2}, // X
+        {tht: 0.0001, phi:       0}, // Y
+        {tht: PI / 2, phi:       0}, // Z
+        {tht: PI / 2, phi:  PI / 2}, // -X
+        {tht: PI    , phi:       0}, // -Y
+        {tht: PI / 2, phi:      PI}, // -Z
 ]
 
 const addClick = (
         el: HTMLDivElement,
         wheel: EventState<WheelState>,
-        index: number
+        i: number
 ) => {
         const click = () => {
-                const i =
-                        wheel.memo.lastIndex === index ? (index + 3) % 6 : index
-                wheel.memo.lastIndex = i
-                let [tht, phi] = THT_PHI[i]
+                const index = wheel.memo.lastIndex === i ? (i + 3) % 6 : i
+                wheel.memo.lastIndex = index
+                const { tht, phi } = rot(wheel.memo, THT_PHI[index])
                 const onUpdate = () => wheel.on(wheel)
                 gsap.to(wheel.memo, { tht, phi, onUpdate })
         }
