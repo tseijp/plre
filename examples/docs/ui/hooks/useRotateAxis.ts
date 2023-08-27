@@ -30,12 +30,6 @@ export const useRotateAxis = (
                         const rad = [-phi, -tht, 0][i]
                         if (el) el.style.transform = `rotate${X}(${rad}rad)`
                 })
-                // console.table({
-                //         tht,
-                //         phi,
-                //         tht_PI: (((tht / PI) * 100) << 0) / 100,
-                //         phi_PI: (((phi / PI) * 100) << 0) / 100,
-                // })
         })
         useEffect(() => {
                 on()

@@ -50,16 +50,16 @@ const Wrap = React.forwardRef((props: WrapProps, forwardRef) => {
                         ref={forwardRef}
                         style={{
                                 position: 'absolute',
-                                top: s * 3.4,
+                                top: s * 3.5,
                                 left: 'initial',
-                                right: 0,
+                                color: 'black',
+                                right: 0.2,
                                 fontSize: s,
                                 width: s * 6,
                                 height: s * 6,
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: 'black',
                                 transformStyle: 'preserve-3d',
                         }}
                 >

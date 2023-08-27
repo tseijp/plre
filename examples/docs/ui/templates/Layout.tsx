@@ -3,6 +3,7 @@ import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import { Debug } from '../atoms/Debug'
+import { useInitPLObject } from '../hooks/useInitPLObject'
 import { Separate } from '../molecules/Separate'
 import { Properties } from '../organisms/Properties'
 import { Timeline } from '../organisms/Timeline'
@@ -11,6 +12,8 @@ import { Viewport } from '../organisms/Viewport'
 
 export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
+        const obj = useInitPLObject()
+
         return (
                 <LayoutImpl noFooter>
                         <Head>
@@ -26,7 +29,7 @@ export const Layout = () => {
                                         <Timeline />
                                 </Separate>
                                 <Separate rate={[0.33, 0.67]}>
-                                        <ViewLayer />
+                                        <ViewLayer obj={obj} />
                                         <Properties />
                                 </Separate>
                         </Separate>

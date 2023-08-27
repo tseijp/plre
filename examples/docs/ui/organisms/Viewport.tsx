@@ -41,7 +41,7 @@ export const Viewport = () => {
                 })
         })
 
-        if (!wheel.memo) wheel.memo = { tht: 1, phi: 0.12, rad: 30 }
+        if (!wheel.memo) wheel.memo = { tht: 1.1, phi: 0.4, rad: 30 }
 
         const self = usePL({
                 update,
