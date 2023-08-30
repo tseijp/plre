@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useCallback } from './useCallback'
+import { useCallback } from '../../atoms'
 import { event } from 'reev'
 import { Vec2, addV, subV } from './utils'
 import type { EventState } from 'reev'

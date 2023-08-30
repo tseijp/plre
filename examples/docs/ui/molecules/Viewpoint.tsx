@@ -1,14 +1,10 @@
 import * as React from 'react'
-import { useRefs } from '../hooks/useRefs'
-import { useAxisEvent } from '../hooks/useAxisEvent'
-import { useDragEvent } from '../hooks/useDragEvent'
-import { AxisHead } from '../atoms/AxisHead'
-import { AxisLine } from '../atoms/AxisLine'
-import { AxisTail } from '../atoms/AxisTail'
+import { useState } from 'react'
+import { useRefs, AxisHead, AxisLine, AxisTail } from '../atoms'
+import { useAxisEvent, useDragEvent } from './hooks'
 import type { EventState } from 'reev/types'
-import type { WheelState } from '../hooks/useWheelEvent'
-import type { ReactNode, CSSProperties } from 'react'
-import { useRotateAxis } from '../hooks/useRotateAxis'
+import type { WheelState } from './hooks'
+import type { ReactNode } from 'react'
 
 export interface ViewpointProps {
         s: number
@@ -17,14 +13,12 @@ export interface ViewpointProps {
 
 export const Viewpoint = (props: ViewpointProps) => {
         const { s = 5, wheel } = props
-        const refs = useRefs()
-        const drag = useDragEvent(() => {})
+        const refs = useRefs<HTMLDivElement | null>(null)
 
         useAxisEvent(refs, wheel)
-        useRotateAxis(refs, wheel, drag)
 
         return (
-                <Wrap ref={drag.ref} s={s}>
+                <Wrap ref={refs(-1)} wheel={wheel} s={s}>
                         <AxisHead x s={s} ref={refs(0)} />
                         <AxisHead y s={s} ref={refs(1)} />
                         <AxisHead z s={s} ref={refs(2)} />
@@ -40,30 +34,53 @@ export const Viewpoint = (props: ViewpointProps) => {
 
 interface WrapProps {
         s: number
+        wheel: EventState<WheelState>
         children: ReactNode
 }
 
 const Wrap = React.forwardRef((props: WrapProps, forwardRef) => {
-        const { s, children } = props
+        const { s, wheel, children } = props
+        const [isHover, setHover] = useState(false)
+        const drag = useDragEvent((state) => {
+                wheel.active = state.active
+                wheel._active = state._active
+                if (!state.active) return
+                const [dx, dy] = state.delta
+                const weight = 2
+                wheel.delta = [-dx * weight, -dy * weight]
+                wheel.on(wheel)
+        })
+
         return (
-                <div // @ts-ignore
-                        ref={forwardRef}
+                <div
+                        ref={drag.ref}
+                        onMouseEnter={() => setHover(true)}
+                        onMouseLeave={() => setHover(false)}
                         style={{
                                 position: 'absolute',
-                                top: s * 3.5,
+                                top: s * 3.7,
                                 left: 'initial',
+                                right: 0.5,
                                 color: 'black',
-                                right: 0.2,
+                                borderRadius: '9999px',
+                                background: isHover ? '#636363' : '',
                                 fontSize: s,
-                                width: s * 6,
-                                height: s * 6,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                transformStyle: 'preserve-3d',
                         }}
                 >
-                        {children}
+                        <div
+                                // @ts-ignore
+                                ref={forwardRef}
+                                style={{
+                                        width: s * 6,
+                                        height: s * 6,
+                                        transformStyle: 'preserve-3d',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                }}
+                        >
+                                {children}
+                        </div>
                 </div>
         )
 })

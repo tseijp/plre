@@ -12,9 +12,11 @@ const floorColor = [58 / 255, 58 / 255, 58 / 255]
 export const createObject = (
         type: ObjectTypes,
         props: Partial<PLObject> = {},
-        children: PLObject[] = []
+        _children: PLObject | PLObject[] = []
 ) => {
         const {
+                id = type,
+                children = _children,
                 position = [0, 0, 0],
                 rotation = [0, 0, 0],
                 scale = [1, 1, 1],
@@ -22,14 +24,16 @@ export const createObject = (
                 index = 0,
                 ...other
         } = props
+
         const self = event({
                 type,
+                id,
                 position,
                 rotation,
                 scale,
                 color,
                 index,
-                children,
+                children: Array.isArray(children) ? children : [children],
                 ...other,
         })
         return self as EventState<PLObject>

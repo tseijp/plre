@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { gsap } from 'gsap/gsap-core'
-import { Refs } from './useRefs'
-import { range, rot } from '../utils'
+import { gsap } from 'gsap'
+import { Refs } from '../../atoms'
+import { range, rot } from '../../utils'
 import { EventState, event } from 'reev'
+import { useCallback } from '../../atoms'
 import { WheelState } from './useWheelEvent'
 
 const { PI } = Math
@@ -23,6 +24,7 @@ const addClick = (
         i: number
 ) => {
         const click = () => {
+                if (wheel.active && wheel._active) return
                 const index = wheel.memo.lastIndex === i ? (i + 3) % 6 : i
                 wheel.memo.lastIndex = index
                 const { tht, phi } = rot(wheel.memo, THT_PHI[index])
@@ -41,7 +43,6 @@ const addHover = (el: HTMLDivElement, color: string) => {
         el.addEventListener('mouseenter', enter)
         el.addEventListener('mouseleave', leave)
         return () => {
-                alert('HI')
                 el.removeEventListener('mouseenter', enter)
                 el.removeEventListener('mouseleave', leave)
         }
@@ -53,7 +54,10 @@ interface AxisState {
         clean(): void
 }
 
-const axisEvent = (refs: Refs, wheel: EventState<WheelState>) => {
+const axisEvent = (
+        refs: Refs<HTMLDivElement | null>,
+        wheel: EventState<WheelState>
+) => {
         const self = event<AxisState>({
                 mount() {
                         range(3).map((i) => {
@@ -74,8 +78,38 @@ const axisEvent = (refs: Refs, wheel: EventState<WheelState>) => {
         return self
 }
 
-export const useAxisEvent = (refs: Refs, wheel: EventState<WheelState>) => {
+export const useAxisEvent = (
+        refs: Refs<HTMLDivElement | null>,
+        wheel: EventState<WheelState>
+        // ref: RefObject<HTMLDivElement>
+) => {
         const [self] = useState(() => axisEvent(refs, wheel))
-        useEffect(() => void self.mount(), [])
-        useEffect(() => () => self.clean(), [])
+        const on = useCallback(() => {
+                if (!wheel.memo) return
+                let { tht, phi } = wheel.memo
+                let wrap = refs[-1].current
+                tht -= PI / 2
+                wrap.style.transform = `rotateX(${tht}rad) rotateY(${phi}rad)`
+                range(6).forEach((i) => {
+                        const el = refs[i]?.current
+                        if (el)
+                                el.style.transform = `rotateY(${-phi}rad) rotateX(${-tht}rad)`
+                })
+                range(3).forEach((i) => {
+                        const el = refs[6 + i]?.current
+                        const X = ['X', 'Y', 'Z'][i]
+                        const rad = [-phi, -tht, 0][i]
+                        if (el) el.style.transform = `rotate${X}(${rad}rad)`
+                })
+        })
+
+        useEffect(() => {
+                on(wheel)
+                wheel({ on })
+                self.mount()
+                return () => {
+                        wheel({ on })
+                        self.clean()
+                }
+        }, [])
 }

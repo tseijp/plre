@@ -1,12 +1,20 @@
 import * as React from 'react'
-import { Flex } from '../atoms/Flex'
-import { useCodemirror } from '../hooks/useCodemirror'
+import { Flex } from '../atoms'
+import { Header } from '../molecules'
+import { useCodemirror } from './hooks'
+import type { EditorState } from '../molecules'
 
-export const Properties = () => {
+export interface PropertiesProps {
+        editorTree: EditorState
+        editorItem: EditorState
+}
+
+export const Properties = (props: PropertiesProps) => {
+        const { ...headerProps } = props
         const self = useCodemirror()
         return (
                 <Flex background="#303030">
-                        <Flex height="25px"></Flex>
+                        <Header {...headerProps} />
                         <Flex ref={self.ref} />
                 </Flex>
         )

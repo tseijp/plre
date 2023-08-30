@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ReactNode } from 'react'
 
-export interface TreeProps<T extends { children: T[] }> {
+export interface TreeProps<T extends { children: T | T[] }> {
         children: (
                 props: T,
                 grandchild?: ReactNode,
@@ -11,22 +11,25 @@ export interface TreeProps<T extends { children: T[] }> {
         tree: T
 }
 
-export const Tree = <T extends { children: T[] }>(props: TreeProps<T>) => {
-        const { children, index = 0, tree } = props
+export const Tree = <T extends { children: T | T[] }>(props: TreeProps<T>) => {
+        const { children: f, index = 0, tree } = props
 
-        return null
+        if (!tree.children) return f(tree, null, index)
 
-        if (!tree.children.length) return children(tree, null, index)
+        if (!Array.isArray(tree.children))
+                return f(tree, f(tree.children, null, index + 1), index)
 
-        return children(
+        if (!tree.children.length) return f(tree, null, index)
+
+        return f(
                 tree,
-                tree.children.map((child, index) => {
+                tree.children.map((child, key) => {
                         return (
                                 <Tree
-                                        key={index}
+                                        key={key}
                                         tree={child}
                                         index={index + 1}
-                                        children={children}
+                                        children={f}
                                 />
                         )
                 }),

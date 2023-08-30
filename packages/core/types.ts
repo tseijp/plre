@@ -19,6 +19,7 @@ export type ObjectTypes =
 
 export interface PLObject {
         type: ObjectTypes
+        id: string
         matrix: Mat4
         matrixWorld: Mat4
         position: Vec3
@@ -26,7 +27,8 @@ export interface PLObject {
         scale: Vec3
         color: Vec3
         index: number
-        children: PLObject[]
+        active: boolean
+        children: PLObject | PLObject[]
         to: 'U' | 'I' | 'S'
 
         // shader
@@ -36,5 +38,5 @@ export interface PLObject {
 
 export interface PL extends GL {
         update(): void
-        collection: PLObject
+        collection: PLObject | null
 }

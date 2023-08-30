@@ -24,7 +24,8 @@ export const AxisTail = forwardRef((props: AxisTailProps, ref) => {
                         }}
                 >
                         <div
-                                ref={ref as any}
+                                // @ts-ignore
+                                ref={ref}
                                 style={{
                                         color: 'transparent',
                                         background: rgba,

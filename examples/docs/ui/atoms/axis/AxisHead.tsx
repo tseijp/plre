@@ -25,7 +25,8 @@ export const AxisHead = forwardRef((props: AxisHeadProps, ref) => {
                         }}
                 >
                         <div
-                                ref={ref as any}
+                                // @ts-ignore
+                                ref={ref}
                                 style={{
                                         color: 'black',
                                         background: color,

@@ -1,13 +1,9 @@
 import * as React from 'react'
-import { Fragment, useRef, useMemo, useEffect } from 'react'
 import { gsap } from 'gsap'
-import { Flex } from '../atoms/Flex'
-import { Box } from '../atoms/Box'
-import { useRefs } from '../hooks/useRefs'
-import { useDragEvent } from '../hooks/useDragEvent'
-import { useWindowSize } from '../hooks/useWindowSize'
-import type { Refs } from '../hooks/useRefs'
-import { useCallback } from '../hooks/useCallback'
+import { Fragment, useRef, useMemo, useEffect } from 'react'
+import { Flex, Box, useRefs, useCallback } from '../atoms'
+import { useDragEvent, useWindowSize } from './hooks'
+import type { Refs } from '../atoms'
 
 export interface SeparateProps {
         rate?: number[]
@@ -26,7 +22,7 @@ export const Separate = (props: SeparateProps) => {
         h -= g * 2 // padding
         h -= 60 // header
         const size = (row ? w : h) - g * (rate.length - 1)
-        const refs = useRefs()
+        const refs = useRefs<HTMLDivElement | null>()
 
         return useMemo(
                 () => (
@@ -72,7 +68,7 @@ export interface SeparatorProps extends SeparateProps {
         w: number
         h: number
         size: number
-        refs: Refs
+        refs: Refs<HTMLDivElement | null>
 }
 
 const Separator = (props: SeparatorProps) => {

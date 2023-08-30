@@ -2,17 +2,47 @@ import * as React from 'react'
 import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import { Debug } from '../atoms/Debug'
-import { useInitPLObject } from '../hooks/useInitPLObject'
-import { Separate } from '../molecules/Separate'
-import { Properties } from '../organisms/Properties'
-import { Timeline } from '../organisms/Timeline'
-import { ViewLayer } from '../organisms/ViewLayer'
-import { Viewport } from '../organisms/Viewport'
+import { Tree, Debug } from '../atoms'
+import { useEditorTree, Separate } from '../molecules'
+import { Properties, Timeline, ViewLayer, Viewport } from '../organisms'
+import { useInitPLObject } from './hooks'
+import type { EditorState } from '../molecules'
+import type { ReactNode } from 'react'
 
 export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
-        const obj = useInitPLObject()
+        const objectTree = useInitPLObject()
+        const editorTree = useEditorTree()
+
+        const render = (editorItem: EditorState, grandChild: ReactNode) => {
+                const props = { editorItem, editorTree }
+
+                switch (editorItem.type) {
+                        case 'viewport':
+                                return <Viewport {...props} />
+                        case 'viewlayer':
+                                return (
+                                        <ViewLayer
+                                                {...props}
+                                                objectTree={objectTree}
+                                        />
+                                )
+                        case 'timeline':
+                                return <Timeline {...props} />
+                        case 'properties':
+                                return <Properties {...props} />
+                        case 'I':
+                                return (
+                                        <Separate
+                                                top={editorItem.top}
+                                                row={editorItem.row}
+                                                rate={editorItem.rate}
+                                        >
+                                                {grandChild}
+                                        </Separate>
+                                )
+                }
+        }
 
         return (
                 <LayoutImpl noFooter>
@@ -20,19 +50,10 @@ export const Layout = () => {
                                 <title>
                                         {siteConfig.title}{' '}
                                         {siteConfig.titleDelimiter}{' '}
-                                        {siteConfig.tagline}
+                                        {siteConfig.tagline}{' '}
                                 </title>
                         </Head>
-                        <Separate top row rate={[0.83, 0.17]}>
-                                <Separate rate={[0.92, 0.08]}>
-                                        <Viewport />
-                                        <Timeline />
-                                </Separate>
-                                <Separate rate={[0.33, 0.67]}>
-                                        <ViewLayer obj={obj} />
-                                        <Properties />
-                                </Separate>
-                        </Separate>
+                        <Tree tree={editorTree}>{render}</Tree>
                         <Debug />
                 </LayoutImpl>
         )

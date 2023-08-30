@@ -1,23 +1,28 @@
 import * as React from 'react'
 import { usePL } from 'plre/react'
-import { Flex } from '../atoms/Flex'
-import { Viewpoint } from '../molecules/Viewpoint'
-import { useCallback } from '../hooks/useCallback'
-import { useWheelEvent } from '../hooks/useWheelEvent'
-import { useResizeEvent } from '../hooks/useResizeEvent'
-import { clamp } from '../utils'
+import { Flex, useCallback } from '../atoms'
+import { Header, Viewpoint, useWheelEvent } from '../molecules'
+import { useResizeEvent } from './hooks'
+import type { EditorState } from '../molecules'
+
+export interface ViewportProps {
+        editorTree: EditorState
+        editorItem: EditorState
+}
 
 const { cos, sin, PI } = Math
 
-export const Viewport = () => {
+export const Viewport = (props: ViewportProps) => {
+        const { ...headerProps } = props
+
         const wheel = useWheelEvent((state) => {
                 if (!state.active) return update()
                 let [dx, dy] = state.delta
                 const _ = wheel.memo
-                if (state.e.ctrlKey) {
+                if (state.e?.ctrlKey) {
                         _.rad += dy / 10
                 } else {
-                        _.tht += dy / 300
+                        _.tht += (dy / 300) * (_.rad < 0 ? -1 : 1)
                         _.phi -= (dx / 300) * (sin(_.tht) < 0 ? -1 : 1)
                 }
                 update()
@@ -59,7 +64,7 @@ export const Viewport = () => {
                         backgroundColor="#303030"
                         transformStyle="preserve-3d"
                 >
-                        <Flex backgroundColor="#303030" height="25px"></Flex>
+                        <Header {...headerProps} />
                         <Flex background="#3A3A3A">
                                 <canvas ref={self.ref} />
                         </Flex>

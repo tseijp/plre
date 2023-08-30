@@ -13,7 +13,8 @@ uniform float cameraAngle;
 
 // #define AA 2
 #define AA 1
-#define ITERATION 64 // 256
+#define PI 3.14159265359
+#define ITERATION 256 // 64
 #define opU(d1, d2) d1.x < d2.x ? d1 : d2
 #define opI(d1, d2) d1.x > d2.x ? d1 : d2
 #define opS(d1, d2) d1.x > -d2.x ? d1 : vec2(-d2.x, d2.y);
@@ -47,7 +48,12 @@ float sdPlane(vec3 p) {
 }
 
 float evalFunction(vec3 p) {
-        return p.x * p.x + p.z * p.z - 1.0;
+        // return p.x * p.x + p.z * p.z - 1.0;
+        float sigma = .3;
+        float a = p.x * p.x + p.z * p.z;
+        float b = -.5 * a / (sigma * sigma);
+        float c = sigma * sqrt(2. * PI);
+        return 1. / c * exp(b) - 1.;
 }
 
 float sdF(vec3 p, float thickness) {
@@ -65,7 +71,7 @@ float sdF2(vec3 p, float thickness) {
 vec2 map(vec3 pos) {
         vec2 res = vec2(100., backgroundIndex);
         res = opU(res, vec2(sdBoxFrame(pos, vec3(1.), .001), boxFrameIndex));
-        res = opU(res, vec2(sdF2(pos, .0125), functionIndex));
+        res = opU(res, vec2(sdF2(pos, .05), functionIndex));
         return res;
 }
 
