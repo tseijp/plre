@@ -1,12 +1,13 @@
-import { pl } from 'plre'
-import { useState } from 'react'
 import event from 'reev'
+import { useState } from 'react'
+import { useCallback } from '../../atoms'
 
 const DELAY = 100
 
-export const resizeEvent = () => {
+type ResizeEventCallback = (entry: ResizeObserverEntry) => () => void
+
+export const resizeEvent = (on: ResizeEventCallback) => {
         const self = event<{
-                on?: () => void
                 ref(target: Element): void
                 listener(): void
                 observer: ResizeObserver | null
@@ -15,15 +16,9 @@ export const resizeEvent = () => {
                 listener: () => {},
                 ref(target: Element) {
                         if (!target) return
-                        const callback = (entry: ResizeObserverEntry) => () => {
-                                pl.width = entry.contentRect.width
-                                pl.height = entry.contentRect.height
-                                pl.resize()
-                                self.on?.()
-                        }
                         const register = (entry: ResizeObserverEntry) => {
                                 if (entry.target !== target) return
-                                const id = setTimeout(callback(entry), DELAY)
+                                const id = setTimeout(on(entry), DELAY)
                                 self.listener()
                                 self.listener = () => clearTimeout(id)
                         }
@@ -38,8 +33,8 @@ export const resizeEvent = () => {
         return self
 }
 
-export const useResizeEvent = (on = () => {}) => {
-        const [self] = useState(() => resizeEvent())
-        self.on = on
-        return self.ref
+export const useResizeEvent = (_on: ResizeEventCallback) => {
+        const on = useCallback(_on)
+        const [self] = useState(() => resizeEvent(on))
+        return self
 }

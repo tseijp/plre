@@ -40,7 +40,6 @@ export const ViewLayer = (props: ViewLayerProps) => {
         return (
                 <Flex backgroundColor="#282828">
                         <Header {...headerProps} />
-                        {/* <Flex height="25px"></Flex> */}
                         <Flex
                                 // backgroundImage="linear-gradient(0deg, #ffff00 50%, #0000ff 50%)"
                                 backgroundImage="linear-gradient(0deg, #282828 50%, #2B2B2B 50%)"

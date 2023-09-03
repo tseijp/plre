@@ -1,6 +1,6 @@
 import { MutableRefObject, useState } from 'react'
 import { event } from 'reev'
-import pl from 'plre'
+import { fs } from 'plre/shader'
 import type { EditorView } from '@codemirror/view'
 import type { EditorState } from '@codemirror/state'
 
@@ -13,7 +13,7 @@ export interface CodemirrorEvent {
         ref: MutableRefObject<HTMLElement>
 }
 
-export const codemirrorEvent = (_pl = pl) => {
+export const codemirrorEvent = () => {
         const mount = async () => {
                 const [
                         { cpp },
@@ -26,7 +26,7 @@ export const codemirrorEvent = (_pl = pl) => {
                         import('@codemirror/view'),
                         import('@uiw/codemirror-theme-github'),
                 ])
-                const doc = _pl.fs
+                const doc = fs
                 const parent = self.target
                 const myTheme = EditorView.theme(theme, { dark: true })
                 const extensions = [cpp(), lineNumbers(), githubDark, myTheme]
