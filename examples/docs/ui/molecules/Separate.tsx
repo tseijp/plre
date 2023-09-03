@@ -1,27 +1,31 @@
 import * as React from 'react'
-import { gsap } from 'gsap'
-import { Fragment, useRef, useMemo, useEffect } from 'react'
-import { Flex, Box, useRefs, useCallback } from '../atoms'
-import { useDragEvent, useWindowSize } from './hooks'
-import type { Refs } from '../atoms'
+import { Fragment, useMemo } from 'react'
+import { Flex, Box, useRefs } from '../atoms'
+import { useWindowSize } from './hooks'
+import { Separator } from './Separator'
+import { Splitter } from './Splitter'
 
 export interface SeparateProps {
         rate?: number[]
         row?: boolean
-        top?: boolean
         gap?: number
+        top?: boolean
         children?: React.ReactNode
 }
 
 export const Separate = (props: SeparateProps) => {
         const { rate = [], gap: g = 3, top, row, children } = props
-        const deps = [rate, g, top, row, children]
-        if (!Array.isArray(children)) throw new Error('not supported')
+        if (!Array.isArray(children))
+                throw new Error(`children must be an array`)
+        if (children.length !== rate.length)
+                throw new Error(`children length must be equal to rate length`)
+
         let [w, h] = useWindowSize()
         w -= g * 2 // padding
         h -= g * 2 // padding
         h -= 60 // header
-        const size = (row ? w : h) - g * (rate.length - 1)
+
+        const size = (row ? w : h) - g * (rate.length - 1) // px
         const refs = useRefs<HTMLDivElement | null>()
 
         return useMemo(
@@ -34,6 +38,16 @@ export const Separate = (props: SeparateProps) => {
                         >
                                 {rate.map((r, i) => (
                                         <Fragment key={i}>
+                                                {/* <Splitter
+                                                        i={i}
+                                                        w={w}
+                                                        h={h}
+                                                        gap={g}
+                                                        row={row}
+                                                        size={size}
+                                                        rate={rate}
+                                                        refs={refs}
+                                                /> */}
                                                 {!i || (
                                                         <Separator
                                                                 i={i}
@@ -59,60 +73,6 @@ export const Separate = (props: SeparateProps) => {
                                 ))}
                         </Flex>
                 ),
-                [size, ...deps]
-        )
-}
-
-export interface SeparatorProps extends SeparateProps {
-        i: number
-        w: number
-        h: number
-        size: number
-        refs: Refs<HTMLDivElement | null>
-}
-
-const Separator = (props: SeparatorProps) => {
-        const { i, w, h, gap, row, size, rate, refs } = props
-        const wh = useRef([w, h]).current
-        const move = (duration = 0) => {
-                const delta = drag.offset[row ? 0 : 1]
-                const [da, db] = [rate[i - 1], rate[i]]
-                const [_a, _b] = [refs[i - 1]?.current, refs[i]?.current]
-                gsap.to(_a, { flexBasis: size * da + delta, duration })
-                gsap.to(_b, { flexBasis: size * db - delta, duration })
-        }
-
-        const drag = useDragEvent((drag) => {
-                if (!drag.active) return
-                move(0.5)
-        })
-
-        const resize = useCallback(() => {
-                const [_w, _h] = wh
-                const [_x, _y] = drag.offset
-                drag.offset = [(_x * w) / _w, (_y * h) / _h]
-                move()
-                wh[0] = w
-                wh[1] = h
-        })
-
-        useEffect(() => {
-                window.addEventListener('resize', resize)
-                return () => {
-                        window.removeEventListener('resize', resize)
-                }
-        }, [])
-
-        return (
-                <Box
-                        ref={drag.ref}
-                        cursor={`${!row ? 'row' : 'col'}-resize`}
-                        basis={`${gap}px`}
-                        grow={0}
-                        // ref: https://stackoverflow.com/questions/15381172/how-can-i-make-flexbox-children-100-height-of-their-parent
-                        height="auto"
-                        display="flex"
-                        alignSelf="stretch"
-                />
+                [size, rate, g, top, row, children]
         )
 }
