@@ -46,6 +46,7 @@ export const ViewLayer = (props: ViewLayerProps) => {
                                 backgroundSize="40px 40px"
                                 alignItems="start"
                                 justifyContent="start"
+                                color="#fff"
                                 marginTop="6px"
                         >
                                 <Tree tree={objectTree}>{render}</Tree>

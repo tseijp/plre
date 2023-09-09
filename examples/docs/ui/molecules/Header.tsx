@@ -25,6 +25,7 @@ export const Header = (props: HeaderProps) => {
                         overflow="visible"
                         alignItems="start"
                         paddingLeft="6px"
+                        color="#fff"
                 >
                         <Drop marginTop="2px">
                                 <span
