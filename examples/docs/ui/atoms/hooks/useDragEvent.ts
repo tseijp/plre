@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
-import { useCallback } from '../../atoms'
+import { useCall } from '..'
 import { event } from 'reev'
-import { Vec2, addV, subV } from './utils'
+import { Vec2, addV, subV } from '../../molecules/hooks/utils'
 import type { EventState } from 'reev'
 
 export interface DragState {
@@ -20,6 +20,7 @@ export interface DragState {
         clean(): void
         ref(traget: Element): void
         on(self: DragState): void
+        event: PointerEvent
 }
 
 export const dragEvent = () => {
@@ -32,6 +33,7 @@ export const dragEvent = () => {
                 offset: [0, 0],
                 movement: [0, 0],
                 move(e: PointerEvent) {
+                        self.event = e
                         self._active = self.active
                         self._value = self.value
                         self.value = [e.clientX, e.clientY]
@@ -43,12 +45,16 @@ export const dragEvent = () => {
                         self.on(self)
                 },
                 down(e: PointerEvent) {
-                        self._active = !(self.active = true)
+                        self.event = e
+                        self._active = false
+                        self.active = true
                         self.target.setPointerCapture(e.pointerId)
                         self.on(self)
                 },
                 up(e: PointerEvent) {
-                        self._active = !(self.active = false)
+                        self.event = e
+                        self._active = true
+                        self.active = false
                         self.delta = self.movement = [0, 0]
                         self.target.releasePointerCapture(e.pointerId)
                         self.on(self)
@@ -78,7 +84,7 @@ export const dragEvent = () => {
 
 export const useDragEvent = (_on: (self: DragState) => void) => {
         const [self] = useState(dragEvent)
-        const on = useCallback(_on)
+        const on = useCall(_on)
         useEffect(() => {
                 self({ on })
                 return () => void self({ on })

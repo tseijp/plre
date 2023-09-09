@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { gsap } from 'gsap'
-import { useDragEvent } from './hooks'
+import { useDragEvent } from '../atoms'
 import type { ReactNode } from 'react'
 
 export interface DraggableProps {

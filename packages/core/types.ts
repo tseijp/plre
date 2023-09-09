@@ -17,6 +17,22 @@ export type ObjectTypes =
         | 'I'
         | 'S'
 
+export type EditorType =
+        | 'viewport'
+        | 'timeline'
+        | 'viewlayer'
+        | 'properties'
+        | 'I'
+
+export interface EditorState {
+        type: EditorType
+        rate: [number, number]
+        top: boolean
+        row: boolean
+        update?: () => void
+        children: EditorState[]
+}
+
 export interface PLObject {
         type: ObjectTypes
         id: string

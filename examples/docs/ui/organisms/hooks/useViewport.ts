@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { createPL } from 'plre'
 import { usePL } from 'plre/react'
-import { useCallback } from '../../atoms'
-import { useWheelEvent } from '../../molecules'
-import { useResizeEvent } from '../hooks'
+import { useCall } from '../../atoms'
+import { useWheelEvent, useResizeEvent } from '../../atoms'
 import type { PL } from 'plre/types'
 const { cos, sin, PI } = Math
 
@@ -39,7 +38,7 @@ export const useViewport = () => {
         /**
          * pl event
          */
-        const update = useCallback(() =>
+        const update = useCall(() =>
                 self.frame(() => {
                         let { tht, phi, rad } = wheel.memo
                         phi += Math.PI / 2 // @ts-ignore

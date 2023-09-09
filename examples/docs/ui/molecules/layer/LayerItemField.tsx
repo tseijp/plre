@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useState } from 'react'
 import { Field } from '../../atoms/Field'
 import { useFieldEvent } from '../hooks/useFieldEvent'
-import { useCallback } from '../../atoms/hooks/useCallback'
+import { useCall } from '../../atoms/hooks/useCall'
 import { Draggable } from '../Draggable'
 import type { ReactNode } from 'react'
 
@@ -15,7 +15,7 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
         const { children, onChange } = props
         if (typeof children !== 'string') return
 
-        const on = useCallback(() => {
+        const on = useCall(() => {
                 if (field.value !== value) onChange?.(field.value)
                 setValue(field.value)
                 setIsActive(false)

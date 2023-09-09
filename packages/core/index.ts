@@ -1,8 +1,8 @@
 import { event } from 'reev'
 import { createGL } from 'glre'
 import { fs, vs } from './shader'
-import { PL, PLObject, ObjectTypes } from './types'
 import { EventState } from 'reev'
+import { PL, PLObject, ObjectTypes, EditorType, EditorState } from './types'
 
 const colorA = [192 / 255, 78 / 255, 255 / 255]
 const colorB = [112 / 255, 200 / 255, 228 / 255]
@@ -37,6 +37,29 @@ export const createObject = (
                 ...other,
         })
         return self as EventState<PLObject>
+}
+
+export const createEditor = (
+        type: EditorType,
+        props: Partial<EditorState> = {},
+        _children: EditorState[] = []
+) => {
+        const {
+                children = _children,
+                top = false,
+                row = false,
+                ...other
+        } = props
+
+        const self = event({
+                children,
+                type,
+                top,
+                row,
+                ...other,
+        }) as EventState<EditorState>
+
+        return self
 }
 
 export const createPL = (props: Partial<PL> = {}) => {

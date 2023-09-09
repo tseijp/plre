@@ -1,6 +1,6 @@
 import event from 'reev'
 import { useState } from 'react'
-import { useCallback } from '../../atoms'
+import { useCall } from '..'
 
 const DELAY = 100
 
@@ -34,7 +34,7 @@ export const resizeEvent = (on: ResizeEventCallback) => {
 }
 
 export const useResizeEvent = (_on: ResizeEventCallback) => {
-        const on = useCallback(_on)
+        const on = useCall(_on)
         const [self] = useState(() => resizeEvent(on))
         return self
 }

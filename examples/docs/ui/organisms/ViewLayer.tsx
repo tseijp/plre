@@ -1,10 +1,10 @@
 import * as React from 'react'
 import { useState } from 'react'
-import { Flex, Tree, useCallback } from '../atoms'
+import { Flex, Tree, useCall } from '../atoms'
 import { Header, LayerItem } from '../molecules'
 import { PLObject } from 'plre/types'
 import type { ReactNode } from 'react'
-import type { EditorState } from '../molecules'
+import type { EditorState } from 'plre/types'
 
 export interface ViewLayerProps {
         objectTree: PLObject
@@ -17,7 +17,7 @@ export const ViewLayer = (props: ViewLayerProps) => {
         const { objectTree, ...headerProps } = props
         const [selectedObj, set] = useState<PLObject | null>(objectTree)
 
-        const handleClick = useCallback((obj: PLObject) => () => {
+        const handleClick = useCall((obj: PLObject) => () => {
                 obj.active = true
                 set((p) => {
                         if (p && p !== obj) p.active = false

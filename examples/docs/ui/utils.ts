@@ -1,3 +1,5 @@
+import { createEditor } from 'plre'
+import { EditorState } from 'plre/types'
 import type { EventState } from 'reev/types'
 
 export const once = <
@@ -46,3 +48,12 @@ export const rot = <T extends { tht: number; phi: number }>(a: T, b: T) => {
 
         return { tht, phi }
 }
+
+export const splitEditor = (item: EditorState, i: number, row: boolean) => {
+        const child = item.children[i]
+        const newGrand = createEditor(child.type, { ...child })
+        const newChild = createEditor('I', { row }, [child, newGrand])
+        item.children[i] = newChild
+}
+
+export const shrinkEditor = (item: EditorState, i: number) => {}

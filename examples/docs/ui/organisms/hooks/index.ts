@@ -1,3 +1,3 @@
 export * from './useCodemirror'
-export * from './useResizeEvent'
+export * from '../../atoms/hooks/'
 export * from './useViewport'

@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Flex } from '../atoms'
 import { Header } from '../molecules'
 import { useCodemirror } from './hooks'
-import type { EditorState } from '../molecules'
+import type { EditorState } from 'plre/types'
 
 export interface PropertiesProps {
         editorTree: EditorState

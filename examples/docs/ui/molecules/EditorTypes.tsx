@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Flex } from '../atoms'
 import type { ReactNode } from 'react'
-import type { EditorType } from './hooks'
+import type { EditorType } from 'plre/types'
 
 export interface EditorTypesProps {
         children?: ReactNode

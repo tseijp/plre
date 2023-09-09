@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { Fragment, useMemo } from 'react'
 import { Flex, Box, useRefs } from '../atoms'
-import { useWindowSize } from './hooks'
+import { useWindowSize } from '../atoms'
 import { Separator } from './Separator'
 import { Splitter } from './Splitter'
+import type { EditorState } from 'plre/types'
 
 export interface SeparateProps {
         rate?: number[]
@@ -11,10 +12,11 @@ export interface SeparateProps {
         gap?: number
         top?: boolean
         children?: React.ReactNode
+        editorItem: EditorState
 }
 
 export const Separate = (props: SeparateProps) => {
-        const { rate = [], gap: g = 3, top, row, children } = props
+        const { rate = [], gap: g = 3, top, row, children, editorItem } = props
         if (!Array.isArray(children))
                 throw new Error(`children must be an array`)
         if (children.length !== rate.length)
@@ -35,19 +37,10 @@ export const Separate = (props: SeparateProps) => {
                                 padding={top ? `${g}px ${g}px` : void 0}
                                 backgroundColor={top ? '#161616' : void 0}
                                 background="#161616"
+                                borderRadius={5}
                         >
                                 {rate.map((r, i) => (
                                         <Fragment key={i}>
-                                                {/* <Splitter
-                                                        i={i}
-                                                        w={w}
-                                                        h={h}
-                                                        gap={g}
-                                                        row={row}
-                                                        size={size}
-                                                        rate={rate}
-                                                        refs={refs}
-                                                /> */}
                                                 {!i || (
                                                         <Separator
                                                                 i={i}
@@ -65,8 +58,21 @@ export const Separate = (props: SeparateProps) => {
                                                         ref={refs(i)}
                                                         basis={size * r}
                                                         borderRadius={5}
-                                                        cursor="auto"
                                                 >
+                                                        <Splitter
+                                                                i={i}
+                                                                w={w}
+                                                                h={h}
+                                                                gap={g}
+                                                                row={row}
+                                                                top={top}
+                                                                size={size}
+                                                                rate={rate}
+                                                                refs={refs}
+                                                                editorItem={
+                                                                        editorItem
+                                                                }
+                                                        />
                                                         {children[i]}
                                                 </Box>
                                         </Fragment>

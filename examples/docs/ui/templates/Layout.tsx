@@ -2,20 +2,21 @@ import * as React from 'react'
 import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import { Tree, Debug } from '../atoms'
-import { useEditorTree, Separate } from '../molecules'
+import { Tree, Debug, Flex } from '../atoms'
+import { Separate } from '../molecules'
 import { Properties, Timeline, ViewLayer, Viewport } from '../organisms'
-import { useInitPLObject } from './hooks'
-import type { EditorState } from '../molecules'
+import { useInitPLObject, useInitPLEditor } from './hooks'
+import type { EditorState } from 'plre/types'
 import type { ReactNode } from 'react'
 
 export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
         const objectTree = useInitPLObject()
-        const editorTree = useEditorTree()
+        const editorTree = useInitPLEditor()
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 const props = { editorItem, editorTree }
+                console.log(editorItem.type)
 
                 switch (editorItem.type) {
                         case 'viewport':
@@ -37,10 +38,13 @@ export const Layout = () => {
                                                 top={editorItem.top}
                                                 row={editorItem.row}
                                                 rate={editorItem.rate}
+                                                {...props}
                                         >
                                                 {grandChild}
                                         </Separate>
                                 )
+                        default:
+                                return <Flex background="#3A3A3A" />
                 }
         }
 

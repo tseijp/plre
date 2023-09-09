@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import event from 'reev'
-import { useCallback } from '../../atoms'
-import { Vec2, addV, wheelValues } from './utils'
+import { useCall } from '..'
+import { Vec2, addV, wheelValues } from '../../molecules/hooks/utils'
 import type { EventState } from 'reev/types'
 
 export interface WheelState {
@@ -75,7 +75,7 @@ export const wheelEvent = () => {
 
 export const useWheelEvent = (_on: (self: WheelState) => void) => {
         const [self] = useState(() => wheelEvent())
-        const on = useCallback(_on)
+        const on = useCall(_on)
         useEffect(() => {
                 self({ on })
                 return () => {

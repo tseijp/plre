@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Flex } from '../atoms'
 import { Header } from '../molecules'
-import type { EditorState } from '../molecules'
+import type { EditorState } from 'plre/types'
 
 export interface TimelineProps {
         editorTree: EditorState

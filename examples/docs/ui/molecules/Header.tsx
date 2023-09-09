@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Flex, Drop } from '../atoms'
 import { EditorTypes } from './EditorTypes'
 import type { ReactNode } from 'react'
-import type { EditorState, EditorType } from './hooks'
+import type { EditorState, EditorType } from 'plre/types'
 
 export interface HeaderProps {
         children?: ReactNode

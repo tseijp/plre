@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Flex } from '../atoms'
 import { useViewport } from './hooks'
 import { Header, Viewpoint } from '../molecules'
-import type { EditorState } from '../molecules'
+import type { EditorState } from 'plre/types'
 
 export interface ViewportProps {
         editorTree: EditorState

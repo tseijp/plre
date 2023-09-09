@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
-import { createObject, pl } from './'
+import { pl } from './'
 import { frame } from 'refr'
 import { mutable } from 'reev'
-import { ObjectTypes, PL, PLObject } from './types'
+import { PL } from './types'
 import type { MutableArgs } from 'reev/types'
 
 export const useMutable = <T extends object>(...args: MutableArgs<T>) => {
@@ -31,7 +31,8 @@ export const usePL = (props: Partial<PL> = {}, self = pl) => {
                 clean() {
                         console.log('usePL clean')
                         self(memo2)(memo1)
-                        frame.cancel()
+                        // @TODO fix refr
+                        // frame.cancel()
                         window.removeEventListener('resize', self.resize)
                 },
         }) as Partial<PL>

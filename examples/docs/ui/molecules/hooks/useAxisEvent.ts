@@ -3,8 +3,8 @@ import { gsap } from 'gsap'
 import { Refs } from '../../atoms'
 import { range, rot } from '../../utils'
 import { EventState, event } from 'reev'
-import { useCallback } from '../../atoms'
-import { WheelState } from './useWheelEvent'
+import { useCall } from '../../atoms'
+import { WheelState } from '../../atoms'
 
 const { PI } = Math
 
@@ -84,7 +84,7 @@ export const useAxisEvent = (
         // ref: RefObject<HTMLDivElement>
 ) => {
         const [self] = useState(() => axisEvent(refs, wheel))
-        const on = useCallback(() => {
+        const on = useCall(() => {
                 if (!wheel.memo) return
                 let { tht, phi } = wheel.memo
                 let wrap = refs[-1].current
