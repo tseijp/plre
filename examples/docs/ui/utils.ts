@@ -2,9 +2,9 @@ import { createEditor } from 'plre'
 import { EditorState } from 'plre/types'
 import type { EventState } from 'reev/types'
 
-export const HEADER_PADDING_SIZE = 65
+export const HEADER_PADDING_SIZE = 63
 
-export const EDITOR_GAP_SIZE = 6
+export const EDITOR_GAP_SIZE = 3
 
 export const LAYOUT_PADDING_STYLE =
         [
