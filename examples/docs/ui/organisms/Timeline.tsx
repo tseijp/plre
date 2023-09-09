@@ -13,7 +13,7 @@ export const Timeline = (props: TimelineProps) => {
         return (
                 <Flex backgroundColor="#303030">
                         <Header {...headerProps} />
-                        <Flex backgroundColor="#3A3A3A">Timeline</Flex>
+                        <Flex backgroundColor="#3A3A3A"></Flex>
                 </Flex>
         )
 }
