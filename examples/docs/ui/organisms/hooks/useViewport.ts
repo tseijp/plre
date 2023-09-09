@@ -29,8 +29,8 @@ export const useViewport = () => {
          * resize event
          */
         const resize = useResizeEvent((entry: ResizeObserverEntry) => () => {
-                self.width = entry.contentRect.width
-                self.height = entry.contentRect.height
+                // self.width = entry.contentRect.width
+                // self.height = entry.contentRect.height
                 self.resize()
                 update()
         })

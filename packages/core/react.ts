@@ -29,7 +29,6 @@ export const usePL = (props: Partial<PL> = {}, self = pl) => {
                         self.el.addEventListener('mousemove', self.mousemove)
                 },
                 clean() {
-                        console.log('usePL clean')
                         self(memo2)(memo1)
                         // @TODO fix refr
                         // frame.cancel()

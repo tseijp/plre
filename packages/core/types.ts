@@ -26,9 +26,11 @@ export type EditorType =
 
 export interface EditorState {
         type: EditorType
-        rate: [number, number]
+        id: string
+        rate: number[]
         top: boolean
         row: boolean
+        active: boolean
         update?: () => void
         children: EditorState[]
 }

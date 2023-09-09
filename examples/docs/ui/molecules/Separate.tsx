@@ -1,22 +1,22 @@
 import * as React from 'react'
 import { Fragment, useMemo } from 'react'
-import { Flex, Box, useRefs } from '../atoms'
+import { Flex, Box, useRefs, useCall } from '../atoms'
 import { useWindowSize } from '../atoms'
 import { Separator } from './Separator'
 import { Splitter } from './Splitter'
+import { shrinkEditor, splitEditor, HEADER_PADDING_SIZE } from '../utils'
 import type { EditorState } from 'plre/types'
 
 export interface SeparateProps {
-        rate?: number[]
-        row?: boolean
         gap?: number
-        top?: boolean
         children?: React.ReactNode
         editorItem: EditorState
+        editorTree: EditorState
 }
 
 export const Separate = (props: SeparateProps) => {
-        const { rate = [], gap: g = 3, top, row, children, editorItem } = props
+        const { gap: g = 3, children, editorItem, editorTree } = props
+        const { rate = [], top, row } = editorItem
         if (!Array.isArray(children))
                 throw new Error(`children must be an array`)
         if (children.length !== rate.length)
@@ -25,20 +25,29 @@ export const Separate = (props: SeparateProps) => {
         let [w, h] = useWindowSize()
         w -= g * 2 // padding
         h -= g * 2 // padding
-        h -= 60 // header
+        h -= HEADER_PADDING_SIZE // header
 
         const size = (row ? w : h) - g * (rate.length - 1) // px
         const refs = useRefs<HTMLDivElement | null>()
 
+        const handleSplit = useCall((i = 0, j = 0, row = false) => {
+                splitEditor(editorItem, i, j, row)
+                editorTree.update()
+        })
+
+        const handleShrinkStart = useCall((i) => {
+                // console.log({ ...editorItem })
+        })
+
+        const handleShrinkEnd = useCall((i) => {
+                shrinkEditor(editorTree, editorItem, i)
+                editorTree.update()
+                // console.log({ ...editorItem })
+        })
+
         return useMemo(
                 () => (
-                        <Flex
-                                row={row}
-                                padding={top ? `${g}px ${g}px` : void 0}
-                                backgroundColor={top ? '#161616' : void 0}
-                                background="#161616"
-                                borderRadius={5}
-                        >
+                        <Flex row={row} background="#161616" borderRadius={5}>
                                 {rate.map((r, i) => (
                                         <Fragment key={i}>
                                                 {!i || (
@@ -61,16 +70,16 @@ export const Separate = (props: SeparateProps) => {
                                                 >
                                                         <Splitter
                                                                 i={i}
-                                                                w={w}
-                                                                h={h}
-                                                                gap={g}
-                                                                row={row}
                                                                 top={top}
-                                                                size={size}
-                                                                rate={rate}
-                                                                refs={refs}
-                                                                editorItem={
-                                                                        editorItem
+                                                                row={row}
+                                                                onSplit={
+                                                                        handleSplit
+                                                                }
+                                                                onShrinkEnd={
+                                                                        handleShrinkEnd
+                                                                }
+                                                                onShrinkStart={
+                                                                        handleShrinkStart
                                                                 }
                                                         />
                                                         {children[i]}

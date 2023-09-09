@@ -15,9 +15,13 @@ export interface ViewLayerProps {
 
 export const ViewLayer = (props: ViewLayerProps) => {
         const { objectTree, ...headerProps } = props
-        const [selectedObj, set] = useState<PLObject | null>(objectTree)
+        // const [selectedObj, set] = useState<PLObject | null>(objectTree)
+        const [selectedObj, set] = useState<EditorState | null>(
+                headerProps.editorTree
+        )
 
-        const handleClick = useCall((obj: PLObject) => () => {
+        // const handleClick = useCall((obj: PLObject) => () => {
+        const handleClick = useCall((obj: EditorState) => () => {
                 obj.active = true
                 set((p) => {
                         if (p && p !== obj) p.active = false
@@ -25,7 +29,8 @@ export const ViewLayer = (props: ViewLayerProps) => {
                 })
         })
 
-        const render = (obj: PLObject, grand: ReactNode, index = 0) => (
+        // const render = (obj: PLObject, grand: ReactNode, index = 0) => (
+        const render = (obj: EditorState, grand: ReactNode, index = 0) => (
                 <LayerItem
                         grand={grand}
                         index={index}
@@ -48,7 +53,9 @@ export const ViewLayer = (props: ViewLayerProps) => {
                                 justifyContent="start"
                                 marginTop="6px"
                         >
-                                <Tree tree={objectTree}>{render}</Tree>
+                                <Tree tree={headerProps.editorTree}>
+                                        {render}
+                                </Tree>
                         </Flex>
                 </Flex>
         )

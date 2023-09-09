@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { gsap } from 'gsap'
 import { Box } from '../atoms'
+import { useSeparatorEvent } from './hooks'
 import type { Refs } from '../atoms'
-import { useSeparatorEvent } from './hooks/useSeparatorEvent'
 
 export interface SeparatorProps {
         i: number

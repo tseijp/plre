@@ -15,6 +15,7 @@ export const createObject = (
         _children: PLObject | PLObject[] = []
 ) => {
         const {
+                // type = _type
                 id = type,
                 children = _children,
                 position = [0, 0, 0],
@@ -45,6 +46,8 @@ export const createEditor = (
         _children: EditorState[] = []
 ) => {
         const {
+                // type = _type
+                id = type,
                 children = _children,
                 top = false,
                 row = false,
@@ -52,8 +55,8 @@ export const createEditor = (
         } = props
 
         const self = event({
-                children,
                 type,
+                children,
                 top,
                 row,
                 ...other,

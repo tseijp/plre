@@ -6,6 +6,7 @@ import { Tree, Debug, Flex } from '../atoms'
 import { Separate } from '../molecules'
 import { Properties, Timeline, ViewLayer, Viewport } from '../organisms'
 import { useInitPLObject, useInitPLEditor } from './hooks'
+import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
 import type { ReactNode } from 'react'
 
@@ -16,7 +17,6 @@ export const Layout = () => {
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 const props = { editorItem, editorTree }
-                console.log(editorItem.type)
 
                 switch (editorItem.type) {
                         case 'viewport':
@@ -34,12 +34,7 @@ export const Layout = () => {
                                 return <Properties {...props} />
                         case 'I':
                                 return (
-                                        <Separate
-                                                top={editorItem.top}
-                                                row={editorItem.row}
-                                                rate={editorItem.rate}
-                                                {...props}
-                                        >
+                                        <Separate {...props}>
                                                 {grandChild}
                                         </Separate>
                                 )
@@ -57,7 +52,14 @@ export const Layout = () => {
                                         {siteConfig.tagline}{' '}
                                 </title>
                         </Head>
-                        <Tree tree={editorTree}>{render}</Tree>
+                        <Flex
+                                position="absolute"
+                                paddingTop={HEADER_PADDING_SIZE}
+                                padding={LAYOUT_PADDING_STYLE}
+                                backgroundColor="#161616"
+                        >
+                                <Tree tree={editorTree}>{render}</Tree>
+                        </Flex>
                         <Debug />
                 </LayoutImpl>
         )
