@@ -4,7 +4,7 @@ import { event } from 'reev'
 import { Vec2, addV, subV } from '../../molecules/hooks/utils'
 import type { EventState } from 'reev'
 
-export interface DragState {
+export interface DragState<El extends Element = Element> {
         _active: boolean
         active: boolean
         _value: Vec2
@@ -12,18 +12,19 @@ export interface DragState {
         delta: Vec2
         offset: Vec2
         movement: Vec2
-        target: Element
+        target: El
         move(e: PointerEvent): void
         down(e: PointerEvent): void
         up(e: PointerEvent): void
         mount(target: Element): void
         clean(): void
         ref(traget: Element): void
-        on(self: DragState): void
+        on(self: DragState<El>): void
         event: PointerEvent
+        memo: any
 }
 
-export const dragEvent = () => {
+export const dragEvent = <El extends Element = Element>() => {
         const self = event({
                 active: false,
                 _active: false,
@@ -32,6 +33,7 @@ export const dragEvent = () => {
                 delta: [0, 0],
                 offset: [0, 0],
                 movement: [0, 0],
+                memo: {},
                 move(e: PointerEvent) {
                         self.event = e
                         self._active = self.active
@@ -55,11 +57,11 @@ export const dragEvent = () => {
                         self.event = e
                         self._active = true
                         self.active = false
-                        self.delta = self.movement = [0, 0]
                         self.target.releasePointerCapture(e.pointerId)
                         self.on(self)
+                        self.delta = self.movement = [0, 0]
                 },
-                mount(target: Element) {
+                mount(target: El) {
                         self.target = target
                         target.addEventListener('pointermove', self.move)
                         target.addEventListener('pointerdown', self.down)
@@ -77,13 +79,15 @@ export const dragEvent = () => {
                         if (target) self.mount(target)
                         else self.clean()
                 },
-        }) as EventState<DragState>
+        }) as EventState<DragState<El>>
 
         return self
 }
 
-export const useDragEvent = (_on: (self: DragState) => void) => {
-        const [self] = useState(dragEvent)
+export const useDragEvent = <El extends Element = Element>(
+        _on: (self: DragState<El>) => void
+) => {
+        const [self] = useState(dragEvent<El>)
         const on = useCall(_on)
         useEffect(() => {
                 self({ on })

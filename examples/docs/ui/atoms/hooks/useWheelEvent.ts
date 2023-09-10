@@ -4,7 +4,7 @@ import { useCall } from '..'
 import { Vec2, addV, wheelValues } from '../../molecules/hooks/utils'
 import type { EventState } from 'reev/types'
 
-export interface WheelState {
+export interface WheelState<El extends Element = Element> {
         _active: boolean
         active: boolean
         _value: Vec2
@@ -12,7 +12,7 @@ export interface WheelState {
         delta: Vec2
         offset: Vec2
         movement: Vec2
-        target: Element
+        target: El
         e: WheelEvent
         wheel(e: WheelEvent): void
         end(e: WheelEvent): void
@@ -20,11 +20,11 @@ export interface WheelState {
         clean(target: null): void
         ref(traget: Element): void
         scroll: () => void
-        on(self: WheelState): void
+        on(self: WheelState<El>): void
         memo: any
 }
 
-export const wheelEvent = () => {
+export const wheelEvent = <El extends Element = Element>() => {
         const self = event({
                 active: false,
                 _active: false,
@@ -57,7 +57,7 @@ export const wheelEvent = () => {
                         self.delta = self.movement = [0, 0]
                         self.on(self)
                 },
-                mount(target: Element) {
+                mount(target: El) {
                         self.target = target
                         target.addEventListener('wheel', self.wheel)
                 },
@@ -68,13 +68,15 @@ export const wheelEvent = () => {
                 ref(target: Element | null) {
                         if (target) self.mount(target)
                 },
-        }) as EventState<WheelState>
+        }) as EventState<WheelState<El>>
 
         return self
 }
 
-export const useWheelEvent = (_on: (self: WheelState) => void) => {
-        const [self] = useState(() => wheelEvent())
+export const useWheelEvent = <El extends Element = Element>(
+        _on: (self: WheelState<El>) => void
+) => {
+        const [self] = useState(wheelEvent<El>)
         const on = useCall(_on)
         useEffect(() => {
                 self({ on })

@@ -21,14 +21,15 @@ const format = (i: number, j: number, row: boolean) => {
         }
 }
 
-export interface SplitterProps extends SplitterEventHandlers {
+export interface SplitterProps {
         i: number
         row?: boolean
         top?: boolean
+        handlers: SplitterEventHandlers
 }
 
 export const Splitter = (props: SplitterProps) => {
-        const { i, top, row, ...splitterItemProps } = props
+        const { i, top, row, handlers } = props
         return range(top ? 4 : 2).map((j) => {
                 j = format(i, j, row)
                 return (
@@ -38,37 +39,24 @@ export const Splitter = (props: SplitterProps) => {
                                 j={j}
                                 row={row}
                                 style={_styles[j]}
-                                {...splitterItemProps}
+                                handlers={handlers}
                         />
                 )
         })
 }
 
-export interface SplitterItem extends SplitterEventHandlers {
+export interface SplitterItem {
         i: number
         j: number
         row: boolean
         style: CSSProperties
+        handlers: SplitterEventHandlers
 }
 
 export const SplitterItem = (props: any) => {
-        const {
-                children,
-                i,
-                j,
-                row,
-                style,
-                onSplit,
-                onShrinkStart,
-                onShrinkEnd,
-        } = props
+        const { children, i, j, row, style, handlers } = props
 
-        const split = useSplitterEvent(i, j, row, {
-                onSplit,
-                onShrinkStart,
-                onShrinkEnd,
-        })
-
+        const split = useSplitterEvent(i, j, row, handlers)
         return (
                 <div
                         style={{

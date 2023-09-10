@@ -1,11 +1,13 @@
 import * as React from 'react'
-import { Fragment, useMemo } from 'react'
-import { Flex, Box, useRefs, useCall } from '../atoms'
-import { useWindowSize } from '../atoms'
+import { Fragment, useState } from 'react'
+import { Flex, Box, useRefs, BoxProps } from '../atoms'
 import { Separator } from './Separator'
 import { Splitter } from './Splitter'
-import { shrinkEditor, splitEditor, HEADER_PADDING_SIZE } from '../utils'
+import { shrinkEditor, splitEditor } from '../utils'
 import type { EditorState } from 'plre/types'
+import { useSeparatorSize } from './hooks/useSeparatorSize'
+import { useMutable } from 'plre/react'
+import { SplitterEventHandlers } from '.'
 
 export interface SeparateProps {
         gap?: number
@@ -15,79 +17,83 @@ export interface SeparateProps {
 }
 
 export const Separate = (props: SeparateProps) => {
-        const { gap: g = 3, children, editorItem, editorTree } = props
+        const { children, editorItem, editorTree } = props
         const { rate = [], top, row } = editorItem
+        const [shrinkIndex, setShrinkIndex] = useState<null | number>(null)
+
         if (!Array.isArray(children))
                 throw new Error(`children must be an array`)
         if (children.length !== rate.length)
                 throw new Error(`children length must be equal to rate length`)
 
-        let [w, h] = useWindowSize()
-        w -= g * 2 // padding
-        h -= g * 2 // padding
-        h -= HEADER_PADDING_SIZE // header
-
-        const size = (row ? w : h) - g * (rate.length - 1) // px
         const refs = useRefs<HTMLDivElement | null>()
 
-        const handleSplit = useCall((i = 0, j = 0, row = false) => {
-                splitEditor(editorItem, i, j, row)
-                editorTree.update()
+        const memo = useMutable<SplitterEventHandlers>({
+                onSplit(i, j, row) {
+                        splitEditor(editorItem, i, j, row)
+                        editorTree.update()
+                },
+                onShrinkStart(i) {
+                        setShrinkIndex(i)
+                },
+                onShrinkEnd(i) {
+                        shrinkEditor(editorTree, editorItem, i)
+                        editorTree.update()
+                },
+                onShrinkCancel() {
+                        setShrinkIndex(null)
+                },
         })
 
-        const handleShrinkStart = useCall((i) => {
-                // console.log({ ...editorItem })
-        })
+        const args = [rate.length, row] as [number, boolean]
+        const render = (r: number, i: number) => (
+                <Fragment key={i}>
+                        <Separator i={i} row={row} rate={rate} refs={refs} />
+                        <BoxWithBasis r={r} args={args} ref={refs(i)}>
+                                <Splitter
+                                        i={i}
+                                        top={top}
+                                        row={row}
+                                        handlers={memo}
+                                />
+                                {children[i]}
+                                <Overlay active={i === shrinkIndex} />
+                        </BoxWithBasis>
+                </Fragment>
+        )
 
-        const handleShrinkEnd = useCall((i) => {
-                shrinkEditor(editorTree, editorItem, i)
-                editorTree.update()
-                // console.log({ ...editorItem })
-        })
+        return (
+                <Flex row={row} background="#161616" borderRadius={5}>
+                        {rate.map(render)}
+                </Flex>
+        )
+}
 
-        return useMemo(
-                () => (
-                        <Flex row={row} background="#161616" borderRadius={5}>
-                                {rate.map((r, i) => (
-                                        <Fragment key={i}>
-                                                {!i || (
-                                                        <Separator
-                                                                i={i}
-                                                                w={w}
-                                                                h={h}
-                                                                gap={g}
-                                                                row={row}
-                                                                size={size}
-                                                                rate={rate}
-                                                                refs={refs}
-                                                        />
-                                                )}
-                                                <Box
-                                                        key={i}
-                                                        ref={refs(i)}
-                                                        basis={size * r}
-                                                        borderRadius={5}
-                                                >
-                                                        <Splitter
-                                                                i={i}
-                                                                top={top}
-                                                                row={row}
-                                                                onSplit={
-                                                                        handleSplit
-                                                                }
-                                                                onShrinkEnd={
-                                                                        handleShrinkEnd
-                                                                }
-                                                                onShrinkStart={
-                                                                        handleShrinkStart
-                                                                }
-                                                        />
-                                                        {children[i]}
-                                                </Box>
-                                        </Fragment>
-                                ))}
-                        </Flex>
-                ),
-                [size, rate, g, top, row, children]
+interface BoxWithBasisProps extends BoxProps {
+        r: number
+        args: [len: number, row: boolean]
+}
+
+const BoxWithBasis = React.forwardRef((props: BoxWithBasisProps, ref) => {
+        const { r, args, ...other } = props
+        const size = useSeparatorSize(...args)
+        return <Box ref={ref} basis={size * r} borderRadius={5} {...other} />
+})
+
+interface OverlayProps {
+        active: boolean
+}
+
+const Overlay = (props: OverlayProps) => {
+        const { active } = props
+        return (
+                <Flex
+                        display={active ? 'flex' : 'none'}
+                        transition="all 0.3s ease"
+                        position="absolute"
+                        backdropFilter="blur(1px)"
+                        backgroundColor="rgba(0, 0, 0, 0.2)"
+                        boxShadow="rgba(0, 0, 0, 0.3) 2px 8px 8px"
+                />
         )
 }

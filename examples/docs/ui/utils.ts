@@ -101,15 +101,15 @@ const getParent = (tree: EditorState, item: EditorState) => {
 export const shrinkEditor = (
         tree: EditorState,
         item: EditorState,
-        i: number
+        expandId: number
 ) => {
         if (tree === item) {
-                tree.children = [tree.children[i]]
+                tree.children = [tree.children[expandId]]
                 tree.rate = [1]
                 return
         }
 
         const parent = getParent(tree, item)
         const id = parent.children.indexOf(item)
-        parent.children[id] = item.children[i]
+        parent.children[id] = item.children[expandId]
 }

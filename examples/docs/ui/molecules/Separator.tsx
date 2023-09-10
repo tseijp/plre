@@ -1,22 +1,24 @@
 import * as React from 'react'
 import { gsap } from 'gsap'
-import { Box } from '../atoms'
+import { Box, useWindowSize } from '../atoms'
 import { useSeparatorEvent } from './hooks'
 import type { Refs } from '../atoms'
+import { useSeparatorSize } from './hooks/useSeparatorSize'
+import { EDITOR_GAP_SIZE } from '../utils'
 
 export interface SeparatorProps {
         i: number
-        w: number
-        h: number
-        size: number
-        rate?: number[]
+        rate: number[]
         row?: boolean
-        gap?: number
         refs: Refs<HTMLDivElement | null>
 }
 
 export const Separator = (props: SeparatorProps) => {
-        const { i, w, h, size, gap, row, rate, refs } = props
+        const { i, row, rate, refs } = props
+        if (!i) return null
+
+        const [w, h] = useWindowSize()
+        const size = useSeparatorSize(rate.length, row)
         const drag = useSeparatorEvent(w, h, (duration) => {
                 const delta = drag.offset[row ? 0 : 1]
                 const [da, db] = [rate[i - 1], rate[i]]
@@ -29,7 +31,7 @@ export const Separator = (props: SeparatorProps) => {
                 <Box
                         ref={drag.ref}
                         cursor={`${!row ? 'row' : 'col'}-resize`}
-                        basis={`${gap}px`}
+                        basis={`${EDITOR_GAP_SIZE}px`}
                         grow={0}
                         // ref: https://stackoverflow.com/questions/15381172/how-can-i-make-flexbox-children-100-height-of-their-parent
                         height="auto"
