@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import event from 'reev'
-import { useCall } from '..'
-import { Vec2, addV, wheelValues } from '../../molecules/hooks/utils'
+import { useCall } from './useCall'
+import { Vec2, addV, wheelValues } from './utils'
 import type { EventState } from 'reev/types'
 
 export interface WheelState<El extends Element = Element> {

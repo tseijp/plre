@@ -1,6 +1,6 @@
 import event from 'reev'
 import { useState } from 'react'
-import { useCall } from '..'
+import { useCall } from './useCall'
 
 const DELAY = 100
 

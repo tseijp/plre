@@ -3,11 +3,11 @@ import { Fragment, useState } from 'react'
 import { Flex, Box, useRefs, BoxProps } from '../atoms'
 import { Separator } from './Separator'
 import { Splitter } from './Splitter'
-import { shrinkEditor, splitEditor } from '../utils'
-import type { EditorState } from 'plre/types'
-import { useSeparatorSize } from './hooks/useSeparatorSize'
+import { shrinkEditor, splitEditor } from './utils'
+import { useSeparatorSize } from './hooks'
 import { useMutable } from 'plre/react'
-import { SplitterEventHandlers } from '.'
+import type { SplitterEventHandlers } from './hooks'
+import type { EditorState } from 'plre/types'
 
 export interface SeparateProps {
         gap?: number

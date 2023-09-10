@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useCall } from '..'
 import { event } from 'reev'
-import { Vec2, addV, subV } from '../../molecules/hooks/utils'
+import { Vec2, addV, subV } from './utils'
 import type { EventState } from 'reev'
 
 export interface DragState<El extends Element = Element> {
