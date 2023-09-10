@@ -76,8 +76,9 @@ export const useSplitterEvent = (
         const reset = () => {
                 const { memo, target } = split
                 onShrinkCancel()
-                memo.spliting = false
-                memo.shrinking = false
+                memo.cancel = memo.reverse = false
+                memo.spliting = memo.shrinking = false
+                memo._spliting = memo._shrinking = false
                 target.style.cursor = 'crosshair'
         }
         return split
@@ -92,21 +93,25 @@ const isSplit = (dir = 0, j = 0) => {
 
 const isShrink = (dir: number, i: number, j: number, row: boolean) => {
         if (row) {
-                if (i % 2) return (j === 0 || j === 3) && dir === 3
-                else return (j === 1 || j === 2) && dir === 1
+                if (i % 2) {
+                        return (j === 0 || j === 3) && dir === 3
+                } else return (j === 1 || j === 2) && dir === 1
         } else {
-                if (i % 2) return (j === 0 || j === 1) && dir === 0
-                else return (j === 2 || j === 3) && dir === 2
+                if (i % 2) {
+                        return (j === 0 || j === 1) && dir === 0
+                } else return (j === 2 || j === 3) && dir === 2
         }
 }
 
 const isReverseShrink = (dir: number, i: number, j: number, row: boolean) => {
         if (row) {
-                if (i % 2) return (j === 0 || j === 3) && dir === 1
-                else return (j === 1 || j === 2) && dir === 3
+                if (i % 2) {
+                        return (j === 0 || j === 3) && dir === 1
+                } else return (j === 1 || j === 2) && dir === 3
         } else {
-                if (i % 2) return (j === 0 || j === 1) && dir === 2
-                else return (j === 2 || j === 3) && dir === 0
+                if (i % 2) {
+                        return (j === 0 || j === 1) && dir === 2
+                } else return (j === 2 || j === 3) && dir === 0
         }
 }
 
@@ -130,18 +135,20 @@ const isCancelShrink = (
                         if (j === 1) return x > 0 // dir === 1
                         if (j === 0) return x < 0 // dir === 3
                 } else {
+                        if (j === 2) return x > 0 // dir === 1
+                        if (j === 4) return x < 0 // dir === 3
                 }
-                if (j === 2) return x > 0 // dir === 1
-                if (j === 4) return x < 0 // dir === 3
         }
 }
 
 const cursor = (sign: number, row = false) => {
         if (row) {
-                if (sign === 1) return 'e-resize'
-                else return 'w-resize'
+                if (sign === 1) {
+                        return 'e-resize'
+                } else return 'w-resize'
         } else {
-                if (sign === 1) return 's-resize'
-                else return 'n-resize'
+                if (sign === 1) {
+                        return 's-resize'
+                } else return 'n-resize'
         }
 }
