@@ -29,8 +29,8 @@ export const Separate = (props: SeparateProps) => {
         const refs = useRefs<HTMLDivElement | null>()
 
         const memo = useMutable<SplitterEventHandlers>({
-                onSplit(i, j, row) {
-                        splitEditor(editorItem, i, j, row)
+                onSplit(...args) {
+                        splitEditor(editorItem, ...args)
                         editorTree.update()
                 },
                 onShrinkStart(i) {
@@ -48,7 +48,13 @@ export const Separate = (props: SeparateProps) => {
         const args = [rate.length, row] as [number, boolean]
         const render = (r: number, i: number) => (
                 <Fragment key={i}>
-                        <Separator i={i} row={row} rate={rate} refs={refs} />
+                        <Separator
+                                i={i}
+                                row={row}
+                                rate={rate}
+                                refs={refs}
+                                parentSplitter={editorItem.memo.parentSplitter}
+                        />
                         <BoxWithBasis r={r} args={args} ref={refs(i)}>
                                 <Splitter
                                         i={i}

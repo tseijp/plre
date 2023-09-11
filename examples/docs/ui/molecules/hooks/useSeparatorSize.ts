@@ -6,7 +6,7 @@ export const useSeparatorSize = (
         len: number, // rate.length
         row: boolean = false
 ) => {
-        let [w, h] = useWindowSize()
+        let [w, h] = useWindowSize() // @TODO fix using parent size
         const gap = EDITOR_GAP_SIZE
         w -= gap * 2 // padding
         h -= gap * 2 // padding

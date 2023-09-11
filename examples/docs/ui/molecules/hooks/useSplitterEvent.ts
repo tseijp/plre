@@ -1,4 +1,4 @@
-import { useDragEvent } from '../../atoms'
+import { DragState, useDragEvent } from '../../atoms'
 import {
         xyDir,
         isSplit,
@@ -11,7 +11,7 @@ import {
 const THRESHOLD_DELTA = 10
 
 export interface SplitterEventHandlers {
-        onSplit(i: number, j: number, row: boolean): void
+        onSplit(state: DragState, i: number, j: number, dir: number): void
         onShrinkEnd(i: number): void
         onShrinkStart(i: number): void
         onShrinkCancel(): void
@@ -25,8 +25,8 @@ export const useSplitterEvent = (
 ) => {
         const { onSplit, onShrinkEnd, onShrinkStart, onShrinkCancel } = handlers
         const split = useDragEvent<HTMLDivElement>((state) => {
-                const { active, _active, movement, target, event, memo } = state
-                if (!_active && active) return // pointerdown event
+                const { active, _active, movement, target, memo } = state
+                if (!_active && active) return
                 let [x, y] = movement
                 let dir = xyDir(x, y)
 
@@ -53,11 +53,21 @@ export const useSplitterEvent = (
                         memo.shrinking = true
                 }
 
+                // override spliting = false if previous spritting
+                if (memo._spritting) {
+                        memo.cancel = false
+                        memo.reverse = false
+                        memo.spliting = true
+                        memo.shrinking = false
+                }
+
                 if (memo.spliting) {
-                        if (!memo.moving) return
-                        onSplit(i, j, dir === 1 || dir === 3)
-                        target.releasePointerCapture(event.pointerId)
-                        return reset()
+                        if (!memo.splitted) {
+                                memo.splitted = true
+                                onSplit(state, i, j, dir)
+                        }
+                        if (memo.moveend) reset()
+                        return
                 }
 
                 if (memo.shrinking) {
@@ -72,9 +82,9 @@ export const useSplitterEvent = (
                                         onShrinkStart(shrinkId)
                                         target.style.cursor = cursor(sign, row)
                                 }
-                        } else if (memo.moveend) {
+                        }
+                        if (memo.moveend) {
                                 if (!memo.cancel) onShrinkEnd(expandId)
-                                target.releasePointerCapture(event.pointerId)
                                 reset()
                         }
                 }
@@ -86,6 +96,7 @@ export const useSplitterEvent = (
                 memo.cancel = memo.reverse = false
                 memo.spliting = memo.shrinking = false
                 memo._spliting = memo._shrinking = false
+                memo.splitted = false
                 target.style.cursor = 'crosshair'
         }
         return split

@@ -51,6 +51,7 @@ export const createEditor = (
                 children = _children,
                 top = false,
                 row = false,
+                memo = {},
                 ...other
         } = props
 
@@ -59,6 +60,7 @@ export const createEditor = (
                 children,
                 top,
                 row,
+                memo,
                 ...other,
         }) as EventState<EditorState>
 

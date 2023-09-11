@@ -1,30 +1,48 @@
 import * as React from 'react'
 import { gsap } from 'gsap'
-import { Box, useWindowSize } from '../atoms'
+import { Box } from '../atoms'
 import { useSeparatorEvent } from './hooks'
-import type { Refs } from '../atoms'
+import type { DragState, Refs } from '../atoms'
 import { useSeparatorSize } from './hooks/useSeparatorSize'
-import { EDITOR_GAP_SIZE } from '../utils'
+import { EDITOR_GAP_SIZE, once } from '../utils'
+import type { EventState } from 'reev'
 
 export interface SeparatorProps {
         i: number
         rate: number[]
         row?: boolean
         refs: Refs<HTMLDivElement | null>
+        parentSplitter?: EventState<DragState>
 }
 
 export const Separator = (props: SeparatorProps) => {
-        const { i, row, rate, refs } = props
+        const { i, row, rate, refs, parentSplitter } = props
         if (!i) return null
 
-        const [w, h] = useWindowSize()
         const size = useSeparatorSize(rate.length, row)
-        const drag = useSeparatorEvent(w, h, (duration) => {
-                const delta = drag.offset[row ? 0 : 1]
-                const [da, db] = [rate[i - 1], rate[i]]
-                const [_a, _b] = [refs[i - 1]?.current, refs[i]?.current]
-                gsap.to(_a, { flexBasis: size * da + delta, duration })
-                gsap.to(_b, { flexBasis: size * db - delta, duration })
+        const drag = useSeparatorEvent({
+                onMove(duration) {
+                        const delta = drag.offset[row ? 0 : 1]
+                        const [da, db] = [rate[i - 1], rate[i]]
+                        const [_a, _b] = [refs[i - 1].current, refs[i].current]
+                        gsap.to(_a, { flexBasis: size * da + delta, duration })
+                        gsap.to(_b, { flexBasis: size * db - delta, duration })
+                },
+                onMount() {
+                        if (!parentSplitter) return
+                        const callback = () => {
+                                drag.active = true
+                                drag.offset = parentSplitter.offset
+                                drag.move(parentSplitter.event)
+                        }
+                        parentSplitter('move', callback)
+                        once(parentSplitter, 'up', () => {
+                                if (drag.memo.cleanCallback) return
+                                drag.memo.cleanCallback = true
+                                drag.up(parentSplitter.event)
+                                parentSplitter('move', callback)
+                        })
+                },
         })
 
         return (

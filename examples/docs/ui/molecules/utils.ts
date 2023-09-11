@@ -1,25 +1,29 @@
 import { createEditor } from 'plre'
+import type { DragState } from '../atoms'
 import type { EditorState } from 'plre/types'
 
 export const splitEditor = (
         item: EditorState,
+        drag: DragState,
         i: number,
         j: number,
-        row: boolean
+        dir: number
 ) => {
         const child = item.children[i]
-
+        const row = dir === 1 || dir === 3
         // recursive split
         if (Array.isArray(child.children) && child.children.length > 0) {
                 const l = child.children.length - 1
                 const k = child.row ? [0, l, l, 0][j] : [0, 0, l, l][j]
-                return splitEditor(child, k, j, row)
+                return splitEditor(child, drag, k, j, dir)
         }
 
-        const rate = [0.5, 0.5]
+        // prettier-ignore
+        const rate = [[1, 0], [0, 1], [0, 1], [1, 0]][dir]
         const id = child.id + '2'
         const newGrand = createEditor(child.type, { id, ...child })
         const newChild = createEditor('I', { row, rate }, [child, newGrand])
+        newChild.memo.parentSplitter = drag
         item.children[i] = newChild
 }
 

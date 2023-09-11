@@ -42,8 +42,8 @@ export const useAtomValue = <T>(anAtom: Atom<T>) => {
 }
 
 export const useSetAtom = <T>(anAtom: Atom<T>) => {
-        return useRef((value: T) => {
-                anAtom.value = value
+        return useRef((value: T | ((p: T) => T)) => {
+                anAtom.value = value as T
         }).current
 }
 

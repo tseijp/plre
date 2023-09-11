@@ -33,6 +33,7 @@ export interface EditorState {
         active: boolean
         update?: () => void
         children: EditorState[]
+        memo: any
 }
 
 export interface PLObject {
