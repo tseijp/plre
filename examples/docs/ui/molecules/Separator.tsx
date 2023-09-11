@@ -31,9 +31,9 @@ export const Separator = (props: SeparatorProps) => {
                 onMount() {
                         if (!parentSplitter) return
                         const callback = () => {
-                                drag.active = true
+                                drag._active = drag.active = true
                                 drag.offset = parentSplitter.offset
-                                drag.move(parentSplitter.event)
+                                drag.on(drag)
                         }
                         parentSplitter('move', callback)
                         once(parentSplitter, 'up', () => {
