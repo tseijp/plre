@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { useState } from 'react'
-import { Flex, Tree, useCall } from '../atoms'
+import { useState, useRef } from 'react'
+import { DragState, Flex, Tree, useCall } from '../atoms'
 import { Header, LayerItem } from '../molecules'
 import { PLObject } from 'plre/types'
 import type { ReactNode } from 'react'
@@ -13,27 +13,78 @@ export interface ViewLayerProps {
         editorItem: EditorState
 }
 
+interface ViewLayerCache {
+        grabbed?: PLObject | null
+        hovered?: PLObject | null
+        id2Item: Map<string, PLObject>
+}
+
+// const extend = <T extends { children: T[] }>(target) => {
+//         let ret = [{ ...target }]
+//         if (!target.children) return ret
+//         target.children.forEach((child) => {
+//                 if (child) ret.push(extend(child))
+//         })
+//         return ret
+// }
+
 export const ViewLayer = (props: ViewLayerProps) => {
         const { objectTree, ...headerProps } = props
-        const [selectedObj, set] = useState<PLObject | null>(objectTree)
+        const [selected, setSelected] = useState<PLObject | null>(objectTree)
+        const [hovered, setHovered] = useState<PLObject | null>(null)
+        const cache = useRef<ViewLayerCache>({ id2Item: new Map() }).current
+
+        // console.table(extend(objectTree))
+
+        const handleMount = useCall((obj: PLObject) => (id: string) => {
+                cache.id2Item.set(id, obj)
+                return () => cache.id2Item.delete(id)
+        })
 
         const handleClick = useCall((obj: PLObject) => () => {
+                if (obj.active) return
                 obj.active = true
-                set((p) => {
+                setHovered(void 0)
+                setSelected((p) => {
                         if (p && p !== obj) p.active = false
                         return obj
                 })
         })
 
+        const handleDrag = useCall((obj: PLObject) => (drag: DragState) => {
+                const { _active, active, value } = drag
+                const draging = _active && active
+                const dragend = _active && !active
+                if (dragend) {
+                        cache.grabbed = null
+                        cache.grabbed = null
+                        setHovered(null)
+                }
+                if (draging) {
+                        if (cache.grabbed !== obj) handleClick(obj)()
+                        const el = document.elementFromPoint(...value)
+                        const id = el?.getAttribute('data-id')
+                        cache.grabbed = obj
+                        cache.hovered = cache.id2Item.get(id)
+
+                        if (!cache.hovered) return setHovered(null)
+                        if (cache.grabbed === cache.hovered) return
+                        setHovered(cache.hovered)
+                }
+        })
+
         const render = (obj: PLObject, grand: ReactNode, index = 0) => (
                 <LayerItem
-                        grand={grand}
+                        objId={obj.id}
                         index={index}
                         icon={obj.type?.[0]}
-                        active={selectedObj === obj}
+                        active={selected === obj}
+                        disable={hovered === obj}
+                        onMount={handleMount(obj)}
                         onClick={handleClick(obj)}
+                        onDrag={handleDrag(obj)}
                 >
-                        {obj.id}
+                        {grand}
                 </LayerItem>
         )
 

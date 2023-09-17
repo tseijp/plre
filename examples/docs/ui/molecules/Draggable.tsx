@@ -1,29 +1,31 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { gsap } from 'gsap'
-import { useDragEvent } from '../atoms'
+import { DragState, useDragEvent } from '../atoms'
 import type { ReactNode } from 'react'
 
 export interface DraggableProps {
         isOpen?: boolean
         children?: ReactNode
+        onDrag?(drag: DragState): void
 }
 
 export const Draggable = (props: DraggableProps) => {
-        const { children } = props
-        const [isActived, setIsActived] = useState(true)
+        const { children, onDrag = () => {} } = props
+        const [isActived, setIsActived] = useState(false)
 
         const drag = useDragEvent(() => {
                 setIsActived(drag.active)
+                onDrag(drag)
                 const [x, y] = drag.movement
                 gsap.to(drag.target, {
-                        x: drag.active ? x : 0,
+                        x: drag.active ? x + 25 : 0,
                         y: drag.active ? y : 0,
                 })
         })
 
         return (
-                <div>
+                <div style={{ cursor: isActived ? 'grabbing' : 'grab' }}>
                         <div
                                 style={{
                                         position: 'absolute',
@@ -36,6 +38,7 @@ export const Draggable = (props: DraggableProps) => {
                         <div
                                 style={{
                                         position: 'absolute',
+                                        pointerEvents: 'none',
                                         display: isActived ? '' : 'none',
                                 }}
                         >

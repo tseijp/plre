@@ -3,17 +3,16 @@ import { useState } from 'react'
 import { Field } from '../../atoms/Field'
 import { useFieldEvent } from '../hooks/useFieldEvent'
 import { useCall } from '../../atoms/hooks/useCall'
-import { Draggable } from '../Draggable'
 import type { ReactNode } from 'react'
 
 export interface LayerItemFieldProps {
+        objId: string
         children: ReactNode
-        onChange?: (value: string) => void
+        onChange?(value: string): void
 }
 
 export const LayerItemField = (props: LayerItemFieldProps) => {
-        const { children, onChange } = props
-        if (typeof children !== 'string') return
+        const { objId, children, onChange } = props
 
         const on = useCall(() => {
                 if (field.value !== value) onChange?.(field.value)
@@ -28,7 +27,7 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
         }
 
         const [isActive, setIsActive] = useState(false)
-        const [value, setValue] = useState(children)
+        const [value, setValue] = useState(objId)
         const field = useFieldEvent(on)
 
         return (
@@ -43,14 +42,14 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
                                 style={{ display: isActive ? 'none' : '' }}
                                 onDoubleClick={handleDoubleClick}
                         >
-                                <Draggable>{value}</Draggable>
+                                {children}
                         </div>
                         <Field
                                 // @ts-ignore
                                 ref={field.ref}
                                 height="20px"
                                 display={isActive ? '' : 'none'}
-                                value={children}
+                                value={objId}
                         />
                 </div>
         )

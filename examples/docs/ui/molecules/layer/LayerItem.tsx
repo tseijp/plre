@@ -1,23 +1,39 @@
 import * as React from 'react'
-import { useRef, useState, useEffect } from 'react'
+import { useId, useRef, useState, useEffect } from 'react'
 import { Flex } from '../../atoms/Flex'
 import { LayerItemCollapse } from './LayerItemCollapse'
 import { LayerItemField } from './LayerItemField'
 import { LayerItemIcon } from './LayerItemIcon'
+import { Draggable } from '../Draggable'
 import type { ReactNode } from 'react'
+import { DragState } from '../../atoms'
 
 export interface LayerItemProps {
         children?: ReactNode
-        grand?: ReactNode
         icon?: ReactNode
+        objId: string
         index?: number
         active?: boolean
+        disable?: boolean
+        onMount?(id: string): void | (() => void)
         onClick?(): void
+        onDrag?(state: DragState): void
 }
 
 export const LayerItem = (props: LayerItemProps) => {
-        const { children, grand, icon, index = 0, active, onClick } = props
-        const [isOpen, setIsOpen] = useState(!!grand)
+        const {
+                children,
+                objId,
+                icon,
+                index = 0,
+                active,
+                disable,
+                onMount,
+                onClick,
+                onDrag,
+        } = props
+        const id = useId()
+        const [isOpen, setIsOpen] = useState(!!children)
         const ref = useRef<HTMLDivElement | null>(null)
 
         const handleClickCollapse = () => {
@@ -25,13 +41,16 @@ export const LayerItem = (props: LayerItemProps) => {
         }
 
         useEffect(() => {
-                ref.current?.addEventListener('click', onClick)
-                return () => {
-                        ref.current?.removeEventListener('click', onClick)
-                }
-        })
+                if (!ref.current) return
+                ref.current.id = id
+                // since can not do hover event when dragging
+                ref.current.setAttribute('data-id', id)
+                ref.current.addEventListener('click', onClick)
+                return onMount(id)
+        }, [])
 
         const left = 8 + (index === 0 ? 0 : (index - 1) * 20)
+        const background = active ? '#2B4E84' : disable ? '#000' : ''
 
         return (
                 <div
@@ -48,7 +67,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                 justifyContent="start"
                                 alignItems="start"
                                 height="20px"
-                                background={active && '#2B4E84'}
+                                background={background}
                                 paddingLeft={left + 'px'}
                                 overflowX="visible"
                                 overflowY="visible"
@@ -59,9 +78,13 @@ export const LayerItem = (props: LayerItemProps) => {
                                         onClick={handleClickCollapse}
                                 />
                                 <LayerItemIcon active={active}>
-                                        {icon}
+                                        <div data-id={id}>{icon}</div>
                                 </LayerItemIcon>
-                                <LayerItemField>{children}</LayerItemField>
+                                <LayerItemField objId={objId}>
+                                        <Draggable onDrag={onDrag}>
+                                                <div data-id={id}>{objId}</div>
+                                        </Draggable>
+                                </LayerItemField>
                         </Flex>
                         <div
                                 style={{
@@ -69,7 +92,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                         overflow: isOpen ? 'visible' : 'hidden',
                                 }}
                         >
-                                {grand}
+                                {children}
                         </div>
                 </div>
         )
