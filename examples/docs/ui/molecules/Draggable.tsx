@@ -7,16 +7,18 @@ import type { ReactNode } from 'react'
 export interface DraggableProps {
         isOpen?: boolean
         children?: ReactNode
-        onDrag?(drag: DragState): void
+        onDragEnd?(drag: DragState): void
+        onDraging?(drag: DragState): void
 }
 
 export const Draggable = (props: DraggableProps) => {
-        const { children, onDrag = () => {} } = props
+        const { children, onDraging = () => {}, onDragEnd = () => {} } = props
         const [isActived, setIsActived] = useState(false)
-
         const drag = useDragEvent(() => {
-                setIsActived(drag.active)
-                onDrag(drag)
+                const { active, _active } = drag
+                setIsActived(active)
+                if (_active && active) onDraging(drag)
+                if (_active && !active) onDragEnd(drag)
                 const [x, y] = drag.movement
                 gsap.to(drag.target, {
                         x: drag.active ? x + 25 : 0,
@@ -29,6 +31,7 @@ export const Draggable = (props: DraggableProps) => {
                         <div
                                 style={{
                                         position: 'absolute',
+                                        width: '100%',
                                         opacity: isActived ? 0.5 : 1,
                                 }}
                                 ref={drag.ref}

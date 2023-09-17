@@ -6,18 +6,18 @@ import { useCall } from '../../atoms/hooks/useCall'
 import type { ReactNode } from 'react'
 
 export interface LayerItemFieldProps {
-        objId: string
+        value: string
         children: ReactNode
         onChange?(value: string): void
 }
 
 export const LayerItemField = (props: LayerItemFieldProps) => {
-        const { objId, children, onChange } = props
+        const { value, children, onChange } = props
 
-        const on = useCall(() => {
-                if (field.value !== value) onChange?.(field.value)
-                setValue(field.value)
+        const onFieldEventFinish = useCall(() => {
                 setIsActive(false)
+                if (field.value === value) return
+                onChange?.(field.value)
         })
 
         const handleDoubleClick = () => {
@@ -27,8 +27,7 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
         }
 
         const [isActive, setIsActive] = useState(false)
-        const [value, setValue] = useState(objId)
-        const field = useFieldEvent(on)
+        const field = useFieldEvent(onFieldEventFinish)
 
         return (
                 <div
@@ -49,7 +48,7 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
                                 ref={field.ref}
                                 height="20px"
                                 display={isActive ? '' : 'none'}
-                                value={objId}
+                                value={value}
                         />
                 </div>
         )

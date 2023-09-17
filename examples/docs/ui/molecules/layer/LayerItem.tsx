@@ -6,47 +6,63 @@ import { LayerItemField } from './LayerItemField'
 import { LayerItemIcon } from './LayerItemIcon'
 import { Draggable } from '../Draggable'
 import type { ReactNode } from 'react'
-import { DragState } from '../../atoms'
+import { useCall, type DragState, useForceUpdate } from '../../atoms'
+import type { PLObject } from 'plre/types'
 
+export interface LayerItemHandlers {
+        mount(obj: PLObject, id: string): void
+        clean(obj: PLObject, id: string): void
+        click(obj: PLObject): void
+        draging(obj: PLObject, drag: DragState): void
+        dragend(obj: PLObject, drag: DragState): void
+}
 export interface LayerItemProps {
+        obj: PLObject
         children?: ReactNode
-        icon?: ReactNode
-        objId: string
         index?: number
         active?: boolean
         disable?: boolean
-        onMount?(id: string): void | (() => void)
-        onClick?(): void
-        onDrag?(state: DragState): void
+        handlers: LayerItemHandlers
 }
 
 export const LayerItem = (props: LayerItemProps) => {
-        const {
-                children,
-                objId,
-                icon,
-                index = 0,
-                active,
-                disable,
-                onMount,
-                onClick,
-                onDrag,
-        } = props
+        const { children, obj, index = 0, active, disable, handlers } = props
         const id = useId()
-        const [isOpen, setIsOpen] = useState(!!children)
         const ref = useRef<HTMLDivElement | null>(null)
+        const [isOpen, setIsOpen] = useState(!!children)
 
-        const handleClickCollapse = () => {
-                setIsOpen((p) => !p)
-        }
+        const handleClickCollapse = useCall(() => setIsOpen((p) => !p))
+
+        const handleDraging = useCall((drag: DragState) => {
+                handlers.draging(obj, drag)
+        })
+
+        const handleDragEnd = useCall((drag: DragState) => {
+                handlers.dragend(obj, drag)
+        })
+
+        const handleChange = useCall((value: string) => {
+                if (!value) value = 'undefined'
+                obj.id = value
+                // @ts-ignore
+                obj.forceUpdate()
+        })
+
+        const forceUpdate = useForceUpdate()
+
+        useEffect(() => {
+                // @ts-ignore
+                obj({ forceUpdate })
+        }, [])
 
         useEffect(() => {
                 if (!ref.current) return
-                ref.current.id = id
+                const click = () => handlers.click(obj)
                 // since can not do hover event when dragging
                 ref.current.setAttribute('data-id', id)
-                ref.current.addEventListener('click', onClick)
-                return onMount(id)
+                ref.current.addEventListener('click', click)
+                handlers.mount(obj, id)
+                return () => handlers.clean(obj, id)
         }, [])
 
         const left = 8 + (index === 0 ? 0 : (index - 1) * 20)
@@ -78,11 +94,17 @@ export const LayerItem = (props: LayerItemProps) => {
                                         onClick={handleClickCollapse}
                                 />
                                 <LayerItemIcon active={active}>
-                                        <div data-id={id}>{icon}</div>
+                                        <div data-id={id}>{obj.type?.[0]}</div>
                                 </LayerItemIcon>
-                                <LayerItemField objId={objId}>
-                                        <Draggable onDrag={onDrag}>
-                                                <div data-id={id}>{objId}</div>
+                                <LayerItemField
+                                        value={obj.id}
+                                        onChange={handleChange}
+                                >
+                                        <Draggable
+                                                onDraging={handleDraging}
+                                                onDragEnd={handleDragEnd}
+                                        >
+                                                <div data-id={id}>{obj.id}</div>
                                         </Draggable>
                                 </LayerItemField>
                         </Flex>
