@@ -47,6 +47,7 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
                                 // @ts-ignore
                                 ref={field.ref}
                                 height="20px"
+                                color="white"
                                 display={isActive ? '' : 'none'}
                                 value={value}
                         />

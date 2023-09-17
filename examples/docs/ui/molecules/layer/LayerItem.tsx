@@ -6,7 +6,8 @@ import { LayerItemField } from './LayerItemField'
 import { LayerItemIcon } from './LayerItemIcon'
 import { Draggable } from '../Draggable'
 import type { ReactNode } from 'react'
-import { useCall, type DragState, useForceUpdate } from '../../atoms'
+import type { DragState } from '../../atoms'
+import { useCall, useForceUpdate } from '../../atoms'
 import type { PLObject } from 'plre/types'
 
 export interface LayerItemHandlers {
@@ -50,20 +51,21 @@ export const LayerItem = (props: LayerItemProps) => {
 
         const forceUpdate = useForceUpdate()
 
-        useEffect(() => {
-                // @ts-ignore
-                obj({ forceUpdate })
-        }, [])
-
-        useEffect(() => {
+        const effect = useCall(() => {
                 if (!ref.current) return
                 const click = () => handlers.click(obj)
                 // since can not do hover event when dragging
                 ref.current.setAttribute('data-id', id)
                 ref.current.addEventListener('click', click)
                 handlers.mount(obj, id)
+                // @ts-ignore
+                obj({ forceUpdate })
                 return () => handlers.clean(obj, id)
-        }, [])
+        })
+
+        useEffect(() => {
+                return effect()
+        }, [effect])
 
         const left = 8 + (index === 0 ? 0 : (index - 1) * 20)
         const background = active ? '#2B4E84' : disable ? '#000' : ''
