@@ -17,12 +17,13 @@ export const Draggable = (props: DraggableProps) => {
         const drag = useDragEvent(() => {
                 const { active, _active } = drag
                 setIsActived(active)
+                if (!_active && active) return
                 if (_active && active) onDraging(drag)
                 if (_active && !active) onDragEnd(drag)
                 const [x, y] = drag.movement
                 gsap.to(drag.target, {
-                        x: drag.active ? x + 25 : 0,
-                        y: drag.active ? y : 0,
+                        x: drag.active ? x : 0,
+                        y: drag.active ? y + 25 : 0,
                 })
         })
 

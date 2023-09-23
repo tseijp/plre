@@ -17,7 +17,7 @@ export const createObject = (
         const {
                 // type = _type
                 id = type,
-                children = _children,
+                children: c = _children,
                 position = [0, 0, 0],
                 rotation = [0, 0, 0],
                 scale = [1, 1, 1],
@@ -25,7 +25,7 @@ export const createObject = (
                 index = 0,
                 ...other
         } = props
-
+        const children = Array.isArray(c) ? c : [c]
         const self = event({
                 type,
                 id,
@@ -34,7 +34,7 @@ export const createObject = (
                 scale,
                 color,
                 index,
-                children: Array.isArray(children) ? children : [children],
+                children,
                 ...other,
         })
         return self as EventState<PLObject>
@@ -43,17 +43,19 @@ export const createObject = (
 export const createEditor = (
         type: EditorType,
         props: Partial<EditorState> = {},
-        _children: EditorState[] = []
+        _children: EditorState | EditorState[] = []
 ) => {
         const {
                 // type = _type
                 id = type,
-                children = _children,
+                children: c = _children,
                 top = false,
                 row = false,
                 memo = {},
                 ...other
         } = props
+
+        const children = Array.isArray(c) ? c : [c]
 
         const self = event({
                 type,

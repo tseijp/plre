@@ -30,7 +30,10 @@ export const LayerItem = (props: LayerItemProps) => {
         const { children, obj, index = 0, active, disable, handlers } = props
         const id = useId()
         const ref = useRef<HTMLDivElement | null>(null)
-        const [isOpen, setIsOpen] = useState(!!children)
+        const withChildren = !!children
+        const [isOpen, setIsOpen] = useState(withChildren)
+
+        useEffect(() => setIsOpen(withChildren), [withChildren])
 
         const handleClickCollapse = useCall(() => setIsOpen((p) => !p))
 
@@ -43,7 +46,7 @@ export const LayerItem = (props: LayerItemProps) => {
         })
 
         const handleChange = useCall((value: string) => {
-                if (!value) value = 'undefined'
+                if (!value) value = 'Object'
                 obj.id = value
                 // @ts-ignore
                 obj.forceUpdate()

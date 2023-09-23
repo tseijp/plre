@@ -38,7 +38,7 @@ export const range = (n = 1) => [...Array(n)].map((_, i) => i)
 export const clamp = (n = 0, min = 0, max = 1) =>
         Math.max(min, Math.min(max, n))
 
-const { PI, abs, sign, floor } = Math
+const { PI, floor } = Math
 
 const TAU = PI * 2
 
@@ -57,4 +57,26 @@ export const rot = <T extends { tht: number; phi: number }>(a: T, b: T) => {
         phi += a.phi
 
         return { tht, phi }
+}
+
+export const getParent = <T extends { children: T[] }>(tree: T, item: T) => {
+        if (tree.children.includes(item)) return tree
+        for (const child of tree.children) {
+                if (Array.isArray(child.children)) {
+                        if (child.children.includes(item)) return child
+                        const parent = getParent(child, item)
+                        if (parent) return parent
+                }
+        }
+}
+
+export const isOffspring = <T extends { children: T[] }>(
+        target: T,
+        self: T
+) => {
+        if (!target.children || target.children.length === 0) return false
+        if (target.children.includes(self)) return true
+        for (const child of target.children)
+                if (isOffspring(child, self)) return true
+        return false
 }

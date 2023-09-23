@@ -1,4 +1,5 @@
 import { createEditor } from 'plre'
+import { getParent } from '../utils'
 import type { DragState } from '../atoms'
 import type { EditorState } from 'plre/types'
 
@@ -25,17 +26,6 @@ export const splitEditor = (
         const newChild = createEditor('I', { row, rate }, [child, newGrand])
         newChild.memo.parentSplitter = drag
         item.children[i] = newChild
-}
-
-const getParent = (tree: EditorState, item: EditorState) => {
-        if (tree.children.includes(item)) return tree
-        for (const child of tree.children) {
-                if (Array.isArray(child.children)) {
-                        if (child.children.includes(item)) return child
-                        const parent = getParent(child, item)
-                        if (parent) return parent
-                }
-        }
 }
 
 export const shrinkEditor = (

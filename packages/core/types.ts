@@ -47,7 +47,7 @@ export interface PLObject {
         color: Vec3
         index: number
         active: boolean
-        children: PLObject | PLObject[]
+        children: PLObject[]
         to: 'U' | 'I' | 'S'
 
         // shader
