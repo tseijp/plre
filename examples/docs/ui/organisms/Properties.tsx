@@ -5,7 +5,6 @@ import { useCodemirror } from './hooks'
 import type { EditorState } from 'plre/types'
 
 export interface PropertiesProps {
-        editorTree: EditorState
         editorItem: EditorState
 }
 

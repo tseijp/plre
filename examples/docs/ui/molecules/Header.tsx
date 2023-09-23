@@ -3,15 +3,18 @@ import { Flex, Drop } from '../atoms'
 import { EditorTypes } from './EditorTypes'
 import type { ReactNode } from 'react'
 import type { EditorState, EditorType } from 'plre/types'
+import { useLayout } from '../ctx'
 
 export interface HeaderProps {
         children?: ReactNode
-        editorTree: EditorState
         editorItem: EditorState
 }
 
 export const Header = (props: HeaderProps) => {
-        const { children, editorTree, editorItem } = props
+        const { children, editorItem } = props
+
+        const { editorTree } = useLayout()
+
         const handleClick = (_type: EditorType) => {
                 editorItem.type = _type
                 editorTree.update()

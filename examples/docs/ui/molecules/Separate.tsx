@@ -8,17 +8,18 @@ import { useSeparatorSize } from './hooks'
 import { useMutable } from 'plre/react'
 import type { SplitterEventHandlers } from './hooks'
 import type { EditorState } from 'plre/types'
+import { useLayout } from '../ctx'
 
 export interface SeparateProps {
         gap?: number
         children?: React.ReactNode
         editorItem: EditorState
-        editorTree: EditorState
 }
 
 export const Separate = (props: SeparateProps) => {
-        const { children, editorItem, editorTree } = props
+        const { children, editorItem } = props
         const { rate = [], top, row } = editorItem
+        const { editorTree } = useLayout()
         const [shrinkIndex, setShrinkIndex] = useState<null | number>(null)
 
         if (!Array.isArray(children))

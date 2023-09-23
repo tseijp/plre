@@ -4,15 +4,14 @@ import { Header } from '../molecules'
 import type { EditorState } from 'plre/types'
 
 export interface TimelineProps {
-        editorTree: EditorState
         editorItem: EditorState
 }
 
 export const Timeline = (props: TimelineProps) => {
-        const { ...headerProps } = props
+        const { editorItem } = props
         return (
                 <Flex backgroundColor="#303030">
-                        <Header {...headerProps} />
+                        <Header editorItem={editorItem} />
                         <Flex backgroundColor="#3A3A3A"></Flex>
                 </Flex>
         )

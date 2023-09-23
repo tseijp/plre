@@ -3,38 +3,33 @@ import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
 import { Tree, Debug, Flex } from '../atoms'
-import { Separate } from '../molecules'
+import { Separate, UserCursors } from '../molecules'
 import { Properties, Timeline, ViewLayer, Viewport } from '../organisms'
-import { useInitPLObject, useInitPLEditor } from './hooks'
+import { useInitPLObject, useInitPLEditor, useInitWebrtc } from './hooks'
 import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
 import type { ReactNode } from 'react'
+import { LayoutProvider } from '../ctx'
 
 export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
         const objectTree = useInitPLObject()
         const editorTree = useInitPLEditor()
+        const webrtcTree = useInitWebrtc()
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
-                const props = { editorItem, editorTree }
-
                 switch (editorItem.type) {
                         case 'viewport':
-                                return <Viewport {...props} />
+                                return <Viewport editorItem={editorItem} />
                         case 'viewlayer':
-                                return (
-                                        <ViewLayer
-                                                {...props}
-                                                objectTree={objectTree}
-                                        />
-                                )
+                                return <ViewLayer editorItem={editorItem} />
                         case 'timeline':
-                                return <Timeline {...props} />
+                                return <Timeline editorItem={editorItem} />
                         case 'properties':
-                                return <Properties {...props} />
+                                return <Properties editorItem={editorItem} />
                         case 'I':
                                 return (
-                                        <Separate {...props}>
+                                        <Separate editorItem={editorItem}>
                                                 {grandChild}
                                         </Separate>
                                 )
@@ -45,22 +40,27 @@ export const Layout = () => {
 
         return (
                 <LayoutImpl noFooter>
-                        <Head>
-                                <title>
-                                        {siteConfig.title}{' '}
-                                        {siteConfig.titleDelimiter}{' '}
-                                        {siteConfig.tagline}{' '}
-                                </title>
-                        </Head>
-                        <Flex
-                                position="absolute"
-                                paddingTop={HEADER_PADDING_SIZE}
-                                padding={LAYOUT_PADDING_STYLE}
-                                backgroundColor="#161616"
+                        <LayoutProvider
+                                value={{ objectTree, editorTree, webrtcTree }}
                         >
-                                <Tree tree={editorTree}>{render}</Tree>
-                        </Flex>
-                        <Debug />
+                                <Head>
+                                        <title>
+                                                {siteConfig.title}{' '}
+                                                {siteConfig.titleDelimiter}{' '}
+                                                {siteConfig.tagline}{' '}
+                                        </title>
+                                </Head>
+                                <Flex
+                                        position="absolute"
+                                        paddingTop={HEADER_PADDING_SIZE}
+                                        padding={LAYOUT_PADDING_STYLE}
+                                        backgroundColor="#161616"
+                                >
+                                        <Tree tree={editorTree}>{render}</Tree>
+                                </Flex>
+                                {/* <UserCursors webrtc={webrtc} /> */}
+                                <Debug />
+                        </LayoutProvider>
                 </LayoutImpl>
         )
 }

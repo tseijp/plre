@@ -5,12 +5,11 @@ import { Header, Viewpoint } from '../molecules'
 import type { EditorState } from 'plre/types'
 
 export interface ViewportProps {
-        editorTree: EditorState
         editorItem: EditorState
 }
 
 export const Viewport = (props: ViewportProps) => {
-        const { ...headerProps } = props
+        const { editorItem } = props
         const [wheel, resize, self] = useViewport()
 
         return (
@@ -19,7 +18,7 @@ export const Viewport = (props: ViewportProps) => {
                         backgroundColor="#303030"
                         transformStyle="preserve-3d"
                 >
-                        <Header {...headerProps} />
+                        <Header editorItem={editorItem} />
                         <Flex background="#3A3A3A">
                                 <canvas ref={self.ref} />
                         </Flex>
