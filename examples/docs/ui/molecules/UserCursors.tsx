@@ -1,7 +1,8 @@
-import React from 'react'
-import { Flex, useForceUpdate, useOnce } from '../atoms'
+import React, { useRef, useState } from 'react'
 import { useCtx } from '../ctx'
-import { useUserCursor } from './hooks/useUserCursor'
+import { useUserObserve } from './hooks'
+import { useForceUpdate, useOnce } from '../atoms'
+import { gsap } from 'gsap'
 
 const style = {
         display: 'inline-block',
@@ -18,13 +19,40 @@ export interface CursorProps {
 
 export const Cursor = (props: CursorProps) => {
         const { userId } = props
-        const { ref, username } = useUserCursor(userId)
+        // const { ref, username } = useUserObserve(userId)
+        const ref = useRef()
+        const [username, set] = useState('anonymous')
+
+        const user = useUserObserve(userId, {
+                onUpdate(key) {
+                        const value = user.get(key)
+                        if (key === 'username') set(value)
+                        const el = ref.current
+                        if (!el) return
+                        if (key === 'x') gsap.to(el, { left: value })
+                        if (key === 'y') gsap.to(el, { top: value })
+                },
+                onActive() {
+                        gsap.to(ref.current, { opacity: 1 })
+                },
+                onDeactive() {
+                        gsap.to(ref.current, { opacity: 0.1 })
+                },
+        })
 
         return (
-                <div ref={ref} style={{ position: 'absolute', zIndex: 1000 }}>
+                <div
+                        ref={ref}
+                        style={{
+                                position: 'absolute',
+                                zIndex: 1000,
+                                userSelect: 'none',
+                                pointerEvents: 'none',
+                        }}
+                >
                         <span style={style}></span>
                         <span>{' ' + username}</span>
-                        <span>{' ' + userId}</span>
+                        {/* <span>{' ' + userId}</span> */}
                 </div>
         )
 }
@@ -37,6 +65,5 @@ export const UserCursors = () => {
                 webrtcTree('updateUsers', forceUpdate)
                 return true
         })
-        console.log('RERENDER YSERCURSOR')
         return webrtcTree._users.map((key) => <Cursor key={key} userId={key} />)
 }

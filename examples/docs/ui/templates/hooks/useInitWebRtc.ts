@@ -119,7 +119,7 @@ export const createWebrtc = () => {
 
         const self = event<WebrtcState>({
                 isInit: false,
-                isDev: process.env.NODE_ENV === 'development',
+                // isDev: process.env.NODE_ENV === 'development',
                 roomId,
                 userId,
                 username,
