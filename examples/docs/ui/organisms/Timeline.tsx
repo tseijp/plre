@@ -12,7 +12,9 @@ export const Timeline = (props: TimelineProps) => {
         return (
                 <Flex backgroundColor="#303030">
                         <Header editorItem={editorItem} />
-                        <Flex backgroundColor="#3A3A3A"></Flex>
+                        <Flex backgroundColor="#3A3A3A">
+                                {/* <UserList /> */}
+                        </Flex>
                 </Flex>
         )
 }

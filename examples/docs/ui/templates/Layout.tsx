@@ -9,7 +9,7 @@ import { useInitPLObject, useInitPLEditor, useInitWebrtc } from './hooks'
 import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
 import type { ReactNode } from 'react'
-import { LayoutProvider } from '../ctx'
+import { CtxProvider } from '../ctx'
 
 export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
@@ -40,7 +40,7 @@ export const Layout = () => {
 
         return (
                 <LayoutImpl noFooter>
-                        <LayoutProvider
+                        <CtxProvider
                                 value={{ objectTree, editorTree, webrtcTree }}
                         >
                                 <Head>
@@ -50,6 +50,9 @@ export const Layout = () => {
                                                 {siteConfig.tagline}{' '}
                                         </title>
                                 </Head>
+                                <Flex position="absolute">
+                                        <UserCursors />
+                                </Flex>
                                 <Flex
                                         position="absolute"
                                         paddingTop={HEADER_PADDING_SIZE}
@@ -58,9 +61,8 @@ export const Layout = () => {
                                 >
                                         <Tree tree={editorTree}>{render}</Tree>
                                 </Flex>
-                                {/* <UserCursors webrtc={webrtc} /> */}
                                 <Debug />
-                        </LayoutProvider>
+                        </CtxProvider>
                 </LayoutImpl>
         )
 }

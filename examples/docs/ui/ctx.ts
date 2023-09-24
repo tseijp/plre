@@ -2,16 +2,16 @@ import { createContext, useContext } from 'react'
 import type { WebrtcState } from './templates/hooks'
 import type { EditorState, PLObject } from 'plre/types'
 
-export interface LayoutState {
+export interface CtxState {
         objectTree: PLObject
         editorTree: EditorState
         webrtcTree: WebrtcState
 }
 
-export const LayoutContext = createContext(null as unknown as LayoutState)
+export const CtxContext = createContext(null as unknown as CtxState)
 
-export const LayoutProvider = LayoutContext.Provider
+export const CtxProvider = CtxContext.Provider
 
-export const LayoutConsumer = LayoutContext.Consumer
+export const CtxConsumer = CtxContext.Consumer
 
-export const useLayout = () => useContext(LayoutContext)
+export const useCtx = () => useContext(CtxContext)
