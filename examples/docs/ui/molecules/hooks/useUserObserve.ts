@@ -47,6 +47,7 @@ export const useUserObserve = (
         useEffect(() => {
                 onUpdate('x')
                 onUpdate('y')
+                onUpdate('color')
                 onUpdate('username')
                 return cleanup
         }, [])

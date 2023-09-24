@@ -21,12 +21,14 @@ export const Cursor = (props: CursorProps) => {
         const { userId } = props
         // const { ref, username } = useUserObserve(userId)
         const ref = useRef()
-        const [username, set] = useState('anonymous')
+        const [username, setUsername] = useState('anonymous')
+        const [color, setColor] = useState('#212121')
 
         const user = useUserObserve(userId, {
                 onUpdate(key) {
                         const value = user.get(key)
-                        if (key === 'username') set(value)
+                        if (key === 'username') setUsername(value)
+                        if (key === 'color') setColor(value)
                         const el = ref.current
                         if (!el) return
                         if (key === 'x') gsap.to(el, { left: value })
@@ -36,7 +38,7 @@ export const Cursor = (props: CursorProps) => {
                         gsap.to(ref.current, { opacity: 1 })
                 },
                 onDeactive() {
-                        gsap.to(ref.current, { opacity: 0.1 })
+                        gsap.to(ref.current, { opacity: 0.2 })
                 },
         })
 
@@ -50,8 +52,18 @@ export const Cursor = (props: CursorProps) => {
                                 pointerEvents: 'none',
                         }}
                 >
-                        <span style={style}></span>
-                        <span>{' ' + username}</span>
+                        <span style={{ ...style, backgroundColor: color }} />
+                        <span
+                                style={{
+                                        margin: '0.2rem',
+                                        padding: '0.1rem',
+                                        paddingRight: '0.3rem',
+                                        background: color,
+                                        borderRadius: '1rem',
+                                }}
+                        >
+                                {' ' + username + ' '}
+                        </span>
                         {/* <span>{' ' + userId}</span> */}
                 </div>
         )

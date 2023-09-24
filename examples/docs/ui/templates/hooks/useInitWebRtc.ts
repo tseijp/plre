@@ -10,15 +10,16 @@ import { useEffect } from 'react'
 export interface WebrtcState {
         isDev: boolean
         isInit: boolean
+        color: stringd
         username: string
-        userId: string
-        roomId: string
         _users: string[]
         checkers: Map<string, () => void>
         mount(): void
         clean(): void
         updateUsers(): void
         // after mount
+        userId: string
+        roomId: string
         ydoc: Y.Doc
         provider: WebrtcProvider
         users: Y.Map<any>
@@ -39,11 +40,7 @@ const createChecker = (key: string, callback = (_key: string) => {}) => {
 }
 
 export const createWebrtc = () => {
-        const params = new URLSearchParams(window.location.search)
-        const roomId = params.get('roomId') || '' + floor(random() * 100)
-        const userId = floor(random() * 1000000000000) + ''
         const username = USER_NAMES[floor(random() * USER_NAMES.length)]
-        const query = `?roomId=${roomId}&userId=${userId}`
 
         const removeUser = (key: string) => {
                 self.users.delete(key)
@@ -66,9 +63,9 @@ export const createWebrtc = () => {
                                 self.checkers.set(key, checker)
                         }
                         self.checkers.get(key)!?.()
-                        const _roomId = ymap.get(key)
+                        const roomId = ymap.get(key)
                         const isExist = arr.includes(key)
-                        if (_roomId === roomId)
+                        if (roomId === self.roomId)
                                 arr = isExist ? arr : [...arr, key]
                         else
                                 arr = isExist
@@ -85,6 +82,14 @@ export const createWebrtc = () => {
         }
 
         const mount = () => {
+                const params = new URLSearchParams(window.location.search)
+                const roomId = (self.roomId =
+                        params.get('roomId') || '' + floor(random() * 100))
+                const userId = (self.userId =
+                        params.get('userId') ||
+                        floor(random() * 1000000000000) + '')
+                const query = `?roomId=${roomId}&userId=${userId}`
+
                 if (self.isInit) return
                 self.isInit = true
                 self.ydoc = new Y.Doc()
@@ -99,6 +104,7 @@ export const createWebrtc = () => {
                 // set user info
                 self.user = self.ydoc.getMap(userId)
                 self.user.set('username', username)
+                self.user.set('color', self.color)
 
                 const tick = () => {
                         self.users.set(userId, roomId)
@@ -120,10 +126,9 @@ export const createWebrtc = () => {
         const self = event<WebrtcState>({
                 isInit: false,
                 // isDev: process.env.NODE_ENV === 'development',
-                roomId,
-                userId,
                 username,
                 checkers: new Map(),
+                color: NICE_COLORS[floor(random() * NICE_COLORS.length)],
                 _users: [],
                 mount,
                 clean,
@@ -170,4 +175,21 @@ const USER_NAMES = [
         'Xu',
         'Yoshida',
         'Zhang',
+]
+
+const NICE_COLORS = [
+        '#e60012',
+        '#f39800',
+        '#fff100',
+        '#009944',
+        '#0068b7',
+        '#1d2088',
+        '#920783',
+        '#e4007f',
+        '#9caeb7',
+        '#00a0e9',
+        // '#ffffff',
+        // '#f5f4f4',
+        // '#d9d9d9',
+        // '#666666',
 ]

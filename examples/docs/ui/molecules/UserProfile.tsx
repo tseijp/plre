@@ -15,6 +15,7 @@ export const UserProfile = () => {
                 <Profile
                         isSelf
                         online
+                        color={webrtcTree.color}
                         userId={webrtcTree.userId}
                         username={webrtcTree.username}
                         onChangeUsername={handleChangeUsername}
@@ -25,6 +26,7 @@ export const UserProfile = () => {
 
 export interface ProfileProps {
         userId?: string
+        color?: string
         username?: string
         profile?: string
         isSelf?: boolean
@@ -35,11 +37,11 @@ export interface ProfileProps {
 
 export const Profile = (props: ProfileProps) => {
         const {
-                userId,
                 username,
                 profile,
                 isSelf,
                 online,
+                color = '#212121',
                 onChangeUsername = () => {},
                 onChangeProfile = () => {},
         } = props
@@ -84,22 +86,10 @@ export const Profile = (props: ProfileProps) => {
                                 fontSize="30px"
                                 color="white"
                                 overflow="visible"
-                                backgroundColor="#212121"
+                                backgroundColor={color}
                         >
-                                {userId[0].toUpperCase()}
+                                {username?.[0].toUpperCase()}
                                 {/* online marker */}
-                                {/* <Box
-                                        position="absolute"
-                                        bottom={0}
-                                        right={0}
-                                        width="10px"
-                                        height="10px"
-                                        borderRadius={9999}
-                                        backgroundColor={
-                                                online ? 'green' : 'gray'
-                                        }
-                                        transform="translate(50%, 50%)"
-                                /> */}
                                 <div
                                         style={{
                                                 position: 'absolute',
@@ -110,7 +100,7 @@ export const Profile = (props: ProfileProps) => {
                                                 borderRadius: '9999px',
                                                 backgroundColor: online
                                                         ? 'lightgreen'
-                                                        : 'gray',
+                                                        : 'lightorange',
                                         }}
                                 />
                         </Box>
