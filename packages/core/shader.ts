@@ -1,11 +1,16 @@
 export const fs = /* cpp */ `#version 300 es
 precision highp float;
-uniform float iTime;
 uniform float cameraAngle;
 uniform vec2 iResolution;
 uniform vec3 cameraPosition;
 uniform vec3 lookAt;
 uniform vec3 floorColor;
+
+// const float cameraAngle = 0.0;
+// const vec2 iResolution = vec2(600., 600.);
+// const vec3 cameraPosition = vec3(10.0);
+// const vec3 lookAt = vec3(0.0);
+// const vec3 floorColor = vec3(0.0);
 
 // #define AA 2
 #define AA 1

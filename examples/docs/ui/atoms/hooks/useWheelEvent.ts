@@ -26,6 +26,7 @@ export interface WheelState<El extends Element = Element> {
 
 export const wheelEvent = <El extends Element = Element>() => {
         const self = event({
+                on: () => {},
                 active: false,
                 _active: false,
                 value: [0, 0],

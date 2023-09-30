@@ -5,12 +5,6 @@ import { fs, vs } from './shader'
 import { EventState } from 'reev'
 import { PL, PLObject, ObjectTypes, EditorType, EditorState } from './types'
 
-// @TODO DELETE
-const colorA = [192 / 255, 78 / 255, 255 / 255]
-const colorB = [112 / 255, 200 / 255, 228 / 255]
-const colorC = [255 / 255, 224 / 255, 178 / 255]
-const floorColor = [58 / 255, 58 / 255, 58 / 255]
-
 let currentIndex = 1
 
 export const createObject = (
@@ -85,13 +79,6 @@ export const createEditor = (
 export const createPL = (props: Partial<PL> = {}) => {
         const mount = () => {
                 self(props)
-                self.uniform({
-                        colorA,
-                        colorB,
-                        colorC,
-                        floorColor,
-                        lookAt: [0, 0, 0],
-                })
         }
 
         const clean = () => {

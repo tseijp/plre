@@ -1,5 +1,6 @@
 import { createObject } from 'plre'
-import { compile, getLayerKey } from 'plre/utils'
+import { compile } from 'plre/compile'
+import { getLayerKey } from 'plre/utils'
 import { useOnce } from '../../atoms'
 
 const boxSDF = (key = '') =>

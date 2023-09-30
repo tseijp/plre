@@ -10,7 +10,7 @@ export interface ViewportProps {
 
 export const Viewport = (props: ViewportProps) => {
         const { editorItem } = props
-        const [wheel, resize, self] = useViewport()
+        const [wheel, resize] = useViewport()
 
         return (
                 <Flex
@@ -20,7 +20,7 @@ export const Viewport = (props: ViewportProps) => {
                 >
                         <Header editorItem={editorItem} />
                         <Flex background="#3A3A3A">
-                                <canvas ref={self.ref} />
+                                <canvas ref={wheel.ref} />
                         </Flex>
                         <Viewpoint s={16} wheel={wheel} />
                 </Flex>

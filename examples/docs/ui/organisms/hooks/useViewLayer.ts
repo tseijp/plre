@@ -1,10 +1,11 @@
+import { is } from './../../../../../../tseijp/packages/parsed-path/packages/core/src/utils/helpers'
 import { useState } from 'react'
 import { PLObject } from 'plre/types'
 import { useMutable } from 'plre/react'
 import type { LayerItemHandlers } from '../../molecules'
 import { moveObject } from '../utils'
-import { getParent } from '../../utils'
 import { useOnce } from '../../atoms'
+import { isCollection, isMaterial, isObject } from 'plre/utils'
 
 interface ViewLayerCache {
         grabbed?: PLObject | null
@@ -39,15 +40,22 @@ export const useViewLayer = (objectTree: PLObject) => {
                         const el = document.elementFromPoint(...value)
                         const id = el?.getAttribute('data-id')
                         let hovered = cache.id2Item.get(id)
+                        let isCancel = false
 
                         // if the hovered component is not a viewlayer
                         if (!hovered) return setHovered((cache.hovered = null))
-                        if (hovered.type.length !== 1)
-                                hovered = getParent(objectTree, hovered)
-                        if (hovered.type.length !== 1)
-                                return setHovered((cache.hovered = null))
 
-                        return setHovered(() => (cache.hovered = hovered))
+                        if (isMaterial(obj)) {
+                                if (!isObject(hovered)) hovered = hovered.parent
+                                if (!isObject(hovered)) isCancel = true
+                        } else {
+                                if (!isCollection(hovered))
+                                        hovered = hovered.parent
+                                if (!isCollection(hovered)) isCancel = true
+                        }
+
+                        if (isCancel) setHovered((cache.hovered = null))
+                        else setHovered(() => (cache.hovered = hovered))
                 },
                 dragend() {
                         const grabbed = cache.grabbed

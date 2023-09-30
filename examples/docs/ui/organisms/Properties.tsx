@@ -1,10 +1,11 @@
 import * as React from 'react'
 import { Flex } from '../atoms'
+import { frame } from 'refr'
 import { Header, LayerItemIcon } from '../molecules'
 import { useCodemirror } from './hooks'
 import type { EditorState } from 'plre/types'
 import { useCtx } from '../ctx'
-import { collectAll } from 'plre/utils'
+import { collectAll } from 'plre/compile'
 
 export interface PropertiesProps {
         editorItem: EditorState
@@ -15,8 +16,10 @@ export const Properties = (props: PropertiesProps) => {
         const self = useCodemirror()
         const { objectTree } = useCtx()
         const handleClick = () => {
-                alert('compiled')
-                console.log(collectAll(objectTree))
+                // @TODO FIX: current cannot stop glre render: `frame(() => self.render() || 1)`
+                frame.clear()
+                const code = collectAll(objectTree)
+                objectTree.compileShader(code)
         }
 
         return (

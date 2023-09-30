@@ -12,6 +12,7 @@ export const resizeEvent = (on: ResizeEventCallback) => {
                 listener(): void
                 observer: ResizeObserver | null
         }>({
+                on: () => {},
                 observer: null,
                 listener: () => {},
                 ref(target: Element) {

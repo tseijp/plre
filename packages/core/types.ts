@@ -59,10 +59,12 @@ export interface PLObject {
         shaderAll: string
         renderAll: string
         _shader: string // compiled result
-        changeActive: (obj: PLObject, prev: PLObject | null) => void
+        compileShader(code: string): void
+        changeActive(obj: PLObject, prev: PLObject | null): void
 }
 
 export interface PL extends GL {
+        on(): void
         update(): void
         object: PLObject
         collection: PLObject | null
