@@ -16,6 +16,8 @@ export type ObjectTypes =
         | 'U'
         | 'I'
         | 'S'
+        // Material
+        | 'Material'
 
 export type EditorType =
         | 'viewport'
@@ -39,12 +41,14 @@ export interface EditorState {
 export interface PLObject {
         type: ObjectTypes
         id: string
+        key: string
         matrix: Mat4
         matrixWorld: Mat4
-        position: Vec3
-        rotation: Vec3
-        scale: Vec3
-        color: Vec3
+        position: Vec3 | null
+        rotation: Vec3 | null
+        parent: PLObject | null
+        scale: Vec3 | null
+        color: Vec3 | null
         index: number
         active: boolean
         children: PLObject[]
@@ -52,10 +56,14 @@ export interface PLObject {
 
         // shader
         shader: string
-        render: string
+        shaderAll: string
+        renderAll: string
+        _shader: string // compiled result
+        changeActive: (obj: PLObject, prev: PLObject | null) => void
 }
 
 export interface PL extends GL {
         update(): void
+        object: PLObject
         collection: PLObject | null
 }

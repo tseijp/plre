@@ -1,9 +1,7 @@
-import { useState } from 'react'
-import { createPL } from 'plre'
-import { usePL } from 'plre/react'
+import { usePLImpl } from '.'
 import { useCall } from '../../atoms'
 import { useWheelEvent, useResizeEvent } from '../../atoms'
-import type { PL } from 'plre/types'
+
 const { cos, sin, PI } = Math
 
 export const useViewport = () => {
@@ -28,7 +26,7 @@ export const useViewport = () => {
         /**
          * resize event
          */
-        const resize = useResizeEvent((entry: ResizeObserverEntry) => () => {
+        const resize = useResizeEvent(() => () => {
                 // self.width = entry.contentRect.width
                 // self.height = entry.contentRect.height
                 self.resize()
@@ -48,6 +46,7 @@ export const useViewport = () => {
                         self.uniform({
                                 cameraAngle: sin(tht) > 0 ? 0 : PI,
                                 cameraPosition: [x, y, z],
+                                floorColor: [58 / 255, 58 / 255, 58 / 255],
                         })
                         self.clear()
                         self.viewport()
@@ -63,9 +62,4 @@ export const useViewport = () => {
         })
 
         return [wheel, resize, self] as const
-}
-
-const usePLImpl = (props: Partial<PL>) => {
-        const [self] = useState(() => createPL())
-        return usePL(props, self)
 }

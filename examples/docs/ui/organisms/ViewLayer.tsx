@@ -1,9 +1,10 @@
 import * as React from 'react'
-import { Flex, Tree } from '../atoms'
+import { Flex, Tree, useOnce } from '../atoms'
 import { Header, LayerItem } from '../molecules'
 import { PLObject } from 'plre/types'
 import { useViewLayer } from './hooks'
 import { useCtx } from '../ctx'
+import { sortObject } from './utils'
 import type { ReactNode } from 'react'
 import type { EditorState } from 'plre/types'
 
@@ -15,7 +16,7 @@ export const ViewLayer = (props: ViewLayerProps) => {
         const { objectTree } = useCtx()
         const { selected, hovered, handlers } = useViewLayer(objectTree)
 
-        // useOnce(() => sortObject(objectTree))
+        useOnce(() => sortObject(objectTree))
 
         const render = (obj: PLObject, grand: ReactNode, index = 0) => (
                 <LayerItem

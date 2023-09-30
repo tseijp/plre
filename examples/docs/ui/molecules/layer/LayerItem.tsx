@@ -5,9 +5,9 @@ import { LayerItemCollapse } from './LayerItemCollapse'
 import { LayerItemField } from './LayerItemField'
 import { LayerItemIcon } from './LayerItemIcon'
 import { Draggable } from '../Draggable'
+import { useCall, useForceUpdate } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { DragState } from '../../atoms'
-import { useCall, useForceUpdate } from '../../atoms'
 import type { PLObject } from 'plre/types'
 
 export interface LayerItemHandlers {
@@ -93,6 +93,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                 overflowX="visible"
                                 overflowY="visible"
                         >
+                                {/* <div style={{ color: 'red' }}>{obj.index}</div> */}
                                 <LayerItemCollapse
                                         index={index}
                                         isOpen={isOpen}

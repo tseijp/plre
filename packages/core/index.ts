@@ -1,13 +1,17 @@
+import { attachParent } from './utils'
 import { event } from 'reev'
 import { createGL } from 'glre'
 import { fs, vs } from './shader'
 import { EventState } from 'reev'
 import { PL, PLObject, ObjectTypes, EditorType, EditorState } from './types'
 
+// @TODO DELETE
 const colorA = [192 / 255, 78 / 255, 255 / 255]
 const colorB = [112 / 255, 200 / 255, 228 / 255]
 const colorC = [255 / 255, 224 / 255, 178 / 255]
 const floorColor = [58 / 255, 58 / 255, 58 / 255]
+
+let currentIndex = 1
 
 export const createObject = (
         type: ObjectTypes,
@@ -17,27 +21,36 @@ export const createObject = (
         const {
                 // type = _type
                 id = type,
+                key = type,
                 children: c = _children,
                 position = [0, 0, 0],
                 rotation = [0, 0, 0],
                 scale = [1, 1, 1],
                 color = [1, 1, 1],
-                index = 0,
+                shader = '',
+                index = currentIndex++,
                 ...other
         } = props
+
         const children = Array.isArray(c) ? c : [c]
+
         const self = event({
                 type,
                 id,
+                key,
                 position,
                 rotation,
                 scale,
                 color,
-                index,
                 children,
+                shader: shader.trim(),
+                index,
                 ...other,
-        })
-        return self as EventState<PLObject>
+        }) as EventState<PLObject>
+
+        attachParent(self)
+
+        return self
 }
 
 export const createEditor = (

@@ -4,7 +4,7 @@ import { useMutable } from 'plre/react'
 import type { LayerItemHandlers } from '../../molecules'
 import { moveObject } from '../utils'
 import { getParent } from '../../utils'
-import { useOnce } from '.'
+import { useOnce } from '../../atoms'
 
 interface ViewLayerCache {
         grabbed?: PLObject | null
@@ -26,6 +26,7 @@ export const useViewLayer = (objectTree: PLObject) => {
                         setHovered(void 0)
                         setSelected((p) => {
                                 if (p && p !== obj) p.active = false
+                                objectTree.changeActive(obj, p)
                                 return obj
                         })
                 },

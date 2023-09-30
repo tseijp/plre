@@ -24,9 +24,11 @@ export const Header = (props: HeaderProps) => {
 
         return (
                 <Flex
+                        row
+                        gap="1rem"
                         height="25px"
                         overflow="visible"
-                        alignItems="start"
+                        justifyContent="start"
                         paddingLeft="6px"
                         color="#fff"
                 >

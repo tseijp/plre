@@ -125,7 +125,7 @@ export const createWebrtc = () => {
 
         const self = event<WebrtcState>({
                 isInit: false,
-                // isDev: process.env.NODE_ENV === 'development',
+                isDev: process.env.NODE_ENV === 'development',
                 username,
                 checkers: new Map(),
                 color: NICE_COLORS[floor(random() * NICE_COLORS.length)],
