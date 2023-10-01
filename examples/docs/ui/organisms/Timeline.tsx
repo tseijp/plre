@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { Box, Field, Flex } from '../atoms'
-import { Header, UserProfile, UserProfiles } from '../molecules'
+import { Box, Flex } from '../atoms'
+import { Header } from './headers/Header'
+import { UserProfile, UserProfiles } from './users'
 import type { EditorState } from 'plre/types'
 
 export interface TimelineProps {

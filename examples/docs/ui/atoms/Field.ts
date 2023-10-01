@@ -1,4 +1,3 @@
-import * as React from 'react'
 import { createElement, forwardRef } from 'react'
 import type { ChangeEvent, CSSProperties, RefObject } from 'react'
 

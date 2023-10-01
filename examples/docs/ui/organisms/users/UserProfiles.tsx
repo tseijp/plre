@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { useForceUpdate, useOnce } from '../atoms'
-import { useCtx } from '../ctx'
+import { useForceUpdate, useOnce } from '../../atoms'
+import { useCtx } from '../../ctx'
 import { Profile } from './UserProfile'
-import { useUserObserve } from '.'
+import { useUserObserve } from '..//hooks'
 import type { ProfileProps } from './UserProfile'
 
 export const UserProfileImpl = (props: ProfileProps) => {

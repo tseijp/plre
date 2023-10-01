@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
-import { Box, Field, Flex, useCall } from '../atoms'
-import { useFieldEvent } from '.'
-import { useCtx } from '../ctx'
+import { Box, Field, Flex, useCall } from '../../atoms'
+import { useFieldEvent } from '../../molecules/hooks'
+import { useCtx } from '../../ctx'
 
 export const UserProfile = () => {
         const { webrtcTree } = useCtx()

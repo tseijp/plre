@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import { DragState, useCall, useDragEvent, useWindowSize } from '../../atoms'
+import { useCall, useDragEvent, useWindowSize } from '../../atoms'
 
 export interface SeparatorEventHandlers {
         onMove(duration?: number): void

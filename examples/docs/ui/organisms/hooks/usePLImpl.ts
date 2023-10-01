@@ -15,7 +15,6 @@ export const usePLImpl = (on = () => {}) => {
         const memo = useMutable({
                 on,
                 ref(target: unknown) {
-                        console.log('usePLImpl useMutable -> target', target)
                         if (target) {
                                 self.target = target
                                 self.mount()

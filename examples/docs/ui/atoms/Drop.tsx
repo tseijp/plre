@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { Arrow } from './Arrow'
+import { useCall } from './hooks'
 
 export interface DropProps extends CSSProperties {
         isOpen?: boolean
@@ -13,6 +14,10 @@ export const Drop = (props: DropProps) => {
         const [isOpen, setIsOpen] = useState(false)
 
         if (!Array.isArray(children)) return null
+
+        const handleClick = useCall(() => {
+                setIsOpen(false)
+        })
 
         return (
                 <div
@@ -47,6 +52,7 @@ export const Drop = (props: DropProps) => {
                                         background: '#1D1D1D',
                                         display: isOpen ? 'flex' : 'none',
                                 }}
+                                onClick={handleClick}
                         >
                                 {children[1]}
                         </div>

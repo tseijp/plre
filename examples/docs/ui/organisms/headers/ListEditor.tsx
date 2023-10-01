@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { Flex } from '../atoms'
+import { Flex } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { EditorType } from 'plre/types'
 
-export interface EditorTypesProps {
+export interface ListEditorProps {
         children?: ReactNode
         onClick: (type: EditorType) => void
 }
 
-export const EditorTypes = (props: EditorTypesProps) => {
+export const ListEditor = (props: ListEditorProps) => {
         const { onClick = () => {} } = props
         return (
                 <Flex

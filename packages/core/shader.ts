@@ -6,12 +6,6 @@ uniform vec3 cameraPosition;
 uniform vec3 lookAt;
 uniform vec3 floorColor;
 
-// const float cameraAngle = 0.0;
-// const vec2 iResolution = vec2(600., 600.);
-// const vec3 cameraPosition = vec3(10.0);
-// const vec3 lookAt = vec3(0.0);
-// const vec3 floorColor = vec3(0.0);
-
 // #define AA 2
 #define AA 1
 #define PI 3.14159265359
@@ -25,14 +19,12 @@ uniform vec3 floorColor;
 const vec2 EPS = vec2(.00001, 0.0);
 
 #include <PLRE_SHADER>
-
 vec3 normal(vec3 pos) {
         float dx = map(pos + EPS.xyy).x - map(pos - EPS.xyy).x;
         float dy = map(pos + EPS.yxy).x - map(pos - EPS.yxy).x;
         float dz = map(pos + EPS.yyx).x - map(pos - EPS.yyx).x;
         return normalize(vec3(dx, dy, dz));
 }
-
 
 vec2 raymarch(vec3 ro, vec3 rd) {
         // raymarch primitives
@@ -45,9 +37,7 @@ vec2 raymarch(vec3 ro, vec3 rd) {
         }
         return res;
 }
-
 #include <PLRE_RENDER>
-
 mat3 setCamera(vec3 ro, vec3 ta, float cr) {
         vec3 cw = normalize(ta - ro);
         vec3 cp = normalize(vec3(sin(cr), cos(cr), 0.0));

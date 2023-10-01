@@ -106,6 +106,9 @@ export const useCodemirror = () => {
                 cache.obj.shader = code
         })
 
+        // @TODO
+        // const compileShader = () => {}
+
         useEffect(() => {
                 // @ts-ignore
                 objectTree({ changeActive })

@@ -1,9 +1,9 @@
 import * as React from 'react'
-import { Flex, Drop } from '../atoms'
-import { EditorTypes } from './EditorTypes'
+import { Flex, Drop } from '../../atoms'
+import { ListEditor } from './ListEditor'
 import type { ReactNode } from 'react'
 import type { EditorState, EditorType } from 'plre/types'
-import { useCtx } from '../ctx'
+import { useCtx } from '../../ctx'
 
 export interface HeaderProps {
         children?: ReactNode
@@ -15,7 +15,7 @@ export const Header = (props: HeaderProps) => {
 
         const { editorTree } = useCtx()
 
-        const handleClick = (_type: EditorType) => {
+        const handleClickEditor = (_type: EditorType) => {
                 editorItem.type = _type
                 editorTree.update()
         }
@@ -42,7 +42,7 @@ export const Header = (props: HeaderProps) => {
                                 >
                                         {type}
                                 </span>
-                                <EditorTypes onClick={handleClick} />
+                                <ListEditor onClick={handleClickEditor} />
                         </Drop>
                         {children}
                 </Flex>

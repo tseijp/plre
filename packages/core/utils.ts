@@ -51,8 +51,19 @@ export const getLayerKey = (obj: PLObject) => {
         return getLayerKey(obj.parent) + '_' + obj.key
 }
 
-// export const withDirective = (shader = '', key = '') => {
-//         const header = `#ifndef ${key}\n#define ${key}\n`
-//         const footer = `\n#endif\n`
-//         return header + shader + footer
-// }
+export const getActiveObjects = (obj: PLObject) => {
+        const ret = [] as PLObject[]
+        if (obj.active) ret.push(obj)
+        obj.children.forEach((child) => {
+                getActiveObjects(child).forEach((_obj) => {
+                        ret.push(_obj)
+                })
+        })
+        return ret
+}
+
+export const withDirective = (shader = '', key = '') => {
+        const header = `#ifndef ${key}\n#define ${key}\n`
+        const footer = `\n#endif\n`
+        return header + shader + footer
+}

@@ -4,7 +4,7 @@ import { useRefs, AxisHead, AxisLine, AxisTail } from '../atoms'
 import { useDragEvent } from '../atoms'
 import { useAxisEvent } from './hooks'
 import type { EventState } from 'reev/types'
-import type { WheelState } from './hooks'
+import type { WheelState } from '../atoms'
 import type { ReactNode } from 'react'
 
 export interface ViewpointProps {

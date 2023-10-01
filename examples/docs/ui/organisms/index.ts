@@ -1,4 +1,6 @@
 export * from './hooks'
+export * from './headers'
+export * from './users'
 export * from './Properties'
 export * from './Timeline'
 export * from './ViewLayer'

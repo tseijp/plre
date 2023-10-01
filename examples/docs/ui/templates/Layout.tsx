@@ -2,9 +2,16 @@ import * as React from 'react'
 import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import { Tree, Debug, Flex } from '../atoms'
-import { Separate, UserCursors } from '../molecules'
-import { Properties, Timeline, ViewLayer, Viewport } from '../organisms'
+// import { Debug } from '../atoms'
+import { Tree, Flex } from '../atoms'
+import { Separate } from '../molecules'
+import {
+        Properties,
+        Timeline,
+        ViewLayer,
+        Viewport,
+        UserCursors,
+} from '../organisms'
 import { useInitPLObject, useInitPLEditor, useInitWebrtc } from './hooks'
 import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
@@ -61,7 +68,7 @@ export const Layout = () => {
                                 >
                                         <Tree tree={editorTree}>{render}</Tree>
                                 </Flex>
-                                <Debug />
+                                {/* <Debug /> */}
                         </CtxProvider>
                 </LayoutImpl>
         )

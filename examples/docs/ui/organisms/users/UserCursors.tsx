@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react'
-import { useCtx } from '../ctx'
-import { useUserObserve } from './hooks'
-import { useForceUpdate, useOnce } from '../atoms'
+import { useCtx } from '../../ctx'
+import { useUserObserve } from '../hooks'
+import { useForceUpdate, useOnce } from '../../atoms'
 import { gsap } from 'gsap'
 
 const style = {

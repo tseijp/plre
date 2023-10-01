@@ -6,7 +6,7 @@ export interface Refs<T> {
 }
 
 export const useRefs = <T>(init?: T) => {
-        const refs = useRef((i: number) => {
+        const refs = useRef((i: number | string) => {
                 if (!refs[i]) {
                         refs[i] = (target: Element | null) => {
                                 refs[i].current = target

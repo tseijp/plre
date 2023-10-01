@@ -1,6 +1,11 @@
 import { PLObject } from './types'
 import * as ShaderChunk from './shader'
-import { getLayerKey, resolveIncludes, shaderChunkMap } from './utils'
+import {
+        getLayerKey,
+        resolveIncludes,
+        shaderChunkMap,
+        // withDirective,
+} from './utils'
 
 /**
  * complie shaders
@@ -25,18 +30,20 @@ export const compileCollection = (obj: PLObject) => {
         ret += NEW_LINE + 'return res;'
         ret += '\n}'
         // ret = withDirective(ret, _key)
-        shaderChunkMap.set(_key, ret)
         return ret
 }
 
 export const compileObject = (obj: PLObject) => {
-        let ret = obj.shader
-        // ret = withDirective(shader, _key)
+        console.log(obj.shader)
+        let ret = obj.shader.trim()
+        // const _key = getLayerKey(obj)
+        // ret = withDirective(ret, _key)
         return ret
 }
 
 export const compileMaterial = (obj: PLObject) => {
-        let ret = obj.shader
+        let ret = obj.shader.trim()
+        // const _key = getLayerKey(obj)
         // ret = withDirective(ret, _key)
         return ret
 }

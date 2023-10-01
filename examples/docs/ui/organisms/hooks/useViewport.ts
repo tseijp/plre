@@ -40,7 +40,6 @@ export const useViewport = () => {
                 const x = rad * sin(tht) * cos(phi)
                 const z = rad * sin(tht) * sin(phi)
                 const y = rad * cos(tht)
-                console.log([x, y, z])
                 self.uniform({
                         cameraAngle: sin(tht) > 0 ? 0 : PI,
                         cameraPosition: [x, y, z],
@@ -54,9 +53,16 @@ export const useViewport = () => {
         })
 
         useEffect(() => {
-                self.ref(wheel.target)
-                self.on()
+                try {
+                        // recompile shader
+                        self.ref?.(wheel.target)
+                        self.on?.()
+                        self.trySuccess?.()
+                } catch (e) {
+                        console.warn(e)
+                        self.catchError?.(e)
+                }
         }, [self])
 
-        return [wheel, resize] as const
+        return [wheel, resize, self] as const
 }

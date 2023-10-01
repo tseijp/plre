@@ -5,13 +5,26 @@ export type Vec3<T = number> = [T, T, T]
 export type Mat4<T = number> = [T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T]
 
 export type ObjectTypes =
-        | 'background'
         | 'boxFrame'
         | 'box'
+        | 'capsule'
+        | 'cone'
+        | 'cube'
+        | 'cylinder'
+        | 'dodecahedron'
+        | 'ellipsoid'
         | 'formula'
-        | 'object'
+        | 'hexPrism'
+        | 'icosahedron'
+        | 'link'
+        | 'octahedron'
+        | 'octagonPrism'
         | 'plane'
+        | 'pyramid'
         | 'sphere'
+        | 'tetrahedron'
+        | 'torus'
+        | 'triPrism'
         // collection
         | 'U'
         | 'I'
@@ -64,8 +77,14 @@ export interface PLObject {
 }
 
 export interface PL extends GL {
-        on(): void
-        update(): void
+        error: Error
         object: PLObject
         collection: PLObject | null
+        /**
+         * Events
+         */
+        on(): void
+        update(): void
+        trySuccess(): void
+        catchError(e: Error): void
 }

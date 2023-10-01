@@ -1,10 +1,12 @@
 import * as React from 'react'
-import { Flex, Tree, useOnce } from '../atoms'
-import { Header, LayerItem } from '../molecules'
 import { PLObject } from 'plre/types'
+import { Header } from './headers/Header'
+import { Flex, Tree, useOnce } from '../atoms'
 import { useViewLayer } from './hooks'
-import { useCtx } from '../ctx'
 import { sortObject } from './utils'
+import { useCtx } from '../ctx'
+import { AddObject } from './headers'
+import { LayerItem } from '../molecules'
 import type { ReactNode } from 'react'
 import type { EditorState } from 'plre/types'
 
@@ -33,7 +35,9 @@ export const ViewLayer = (props: ViewLayerProps) => {
 
         return (
                 <Flex backgroundColor="#282828">
-                        <Header editorItem={editorItem} />
+                        <Header editorItem={editorItem}>
+                                <AddObject />
+                        </Header>
                         <Flex
                                 // backgroundImage="linear-gradient(0deg, #ffff00 50%, #0000ff 50%)"
                                 backgroundImage="linear-gradient(0deg, #282828 50%, #2B2B2B 50%)"
