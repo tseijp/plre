@@ -12,7 +12,6 @@ export const DropItems = (props: DropItemsProps) => {
                 <Flex
                         gap="0.25rem"
                         color="white"
-                        cursor="pointer"
                         padding="0.5rem"
                         alignItems="start"
                         borderRadius="5px"

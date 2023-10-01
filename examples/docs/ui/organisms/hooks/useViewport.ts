@@ -1,6 +1,7 @@
 import { usePLImpl } from '.'
 import { useWheelEvent, useResizeEvent } from '../../atoms'
 import { useEffect } from 'react'
+import { useCtx } from '../../ctx'
 
 const { cos, sin, PI } = Math
 
@@ -52,15 +53,17 @@ export const useViewport = () => {
                 })
         })
 
+        const { editorTree } = useCtx()
+
         useEffect(() => {
                 try {
                         // recompile shader
                         self.ref?.(wheel.target)
                         self.on?.()
-                        self.trySuccess?.()
+                        editorTree.trySuccess?.()
                 } catch (e) {
                         console.warn(e)
-                        self.catchError?.(e)
+                        editorTree.catchError?.(e)
                 }
         }, [self])
 

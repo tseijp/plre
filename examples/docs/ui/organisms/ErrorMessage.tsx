@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { Flex, Box, useRefs, useOnce } from '../atoms'
 import { PL } from 'plre/types'
+import { useCtx } from '../ctx'
 
 export interface ErrorMessageProps {
         self: PL
@@ -9,6 +10,7 @@ export interface ErrorMessageProps {
 
 export const ErrorMessage = (props: ErrorMessageProps) => {
         const { self } = props
+        const { editorTree } = useCtx()
         const [err, set] = useState('')
         const cache = useOnce(() => ({ err }))
         const refs = useRefs()
@@ -30,7 +32,7 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
 
         useEffect(() => {
                 // @ts-ignore
-                self({
+                editorTree({
                         trySuccess() {
                                 set('')
                                 cache.err = ''

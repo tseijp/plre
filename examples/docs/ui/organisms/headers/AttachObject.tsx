@@ -4,12 +4,13 @@ import { Drop } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useMutable } from 'plre/react'
 import { useCompile } from '../hooks'
-import { deleteObject } from '../utils'
-import { getActiveObjects } from 'plre/utils'
+import { addMaterial, deactivateAll, deleteObject } from '../utils'
+import { getActiveObjects, isObject } from 'plre/utils'
 import { DropItems } from '../../molecules'
 
 interface AttachObjectHandles {
         delete(): void
+        'attach Material'(): void
 }
 
 export const AttachObject = () => {
@@ -19,28 +20,50 @@ export const AttachObject = () => {
         const handles = useMutable<AttachObjectHandles>({
                 delete() {
                         getActiveObjects(objectTree).forEach(deleteObject)
+                        deactivateAll(objectTree)
                         editorTree.changeActive?.(null)
                         compile()
                 },
+                'attach Material'() {
+                        getActiveObjects(objectTree).forEach((obj, i) => {
+                                if (!isObject(obj)) return
+                                const child = addMaterial(obj)
+                                if (i === 0) {
+                                        child.active = true
+                                        editorTree.changeActive?.(child)
+                                }
+                        })
+                        deactivateAll(objectTree)
+                        compile()
+                },
         })
+
+        const render = (key: keyof typeof handles) => (
+                <div
+                        onClick={() => handles[key]()}
+                        key={key}
+                        style={{
+                                width: '100%',
+                                cursor: 'pointer',
+                        }}
+                >
+                        {Up(key)}
+                </div>
+        )
 
         return (
                 <Drop>
                         <span
                                 style={{
-                                        width: 54,
                                         height: 18,
+                                        padding: '0 0.25rem',
                                         textAlign: 'center',
                                 }}
                         >
                                 Object
                         </span>
                         <DropItems items={Object.keys(handles)}>
-                                {(key) => (
-                                        <div onClick={() => handles[key]()}>
-                                                {Up(key)}
-                                        </div>
-                                )}
+                                {render}
                         </DropItems>
                 </Drop>
         )

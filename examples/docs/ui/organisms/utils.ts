@@ -1,18 +1,38 @@
-import * as ObjectShaders from './objects'
+import * as Objects from 'plre/objects'
+import * as Materials from 'plre/materials'
 import { createObject } from 'plre'
 import { attachParent, getLayerKey } from 'plre/utils'
 import type { ObjectTypes, PLObject } from 'plre/types'
 import { getParent, isOffspring } from '../utils'
 
+export const activateAll = (obj: PLObject) => {
+        obj.children.forEach(activateAll)
+        obj.active = true
+}
+
+export const deactivateAll = (obj: PLObject) => {
+        obj.children.forEach(deactivateAll)
+        obj.active = false
+}
+
 export const addObject = (obj: PLObject, type: ObjectTypes) => {
         const child = createObject(type)
-        const shader = ObjectShaders[type]
+        const shader = Objects[type]
         if (!shader) throw Error(`No shader for ${type}`)
         obj.children.push(child)
         attachParent(obj)
         const _key = getLayerKey(child)
         child.shader = shader(_key).trim()
-        child.active = true
+        return child
+}
+
+export const addMaterial = (obj: PLObject) => {
+        const child = createObject('Material')
+        const shader = Materials['basicMaterial']
+        obj.children.push(child)
+        attachParent(obj)
+        const _key = getLayerKey(child)
+        child.shader = shader(_key).trim()
         return child
 }
 
@@ -32,7 +52,6 @@ export const moveObject = (
         const parent = getParent(obj, grabbed)
         hovered.children.push(grabbed)
         parent.children.splice(parent.children.indexOf(grabbed), 1)
-        sortObject(obj)
         return obj
 }
 

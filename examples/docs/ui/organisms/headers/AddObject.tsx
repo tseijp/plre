@@ -1,11 +1,12 @@
 import * as React from 'react'
+import { Up } from '../../utils'
 import { Drop } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useCompile } from '../hooks'
-import { addObject } from '../utils'
+import { addObject, deactivateAll } from '../utils'
 import { getActiveObjects, isCollection } from 'plre/utils'
 import { DropItems } from '../../molecules'
-import * as Objects from '../objects'
+import * as Objects from 'plre/objects'
 import type { ObjectTypes } from 'plre/types'
 
 const objectTypes = Object.keys(Objects) as ObjectTypes[]
@@ -19,34 +20,44 @@ export const AddObject = () => {
                 let objs = getActiveObjects(objectTree)
                 if (objs.length <= 0) objs = [objectTree]
                 objs.forEach((obj, i) => {
-                        obj.active = false
                         if (!isCollection(obj)) obj = obj.parent
                         if (!isCollection(obj)) obj = obj.parent
                         if (!isCollection(obj)) return
                         const child = addObject(obj, type)
-                        if (i === 0) editorTree.changeActive?.(child)
+                        if (i === 0) {
+                                child.active = true
+                                editorTree.changeActive?.(child)
+                        }
                 })
+                deactivateAll(objectTree)
                 compile()
         }
+
+        const render = (type: ObjectTypes) => (
+                <div
+                        onClick={() => handleClick(type)}
+                        key={type}
+                        style={{
+                                width: '100%',
+                                cursor: 'pointer',
+                        }}
+                >
+                        {Up(type)}
+                </div>
+        )
 
         return (
                 <Drop>
                         <span
                                 style={{
-                                        width: 36,
                                         height: 18,
+                                        padding: '0 0.25rem',
                                         textAlign: 'center',
                                 }}
                         >
                                 Add
                         </span>
-                        <DropItems items={objectTypes}>
-                                {(type) => (
-                                        <div onClick={() => handleClick(type)}>
-                                                {type}
-                                        </div>
-                                )}
-                        </DropItems>
+                        <DropItems items={objectTypes}>{render}</DropItems>
                         {/* <Flex
                                 gap="0.25rem"
                                 color="white"

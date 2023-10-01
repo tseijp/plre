@@ -15,9 +15,12 @@ export const Draggable = (props: DraggableProps) => {
         const { children, onDraging = () => {}, onDragEnd = () => {} } = props
         const [isActived, setIsActived] = useState(false)
         const drag = useDragEvent(() => {
-                const { active, _active } = drag
+                const { active, _active, memo } = drag
                 setIsActived(active)
-                if (!_active && active) return
+                if (!_active && active) return (memo.i = 0)
+                memo.i++
+                if (memo.i <= 10) return
+
                 if (_active && active) onDraging(drag)
                 if (_active && !active) onDragEnd(drag)
                 const [x, y] = drag.movement

@@ -49,6 +49,8 @@ export interface EditorState {
         memo: any
         // events
         update?(): void
+        trySuccess(): void
+        catchError(e: Error): void
         changeActive?(obj: PLObject): void
 }
 
@@ -86,6 +88,4 @@ export interface PL extends GL {
          */
         on(): void
         update(): void
-        trySuccess(): void
-        catchError(e: Error): void
 }

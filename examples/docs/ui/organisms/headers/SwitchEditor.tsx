@@ -14,15 +14,24 @@ const editorItems = ['viewport', 'viewlayer', 'timeline', 'properties']
 export const SwitchEditor = (props: SwitchEditorProps) => {
         const { type, onClick } = props
         const render = (type: EditorType) => (
-                <div onClick={() => onClick(type)}>{Up(type)}</div>
+                <div
+                        onClick={() => onClick(type)}
+                        key={type}
+                        style={{
+                                width: '100%',
+                                cursor: 'pointer',
+                        }}
+                >
+                        {Up(type)}
+                </div>
         )
 
         return (
                 <Drop marginTop="2px">
                         <span
                                 style={{
-                                        width: 18,
                                         height: 18,
+                                        padding: '0 0.25rem',
                                         textAlign: 'center',
                                 }}
                         >

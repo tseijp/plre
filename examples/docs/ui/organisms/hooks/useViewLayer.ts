@@ -1,12 +1,12 @@
-import { is } from './../../../../../../tseijp/packages/parsed-path/packages/core/src/utils/helpers'
 import { useState } from 'react'
 import { PLObject } from 'plre/types'
 import { useMutable } from 'plre/react'
 import type { LayerItemHandlers } from '../../molecules'
-import { moveObject } from '../utils'
+import { deactivateAll, moveObject } from '../utils'
 import { useOnce } from '../../atoms'
 import { isCollection, isMaterial, isObject } from 'plre/utils'
 import { useCtx } from '../../ctx'
+import { useCompile } from '.'
 
 interface ViewLayerCache {
         grabbed?: PLObject | null
@@ -15,26 +15,25 @@ interface ViewLayerCache {
 }
 
 export const useViewLayer = () => {
+        const compile = useCompile()
         const { editorTree, objectTree } = useCtx()
-        const [selected, setSelected] = useState<PLObject | null>(objectTree)
         const [hovered, setHovered] = useState<PLObject | null>(null)
+        const [selected, setSelected] = useState<PLObject | null>(objectTree)
         const cache = useOnce<ViewLayerCache>(() => ({ id2Item: new Map() }))
 
         const handlers = useMutable<LayerItemHandlers>({
                 mount: (obj, id) => cache.id2Item.set(id, obj),
                 clean: (_, id) => cache.id2Item.delete(id),
                 click(obj) {
+                        deactivateAll(objectTree)
                         obj.active = true
                         setHovered(void 0)
-                        setSelected((p) => {
-                                if (!obj.active && p && p !== obj)
-                                        p.active = false
-                                editorTree.changeActive?.(obj)
-                                return obj
-                        })
+                        editorTree.changeActive?.(obj)
+                        setSelected(() => obj)
                 },
                 draging(obj, drag) {
                         const { value } = drag
+
                         // activate the grabbed obj
                         if (cache.grabbed !== obj) handlers.click(obj)
                         cache.grabbed = obj
@@ -72,6 +71,8 @@ export const useViewLayer = () => {
                         setHovered(null)
                         if (!grabbed || !hovered || grabbed === hovered) return
                         moveObject(objectTree, grabbed, hovered)
+                        compile()
+                        alert('COMPILED')
                 },
         })
 

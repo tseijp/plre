@@ -42,6 +42,13 @@ export const usePLImpl = (on = () => {}) => {
                         // frame.cancel()
                         window.removeEventListener('resize', self.resize)
 
+                        try {
+                                const { gl, pg } = self
+                                gl.deleteProgram(pg)
+                        } catch (e) {
+                                console.warn(e)
+                        }
+
                         // @ts-ignore plre specific
                         objectTree({ compileShader })
                 },
@@ -55,10 +62,14 @@ export const usePLImpl = (on = () => {}) => {
                 // cache.vs = ''
                 ret.target = self.target
                 set((p) => {
-                        p.clean()
+                        p.clean?.()
                         return ret
                 })
         }
 
         return useMemo(() => self(memo), [self, memo]) as PL
+}
+
+const warn = () => {
+        console.warn('usePLImpl compileShader Warn: p.clean is not defined')
 }
