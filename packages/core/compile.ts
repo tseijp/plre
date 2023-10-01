@@ -34,7 +34,6 @@ export const compileCollection = (obj: PLObject) => {
 }
 
 export const compileObject = (obj: PLObject) => {
-        console.log(obj.shader)
         let ret = obj.shader.trim()
         // const _key = getLayerKey(obj)
         // ret = withDirective(ret, _key)

@@ -79,21 +79,19 @@ export const codemirrorEvent = (doc = '') => {
 
 interface UseCodemirrorCache {
         obj?: PLObject
-        prev?: PLObject
 }
 
 export const useCodemirror = () => {
-        const { objectTree } = useCtx()
+        const { editorTree, objectTree } = useCtx()
         const self = useOnce(() => codemirrorEvent(collectAll(objectTree)))
         const cache = useOnce<UseCodemirrorCache>(() => ({}))
-        const changeActive = useCall((obj, prev) => {
-                // cache
+        const changeActive = useCall((obj) => {
+                // cache to save changed code
                 cache.obj = obj
-                cache.prev = prev
 
                 // reset codemirror
                 const { EditorState } = self.libs
-                const doc = obj.shader
+                const doc = obj?.shader || ''
                 const extensions = self.extensions
                 const state = EditorState.create({ doc, extensions })
                 self.view.setState(state)
@@ -111,12 +109,12 @@ export const useCodemirror = () => {
 
         useEffect(() => {
                 // @ts-ignore
-                objectTree({ changeActive })
+                editorTree({ changeActive })
                 self({ changeEditor })
 
                 return () => {
                         // @ts-ignore
-                        objectTree({ changeActive })
+                        editorTree({ changeActive })
                         self({ changeEditor })
                 }
         }, [])

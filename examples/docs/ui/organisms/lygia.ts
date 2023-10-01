@@ -67,8 +67,6 @@ export async function resolve(lines: string | string[]) {
                                 let url = line_trim.substring(15)
                                 url = 'https://lygia.xyz' + url.replace(REG, '')
 
-                                console.log(set.has(url), cache.has(url))
-
                                 // once only
                                 if (set.has(url)) return
                                 set.add(url)

@@ -6,6 +6,7 @@ import type { LayerItemHandlers } from '../../molecules'
 import { moveObject } from '../utils'
 import { useOnce } from '../../atoms'
 import { isCollection, isMaterial, isObject } from 'plre/utils'
+import { useCtx } from '../../ctx'
 
 interface ViewLayerCache {
         grabbed?: PLObject | null
@@ -13,7 +14,8 @@ interface ViewLayerCache {
         id2Item: Map<string, PLObject>
 }
 
-export const useViewLayer = (objectTree: PLObject) => {
+export const useViewLayer = () => {
+        const { editorTree, objectTree } = useCtx()
         const [selected, setSelected] = useState<PLObject | null>(objectTree)
         const [hovered, setHovered] = useState<PLObject | null>(null)
         const cache = useOnce<ViewLayerCache>(() => ({ id2Item: new Map() }))
@@ -22,12 +24,12 @@ export const useViewLayer = (objectTree: PLObject) => {
                 mount: (obj, id) => cache.id2Item.set(id, obj),
                 clean: (_, id) => cache.id2Item.delete(id),
                 click(obj) {
-                        if (obj.active) return
                         obj.active = true
                         setHovered(void 0)
                         setSelected((p) => {
-                                if (p && p !== obj) p.active = false
-                                objectTree.changeActive(obj, p)
+                                if (!obj.active && p && p !== obj)
+                                        p.active = false
+                                editorTree.changeActive?.(obj)
                                 return obj
                         })
                 },
@@ -43,12 +45,17 @@ export const useViewLayer = (objectTree: PLObject) => {
                         let isCancel = false
 
                         // if the hovered component is not a viewlayer
+                        if (hovered === obj) return
+
                         if (!hovered) return setHovered((cache.hovered = null))
 
                         if (isMaterial(obj)) {
                                 if (!isObject(hovered)) hovered = hovered.parent
+                                if (!isObject(hovered)) hovered = hovered.parent
                                 if (!isObject(hovered)) isCancel = true
                         } else {
+                                if (!isCollection(hovered))
+                                        hovered = hovered.parent
                                 if (!isCollection(hovered))
                                         hovered = hovered.parent
                                 if (!isCollection(hovered)) isCancel = true

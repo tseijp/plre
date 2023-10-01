@@ -46,9 +46,11 @@ export interface EditorState {
         top: boolean
         row: boolean
         active: boolean
-        update?: () => void
         children: EditorState[]
         memo: any
+        // events
+        update?(): void
+        changeActive?(obj: PLObject): void
 }
 
 export interface PLObject {

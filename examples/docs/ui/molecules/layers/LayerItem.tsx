@@ -93,7 +93,9 @@ export const LayerItem = (props: LayerItemProps) => {
                                 overflowX="visible"
                                 overflowY="visible"
                         >
-                                {/* <div style={{ color: 'red' }}>{obj.index}</div> */}
+                                {/* <div style={{ color: 'red' }}>
+                                        {!obj.parent && 'NO PARENT'}
+                                </div> */}
                                 <LayerItemCollapse
                                         index={index}
                                         isOpen={isOpen}

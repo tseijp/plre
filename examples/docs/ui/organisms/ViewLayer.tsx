@@ -5,7 +5,7 @@ import { Flex, Tree, useOnce } from '../atoms'
 import { useViewLayer } from './hooks'
 import { sortObject } from './utils'
 import { useCtx } from '../ctx'
-import { AddObject } from './headers'
+import { AddObject, AttachObject } from './headers'
 import { LayerItem } from '../molecules'
 import type { ReactNode } from 'react'
 import type { EditorState } from 'plre/types'
@@ -16,7 +16,7 @@ export interface ViewLayerProps {
 export const ViewLayer = (props: ViewLayerProps) => {
         const { editorItem } = props
         const { objectTree } = useCtx()
-        const { selected, hovered, handlers } = useViewLayer(objectTree)
+        const { selected, hovered, handlers } = useViewLayer()
 
         useOnce(() => sortObject(objectTree))
 
@@ -37,6 +37,7 @@ export const ViewLayer = (props: ViewLayerProps) => {
                 <Flex backgroundColor="#282828">
                         <Header editorItem={editorItem}>
                                 <AddObject />
+                                <AttachObject />
                         </Header>
                         <Flex
                                 // backgroundImage="linear-gradient(0deg, #ffff00 50%, #0000ff 50%)"

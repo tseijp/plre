@@ -21,8 +21,10 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
                 flex.current.addEventListener('click', _flex)
                 box.current.addEventListener('click', _box)
                 return () => {
-                        flex.removeEventListener('click', _flex)
-                        box.removeEventListener('click', _box)
+                        if (!flex || !box || !flex.current || !box.current)
+                                return
+                        flex.current.removeEventListener('click', _flex)
+                        box.current.removeEventListener('click', _box)
                 }
         }, [])
 
@@ -85,6 +87,7 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
                                         </Box>
                                         <Box minHeight="">
                                                 {getText(getText(err))}
+                                                {self.fs}
                                         </Box>
                                 </Box>
                         </Flex>

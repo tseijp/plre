@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { Flex, Drop } from '../../atoms'
-import { ListEditor } from './ListEditor'
 import type { ReactNode } from 'react'
 import type { EditorState, EditorType } from 'plre/types'
 import { useCtx } from '../../ctx'
+import { SwitchEditor } from './SwitchEditor'
 
 export interface HeaderProps {
         children?: ReactNode
@@ -32,18 +32,7 @@ export const Header = (props: HeaderProps) => {
                         paddingLeft="6px"
                         color="#fff"
                 >
-                        <Drop marginTop="2px">
-                                <span
-                                        style={{
-                                                width: 18,
-                                                height: 18,
-                                                textAlign: 'center',
-                                        }}
-                                >
-                                        {type}
-                                </span>
-                                <ListEditor onClick={handleClickEditor} />
-                        </Drop>
+                        <SwitchEditor type={type} onClick={handleClickEditor} />
                         {children}
                 </Flex>
         )

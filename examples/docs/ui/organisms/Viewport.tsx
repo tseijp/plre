@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Flex } from '../atoms'
-import { AddObject, Header } from './headers'
+import { AddObject, AttachObject, Header } from './headers'
 import { useViewport } from './hooks'
 import { Viewpoint } from '../molecules'
 import { ErrorMessage } from './ErrorMessage'
@@ -22,6 +22,7 @@ export const Viewport = (props: ViewportProps) => {
                 >
                         <Header editorItem={editorItem}>
                                 <AddObject />
+                                <AttachObject />
                         </Header>
                         <Flex background="#3A3A3A">
                                 <canvas ref={wheel.ref} />

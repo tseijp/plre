@@ -28,6 +28,8 @@ export const once = <
         callback()
 }
 
+export const Up = (str: string) => str[0].toUpperCase() + str.slice(1)
+
 export const rand = (n = 1) => (Math.random() * n) << 0
 
 export const randColor = () =>

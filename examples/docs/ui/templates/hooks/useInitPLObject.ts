@@ -4,21 +4,21 @@ import { compile } from 'plre/compile'
 import { useOnce } from '../../atoms'
 
 const boxSDF = (key = '') => /* CPP */ `
-#define boxSize vec3(1.)
-
 float ${key}(vec3 p) {
+        vec3 boxSize = vec3(1.);
         vec3 d = abs(p) - boxSize;
         return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
 }
 `
 
 const boxFrameSDF = (key = '') => /* CPP */ `
+#ifndef min3
 #define min3(a, b, c) min(a, min(b, c))
 #define max3(a, b, c) max(a, max(b, c))
-#define boxFrameThickness .001
-#define boxFrameSize vec3(1.)
-
+#endif
 float ${key}(vec3 _p) {
+        float boxFrameThickness = .001;
+        vec3 boxFrameSize = vec3(1.);
         vec3 p = abs(_p)     - boxFrameSize;
         vec3 q = abs(p + boxFrameThickness) - boxFrameThickness;
         return min3(
@@ -30,9 +30,7 @@ float ${key}(vec3 _p) {
 `
 
 const formulaSDF = (key = '') => /* CPP */ `
-#define formulaThickness .05
-
-float yourFormula(vec3 p) {
+float ${key}_Formula(vec3 p) {
         // return p.x * p.x + p.z * p.z - 1.0;
         float sigma = .3;
         float a = p.x * p.x + p.z * p.z;
@@ -42,18 +40,20 @@ float yourFormula(vec3 p) {
 }
 
 float ${key}(vec3 p) {
-        float f = yourFormula(p);
+        float f = ${key}_Formula(p);
+        float formulaThickness = .05;
         return min(abs(p.y - f) - formulaThickness, 30.);
 }
 `
 
 const formulaShader = (key = '') => /* CPP */ `
+#ifndef grid
 #define grid(x) 1. - step(-.005, mod(x + .0025, .1)) * step(mod(x + .0025, .1), .005)
-#define colorA vec3(192. / 255., 78. / 255., 255. / 255.)
-#define colorB vec3(112. / 255., 200. / 255., 228. / 255.)
-#define colorC vec3(255. / 255., 224. / 255., 178. / 255.)
-
+#endif
 vec3 ${key}(vec3 pos, vec3 nor) {
+        vec3 colorA = vec3(192. / 255., 78. / 255., 255. / 255.);
+        vec3 colorB = vec3(112. / 255., 200. / 255., 228. / 255.);
+        vec3 colorC = vec3(255. / 255., 224. / 255., 178. / 255.);
         vec3 col = mix(colorB, colorA, abs(nor.x));
         col = mix(col, colorC, nor.z);
         col *= grid(pos.x);

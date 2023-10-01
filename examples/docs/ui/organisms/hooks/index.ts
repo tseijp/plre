@@ -1,4 +1,5 @@
 export * from './useCodemirror'
+export * from './useCompile'
 export * from './usePLImpl'
 export * from './useViewLayer'
 export * from './useViewport'
