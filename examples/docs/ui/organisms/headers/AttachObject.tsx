@@ -1,22 +1,42 @@
 import * as React from 'react'
 import { Up } from '../../utils'
-import { Drop } from '../../atoms'
+import { Drop, useCall } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useMutable } from 'plre/react'
 import { useCompile } from '../hooks'
-import { addMaterial, deactivateAll, deleteObject } from 'plre/control'
+import {
+        addCollection,
+        addMaterial,
+        deactivateAll,
+        deleteObject,
+} from 'plre/control'
 import { getActiveObjects, isObject } from 'plre/utils'
 import { DropItems } from '../../molecules'
 import { delAll, pub } from 'plre/connect'
+import { ObjectTypes } from 'plre/types'
 
 interface AttachObjectHandles {
         delete(): void
-        'attach Material'(): void
+        union(): void
+        subtraction(): void
+        intersection(): void
+        material(): void
 }
 
 export const AttachObject = () => {
         const { editorTree, objectTree } = useCtx()
         const compile = useCompile()
+
+        const add = useCall((f, type: ObjectTypes) => {
+                getActiveObjects(objectTree).forEach((obj, i) => {
+                        const child = f(obj, type)
+                        // pub(obj) !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        if (i !== 0) return
+                        child.active = true
+                        editorTree.changeActive?.(child)
+                        compile()
+                })
+        })
 
         const handles = useMutable<AttachObjectHandles>({
                 delete() {
@@ -28,16 +48,17 @@ export const AttachObject = () => {
                         editorTree.changeActive?.(null)
                         compile()
                 },
-                'attach Material'() {
-                        getActiveObjects(objectTree).forEach((obj, i) => {
-                                if (!isObject(obj)) return
-                                const child = addMaterial(obj)
-                                // pub(child) !!!!!!!!!!!!!!!!!!!!!!!!!!!
-                                if (i === 0) {
-                                        child.active = true
-                                        editorTree.changeActive?.(child)
-                                }
-                        })
+                union() {
+                        add(addCollection, 'U')
+                },
+                subtraction() {
+                        add(addCollection, 'S')
+                },
+                intersection() {
+                        add(addCollection, 'I')
+                },
+                material() {
+                        add(addMaterial, 'Material')
                         deactivateAll(objectTree)
                         compile()
                 },

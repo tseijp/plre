@@ -3,6 +3,7 @@ import * as Materials from './materials'
 import { createObject } from 'plre'
 import { isOffspring, attachParent, getLayerKey } from './utils'
 import type { ObjectTypes, PLObject } from './types'
+import { compileCollection } from './compile'
 
 export const activateAll = (obj: PLObject) => {
         obj.children.forEach(activateAll)
@@ -33,6 +34,15 @@ export const addMaterial = (obj: PLObject) => {
         attachParent(obj)
         const _key = getLayerKey(child)
         child.shader = shader(_key).trim()
+        return child
+}
+
+export const addCollection = (obj: PLObject, type: ObjectTypes) => {
+        const child = createObject(type)
+        const shader = compileCollection(child)
+        obj.children.push(child)
+        obj.shader = shader
+        attachParent(obj)
         return child
 }
 
