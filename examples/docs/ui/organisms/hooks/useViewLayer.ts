@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { PLObject } from 'plre/types'
 import { useMutable } from 'plre/react'
 import type { LayerItemHandlers } from '../../molecules'
-import { deactivateAll, moveObject } from '../utils'
+import { deactivateAll, moveObject } from 'plre/control'
 import { useOnce } from '../../atoms'
 import { isCollection, isMaterial, isObject } from 'plre/utils'
 import { useCtx } from '../../ctx'
@@ -70,7 +70,7 @@ export const useViewLayer = () => {
                         cache.hovered = null
                         setHovered(null)
                         if (!grabbed || !hovered || grabbed === hovered) return
-                        moveObject(objectTree, grabbed, hovered)
+                        moveObject(grabbed, hovered)
                         compile()
                         alert('COMPILED')
                 },

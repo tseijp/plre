@@ -28,7 +28,7 @@ export type ObjectTypes =
         | 'U'
         | 'I'
         | 'S'
-        // Material
+        // Material @TODO add more
         | 'Material'
 
 export type EditorType =
@@ -69,6 +69,7 @@ export interface PLObject {
         active: boolean
         children: PLObject[]
         to: 'U' | 'I' | 'S'
+        memo: any
 
         // shader
         shader: string
@@ -83,6 +84,7 @@ export interface PL extends GL {
         error: Error
         object: PLObject
         collection: PLObject | null
+        memo: any
         /**
          * Events
          */

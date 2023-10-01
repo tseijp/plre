@@ -1,15 +1,12 @@
 import { PLObject } from './types'
 import * as ShaderChunk from './shader'
-import {
-        getLayerKey,
-        resolveIncludes,
-        shaderChunkMap,
-        // withDirective,
-} from './utils'
+import { getLayerKey, resolveIncludes, shaderChunkMap } from './utils'
 
-/**
- * complie shaders
- */
+export const withDirective = (shader = '', key = '') => {
+        const header = `#ifndef ${key}\n#define ${key}\n`
+        const footer = `\n#endif\n`
+        return header + shader + footer
+}
 
 const NEW_LINE = '\n        '
 

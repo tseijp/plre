@@ -23,6 +23,7 @@ export const createObject = (
                 color = [1, 1, 1],
                 shader = '',
                 index = currentIndex++,
+                memo = {},
                 ...other
         } = props
 
@@ -39,6 +40,7 @@ export const createObject = (
                 children,
                 shader: shader.trim(),
                 index,
+                memo,
                 ...other,
         }) as EventState<PLObject>
 

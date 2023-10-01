@@ -1,9 +1,8 @@
-import * as Objects from 'plre/objects'
-import * as Materials from 'plre/materials'
+import * as Objects from './objects'
+import * as Materials from './materials'
 import { createObject } from 'plre'
-import { attachParent, getLayerKey } from 'plre/utils'
-import type { ObjectTypes, PLObject } from 'plre/types'
-import { getParent, isOffspring } from '../utils'
+import { isOffspring, attachParent, getLayerKey } from './utils'
+import type { ObjectTypes, PLObject } from './types'
 
 export const activateAll = (obj: PLObject) => {
         obj.children.forEach(activateAll)
@@ -23,6 +22,7 @@ export const addObject = (obj: PLObject, type: ObjectTypes) => {
         attachParent(obj)
         const _key = getLayerKey(child)
         child.shader = shader(_key).trim()
+        addMaterial(child)
         return child
 }
 
@@ -43,16 +43,11 @@ export const deleteObject = (obj: PLObject) => {
         parent.children.splice(index, 1)
 }
 
-export const moveObject = (
-        obj: PLObject,
-        grabbed: PLObject,
-        hovered: PLObject
-) => {
+export const moveObject = (grabbed: PLObject, hovered: PLObject) => {
         if (isOffspring(grabbed, hovered)) return alert('ERROR')
-        const parent = getParent(obj, grabbed)
+        deleteObject(grabbed)
         hovered.children.push(grabbed)
-        parent.children.splice(parent.children.indexOf(grabbed), 1)
-        return obj
+        return grabbed
 }
 
 export const sortObject = (obj: PLObject) => {

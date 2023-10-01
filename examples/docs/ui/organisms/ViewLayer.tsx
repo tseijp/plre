@@ -3,7 +3,7 @@ import { PLObject } from 'plre/types'
 import { Header } from './headers/Header'
 import { Flex, Tree, useOnce } from '../atoms'
 import { useViewLayer } from './hooks'
-import { sortObject } from './utils'
+import { sortObject } from 'plre/control'
 import { useCtx } from '../ctx'
 import { AddObject, AttachObject } from './headers'
 import { LayerItem } from '../molecules'
@@ -36,7 +36,6 @@ export const ViewLayer = (props: ViewLayerProps) => {
         return (
                 <Flex backgroundColor="#282828">
                         <Header editorItem={editorItem}>
-                                <AddObject />
                                 <AttachObject />
                         </Header>
                         <Flex

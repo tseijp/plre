@@ -19,6 +19,17 @@ export const attachParent = (self: PLObject) => {
         return self
 }
 
+export const isOffspring = <T extends { children: T[] }>(
+        target: T,
+        self: T
+) => {
+        if (!target.children || target.children.length === 0) return false
+        if (target.children.includes(self)) return true
+        for (const child of target.children)
+                if (isOffspring(child, self)) return true
+        return false
+}
+
 export const includePattern = /^[ \t]*#include +<([\w\d./]+)>/gm
 
 export const resolveIncludes = (str = '') => {
@@ -60,10 +71,4 @@ export const getActiveObjects = (obj: PLObject) => {
                 })
         })
         return ret
-}
-
-export const withDirective = (shader = '', key = '') => {
-        const header = `#ifndef ${key}\n#define ${key}\n`
-        const footer = `\n#endif\n`
-        return header + shader + footer
 }

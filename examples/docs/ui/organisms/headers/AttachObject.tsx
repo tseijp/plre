@@ -4,7 +4,7 @@ import { Drop } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useMutable } from 'plre/react'
 import { useCompile } from '../hooks'
-import { addMaterial, deactivateAll, deleteObject } from '../utils'
+import { addMaterial, deactivateAll, deleteObject } from 'plre/control'
 import { getActiveObjects, isObject } from 'plre/utils'
 import { DropItems } from '../../molecules'
 

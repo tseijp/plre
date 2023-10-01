@@ -1,6 +1,6 @@
 import frame from 'refr'
 import { useCtx } from '../../ctx'
-import { resolve } from '../lygia'
+import { resolve } from 'plre/lygia'
 import { collectAll } from 'plre/compile'
 
 export const useCompile = () => {

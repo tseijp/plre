@@ -71,14 +71,3 @@ export const getParent = <T extends { children: T[] }>(tree: T, item: T) => {
                 }
         }
 }
-
-export const isOffspring = <T extends { children: T[] }>(
-        target: T,
-        self: T
-) => {
-        if (!target.children || target.children.length === 0) return false
-        if (target.children.includes(self)) return true
-        for (const child of target.children)
-                if (isOffspring(child, self)) return true
-        return false
-}
