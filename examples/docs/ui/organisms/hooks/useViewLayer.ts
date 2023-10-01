@@ -75,7 +75,7 @@ export const useViewLayer = () => {
                         moveObject(grabbed, hovered)
                         // pubAll(grabbed) !!!!!!!!!!!!!!!!!!!!!!!!!!!
                         compile()
-                        alert('COMPILED')
+                        // alert('COMPILED')
                 },
         })
 
