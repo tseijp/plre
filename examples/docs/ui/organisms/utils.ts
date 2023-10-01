@@ -11,7 +11,7 @@ export const addObject = (obj: PLObject, type: ObjectTypes) => {
         obj.children.push(child)
         attachParent(obj)
         const _key = getLayerKey(child)
-        child.shader = shader(_key)
+        child.shader = shader(_key).trim()
         child.active = true
         return child
 }

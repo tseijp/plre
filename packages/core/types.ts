@@ -9,7 +9,6 @@ export type ObjectTypes =
         | 'box'
         | 'capsule'
         | 'cone'
-        | 'cube'
         | 'cylinder'
         | 'dodecahedron'
         | 'ellipsoid'

@@ -34,14 +34,6 @@ float ${key}(vec3 pos) {
 }
 `
 
-export const cube = (key = '') => /* CPP */ `
-#include "lygia/sdf/cubeSDF.glsl"
-float ${key}(vec3 pos) {
-  vec3 cubeSize = vec3(1.0);
-  return cubeSDF(pos, cubeSize);
-}
-`
-
 export const cylinder = (key = '') => /* CPP */ `
 #include "lygia/sdf/cylinderSDF.glsl"
 float ${key}(vec3 pos) {
