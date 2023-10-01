@@ -7,6 +7,7 @@ import { useCompile } from '../hooks'
 import { addMaterial, deactivateAll, deleteObject } from 'plre/control'
 import { getActiveObjects, isObject } from 'plre/utils'
 import { DropItems } from '../../molecules'
+import { delAll, pub } from 'plre/connect'
 
 interface AttachObjectHandles {
         delete(): void
@@ -19,7 +20,10 @@ export const AttachObject = () => {
 
         const handles = useMutable<AttachObjectHandles>({
                 delete() {
-                        getActiveObjects(objectTree).forEach(deleteObject)
+                        getActiveObjects(objectTree).forEach((obj) => {
+                                deleteObject(obj)
+                                // delAll(obj) !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        })
                         deactivateAll(objectTree)
                         editorTree.changeActive?.(null)
                         compile()
@@ -28,6 +32,7 @@ export const AttachObject = () => {
                         getActiveObjects(objectTree).forEach((obj, i) => {
                                 if (!isObject(obj)) return
                                 const child = addMaterial(obj)
+                                // pub(child) !!!!!!!!!!!!!!!!!!!!!!!!!!!
                                 if (i === 0) {
                                         child.active = true
                                         editorTree.changeActive?.(child)

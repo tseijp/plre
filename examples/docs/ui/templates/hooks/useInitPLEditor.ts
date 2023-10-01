@@ -1,3 +1,4 @@
+import { initAll } from 'plre/connect'
 import { useForceUpdate, useOnce } from '../../atoms'
 import { createEditor } from 'plre'
 
@@ -20,6 +21,7 @@ export const createPLEditor = (update = () => {}) => {
                 { rate: [0.83, 0.17], row: true, top: true, update },
                 [left, right]
         )
+        // initAll(top) !!!!!!!!!!!!!!!!!!!!!!!!!!!
         return top
 }
 

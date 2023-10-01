@@ -7,6 +7,7 @@ import { useOnce } from '../../atoms'
 import { isCollection, isMaterial, isObject } from 'plre/utils'
 import { useCtx } from '../../ctx'
 import { useCompile } from '.'
+import { delAll, pubAll } from 'plre/connect'
 
 interface ViewLayerCache {
         grabbed?: PLObject | null
@@ -70,7 +71,9 @@ export const useViewLayer = () => {
                         cache.hovered = null
                         setHovered(null)
                         if (!grabbed || !hovered || grabbed === hovered) return
+                        // delAll(grabbed) !!!!!!!!!!!!!!!!!!!!!!!!!!!
                         moveObject(grabbed, hovered)
+                        // pubAll(grabbed) !!!!!!!!!!!!!!!!!!!!!!!!!!!
                         compile()
                         alert('COMPILED')
                 },

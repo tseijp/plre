@@ -30,6 +30,14 @@ export const isOffspring = <T extends { children: T[] }>(
         return false
 }
 
+export const isIgnoreProp = (value: unknown, key: string) => {
+        if (typeof value !== 'string' || typeof value !== 'number') return true
+        if (key === 'children') return true
+        if (key === 'parent') return true
+        if (key === 'memo') return true
+        return false
+}
+
 export const includePattern = /^[ \t]*#include +<([\w\d./]+)>/gm
 
 export const resolveIncludes = (str = '') => {
