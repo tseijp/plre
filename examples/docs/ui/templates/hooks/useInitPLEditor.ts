@@ -1,10 +1,9 @@
-import { initAll } from 'plre/connect'
 import { useForceUpdate, useOnce } from '../../atoms'
 import { createEditor } from 'plre'
 
 export const createPLEditor = (update = () => {}) => {
-        // const viewport = createEditor('timeline')
-        const viewport = createEditor('viewport')
+        const viewport = createEditor('viewlayer')
+        // const viewport = createEditor('viewport')
         const timeline = createEditor('timeline')
         const viewlayer = createEditor('viewlayer')
         const properties = createEditor('properties')
@@ -18,10 +17,10 @@ export const createPLEditor = (update = () => {}) => {
         ])
         const top = createEditor(
                 'I',
-                { rate: [0.83, 0.17], row: true, top: true, update },
+                { rate: [0.83, 0.17], row: true, top: true, update }, // @TODO RENAME
                 [left, right]
         )
-        // initAll(top) !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         return top
 }
 

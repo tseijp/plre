@@ -2,21 +2,30 @@
 import * as Y from 'yjs'
 // @ts-ignore
 import { WebrtcProvider } from 'y-webrtc'
-import { useOnce } from '../../atoms'
+import { useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
-import { useEffect } from 'react'
-// import type { PLObject } from 'plre/types'
+import { initConnectAll, subConnect, subConnectAll } from 'plre/connect'
+import { useEffect, useState } from 'react'
+import { EditorState, PLObject } from 'plre/types'
 
+const isDev = false
+// const isDev = process.env.NODE_ENV === 'development'
 export interface WebrtcState {
         isDev: boolean
         isInit: boolean
-        color: stringd
+        isReady: boolean
+        color: string
         username: string
         _users: string[]
         checkers: Map<string, () => void>
+
+        // events
         mount(): void
         clean(): void
+        connected(): void
+        forceUpdate(): void
         updateUsers(): void
+
         // after mount
         userId: string
         roomId: string
@@ -27,6 +36,8 @@ export interface WebrtcState {
 }
 
 const TICK_TIMEOUT_MS = 1000
+
+const CONNECTED_TIMEOUT_MS = 100
 
 const createChecker = (key: string, callback = (_key: string) => {}) => {
         let timeoutId = 0 as any
@@ -39,9 +50,15 @@ const createChecker = (key: string, callback = (_key: string) => {}) => {
         }
 }
 
-export const createWebrtc = () => {
+export const createWebrtc = (
+        objectTree: PLObject,
+        _editorTree: EditorState
+) => {
         const username = USER_NAMES[floor(random() * USER_NAMES.length)]
 
+        /**
+         * users
+         */
         const removeUser = (key: string) => {
                 self.users.delete(key)
                 self.checkers.delete(key)
@@ -81,21 +98,44 @@ export const createWebrtc = () => {
                 self.user.set('y', e.clientY << 0)
         }
 
+        /**
+         * mount and clean
+         */
+        const checkConnected = () => {
+                const { provider } = self
+                let id = 0 as any
+                const tick = () => {
+                        if (!provider.connected)
+                                id = setTimeout(tick, CONNECTED_TIMEOUT_MS)
+                        else {
+                                id = 0
+                                self.connected?.()
+                        }
+                }
+                self('clean', () => id && clearTimeout(id))
+                tick()
+        }
+
         const mount = () => {
                 const params = new URLSearchParams(window.location.search)
                 const roomId = (self.roomId =
                         params.get('roomId') || '' + floor(random() * 100))
                 const userId = (self.userId =
-                        params.get('userId') ||
-                        floor(random() * 1000000000000) + '')
+                        params.get('userId') || floor(random() * 100) + '')
                 const query = `?roomId=${roomId}&userId=${userId}`
 
                 if (self.isInit) return
                 self.isInit = true
-                self.ydoc = new Y.Doc()
+
+                // random roomId if dev
                 if (self.isDev)
                         self.roomId = self.roomId + floor(random() * 100)
+
+                // init yjs
+                self.ydoc = new Y.Doc()
                 self.provider = new WebrtcProvider(self.roomId, self.ydoc)
+                checkConnected()
+
                 // set users
                 self.users = self.ydoc.getMap('users')
                 self.users.set(userId, roomId)
@@ -105,6 +145,10 @@ export const createWebrtc = () => {
                 self.user = self.ydoc.getMap(userId)
                 self.user.set('username', username)
                 self.user.set('color', self.color)
+
+                // init objects
+                initConnectAll(objectTree, self.ydoc, self.forceUpdate)
+                subConnectAll(objectTree)
 
                 const tick = () => {
                         self.users.set(userId, roomId)
@@ -125,7 +169,7 @@ export const createWebrtc = () => {
 
         const self = event<WebrtcState>({
                 isInit: false,
-                isDev: process.env.NODE_ENV === 'development',
+                isDev,
                 username,
                 checkers: new Map(),
                 color: NICE_COLORS[floor(random() * NICE_COLORS.length)],
@@ -139,13 +183,25 @@ export const createWebrtc = () => {
 
 const { floor, random } = Math
 
-export const useInitWebrtc = () => {
-        const webrtc = useOnce(createWebrtc)
+export const useInitWebrtc = (
+        objectTree: PLObject,
+        editorTree: EditorState
+) => {
+        const [isReady, set] = useState(false)
+        const forceUpdate = useForceUpdate()
+        const self = useOnce(() => {
+                const self = createWebrtc(objectTree, editorTree, forceUpdate)
+                self('connected', () => set(true))
+                return self
+        })
 
-        useEffect(() => void webrtc.mount(), [])
-        useEffect(() => () => webrtc.clean(), [])
+        useEffect(() => void self.mount(), [])
+        useEffect(() => () => self.clean(), [])
 
-        return webrtc
+        self.isReady = isReady
+        self.forceUpdate = forceUpdate
+
+        return self
 }
 
 const USER_NAMES = [

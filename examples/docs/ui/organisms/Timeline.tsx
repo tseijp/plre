@@ -8,11 +8,36 @@ export interface TimelineProps {
         editorItem: EditorState
 }
 
+const set = new Set<any>()
+
 export const Timeline = (props: TimelineProps) => {
         const { editorItem } = props
         return (
                 <Flex backgroundColor="#303030">
-                        <Header editorItem={editorItem} />
+                        <Header editorItem={editorItem}>
+                                <button
+                                        onClick={() => {
+                                                const w = window.open(
+                                                        'http://localhost:3000/?roomId=0',
+                                                        '_blank'
+                                                )
+                                                w.focus()
+                                                set.add(w)
+                                        }}
+                                >
+                                        OPEN
+                                </button>
+                                <button
+                                        onClick={() => {
+                                                set.forEach((w) => {
+                                                        w.close()
+                                                })
+                                                set.clear()
+                                        }}
+                                >
+                                        CLOSE
+                                </button>
+                        </Header>
                         <Flex
                                 gap="1rem"
                                 overflow="scroll"

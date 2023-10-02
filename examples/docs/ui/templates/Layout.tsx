@@ -22,13 +22,17 @@ export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
         const objectTree = useInitPLObject()
         const editorTree = useInitPLEditor()
-        const webrtcTree = useInitWebrtc()
+        const webrtcTree = useInitWebrtc(objectTree, editorTree)
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 switch (editorItem.type) {
                         case 'viewport':
+                                if (!webrtcTree.isReady)
+                                        return <Flex background="#3A3A3A" />
                                 return <Viewport editorItem={editorItem} />
                         case 'viewlayer':
+                                if (!webrtcTree.isReady)
+                                        return <Flex background="#3A3A3A" />
                                 return <ViewLayer editorItem={editorItem} />
                         case 'timeline':
                                 return <Timeline editorItem={editorItem} />
@@ -58,7 +62,7 @@ export const Layout = () => {
                                         </title>
                                 </Head>
                                 <Flex position="absolute">
-                                        <UserCursors />
+                                        {webrtcTree && <UserCursors />}
                                 </Flex>
                                 <Flex
                                         position="absolute"

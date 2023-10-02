@@ -73,6 +73,9 @@ export const LayerItem = (props: LayerItemProps) => {
         const left = 8 + (index === 0 ? 0 : (index - 1) * 20)
         const background = active ? '#2B4E84' : disable ? '#000' : ''
 
+        // debug
+        const { memo: _ = {} } = obj
+
         return (
                 <div
                         style={{
@@ -93,9 +96,6 @@ export const LayerItem = (props: LayerItemProps) => {
                                 overflowX="visible"
                                 overflowY="visible"
                         >
-                                {/* <div style={{ color: 'red' }}>
-                                        {!obj.parent && 'NO PARENT'}
-                                </div> */}
                                 <LayerItemCollapse
                                         index={index}
                                         isOpen={isOpen}
@@ -115,6 +115,24 @@ export const LayerItem = (props: LayerItemProps) => {
                                                 <div data-id={id}>{obj.id}</div>
                                         </Draggable>
                                 </LayerItemField>
+                                <div
+                                        style={{
+                                                color: 'red',
+                                                marginLeft: '5rem',
+                                        }}
+                                >
+                                        {!_.ydoc && 'NO YDOC'}
+                                        {!_.ymap && 'NO YARR'}
+                                        {!_.yarr && 'NO YMAP'}
+                                </div>
+                                <div style={{ color: '#e2e2e2' }}>
+                                        {_._init ? ' Init:' + _._init : ''}
+                                        {_._pub ? ' Pub:' + _._pub : ''}
+                                        {_._del ? ' Del:' + _._del : ''}
+                                        {_._sub ? ' Sub:' + _._sub : ''}
+                                        {_._ymap ? ' Ymap:' + _._ymap : ''}
+                                        {_._yarr ? ' Yarr' + _._yarr : ''}
+                                </div>
                         </Flex>
                         <div
                                 style={{

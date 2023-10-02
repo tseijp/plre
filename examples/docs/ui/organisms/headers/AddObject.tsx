@@ -3,10 +3,10 @@ import { Up } from '../../utils'
 import { Drop } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useCompile } from '../hooks'
-import { pubAll } from 'plre/connect'
 import { addObject, deactivateAll } from 'plre/control'
 import { getActiveObjects, isCollection } from 'plre/utils'
 import { DropItems } from '../../molecules'
+import { initConnectAll, pubConnectAll, subConnectAll } from 'plre/connect'
 import * as Objects from 'plre/objects'
 import type { ObjectTypes } from 'plre/types'
 
@@ -25,8 +25,11 @@ export const AddObject = () => {
                         if (!isCollection(obj)) obj = obj.parent
                         if (!isCollection(obj)) return
                         const child = addObject(obj, type)
-                        // initAll(child) !!!!!!!!!!!!!!!!!!!!!!!!!!!
-                        // pubAll(child) !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        initConnectAll(child)
+                        pubConnectAll(child)
+                        setTimeout(() => {
+                                subConnectAll(child)
+                        }, 10000)
                         if (i === 0) {
                                 child.active = true
                                 editorTree.changeActive?.(child)
