@@ -27,12 +27,8 @@ export const Layout = () => {
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 switch (editorItem.type) {
                         case 'viewport':
-                                if (!webrtcTree.isReady)
-                                        return <Flex background="#3A3A3A" />
                                 return <Viewport editorItem={editorItem} />
                         case 'viewlayer':
-                                if (!webrtcTree.isReady)
-                                        return <Flex background="#3A3A3A" />
                                 return <ViewLayer editorItem={editorItem} />
                         case 'timeline':
                                 return <Timeline editorItem={editorItem} />

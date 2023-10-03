@@ -1,18 +1,21 @@
-import { attachParent, getLayerKey, isIgnoreProp } from './utils'
+import { is } from './../../../tseijp/packages/use-midi/packages/core/src/utils/helpers'
+import { addSuffix, attachParent, getLayerKey, isIgnoreProp } from './utils'
 import { PLObject } from './types'
 import { createObject } from '.'
 import { deleteObject } from './control'
 
-export const initConnect = (
-        obj: PLObject,
-        _ydoc?: any,
-        forceUpdate = () => {}
-) => {
+export const initConnect = (obj: PLObject) => {
         const { children, parent, memo } = obj
         const _key = getLayerKey(obj)
 
-        memo.forceUpdate = parent?.memo.forceUpdate || forceUpdate
-        const ydoc = (memo.ydoc = parent?.memo.ydoc || _ydoc)
+        if (memo._init) return console.warn(initWarn(obj))
+
+        if (parent) {
+                memo.ydoc = parent.memo.ydoc
+                memo.forceUpdateRoot = parent.memo.forceUpdateRoot
+        }
+
+        const ydoc = memo.ydoc
         const ymap = (memo.ymap = ydoc.getMap(_key))
         const yarr = (memo.yarr = ydoc.getMap(_key + '_'))
 
@@ -28,9 +31,12 @@ export const initConnect = (
                 let child = children.find((c) => c.type === type)
                 if (type) {
                         if (child) return
+                        const ids = children.map((c) => c.id)
                         child = createObject(type as any)
+                        child.id = addSuffix(ids, child.id)
                         children.push(child)
                         attachParent(obj)
+                        // initialize when open page
                         initConnect(child)
                         subConnect(child)
                 } else {
@@ -45,8 +51,14 @@ export const initConnect = (
 }
 
 export const pubConnect = (obj: PLObject) => {
-        const { children, memo } = obj
-        const { ymap, yarr } = memo
+        const { parent, memo } = obj
+        const { ymap } = memo
+
+        if (!ymap) return console.warn(notInitWarn(obj))
+        if (memo._pub) return console.warn(notInitWarn(obj))
+
+        const _key = getLayerKey(obj)
+        if (parent) parent.memo.yarr.set(_key, obj.type)
 
         for (const key in obj) {
                 const value = obj[key]
@@ -54,10 +66,11 @@ export const pubConnect = (obj: PLObject) => {
                 ymap.set(key, value)
         }
 
-        children.forEach((child) => {
-                const key = getLayerKey(child)
-                yarr.set(key, child.type)
-        })
+        // Duplicate subscribe add delta with update of this publish
+        // children.forEach((child) => {
+        //         const key = getLayerKey(child)
+        //         yarr.set(key, child.type)
+        // })
 
         // debug
         if (!memo._pub) memo._pub = 0
@@ -69,18 +82,20 @@ export const delConnect = (obj: PLObject) => {
         const { parent, memo } = obj
         const { ymap, yarr } = memo
 
+        if (!ymap || !yarr) return console.warn(notInitWarn(obj))
+
         for (const key in obj) {
                 if (isIgnoreProp(obj[key], key)) continue
                 ymap.set(key, void 0)
         }
 
         yarr.forEach((key: string) => {
-                yarr.set(key, void 0)
+                if (yarr.get(key)) yarr.set(key, void 0)
         })
 
         const _key = getLayerKey(obj)
 
-        parent.memo.yarr.set(_key, void 0)
+        if (parent) parent.memo.yarr.set(_key, void 0)
 
         memo.unobserveListener?.forEach((f: any) => f())
 
@@ -91,8 +106,11 @@ export const delConnect = (obj: PLObject) => {
 }
 
 export const subConnect = (obj: PLObject) => {
-        const { memo, children } = obj
-        const { ymap, yarr, forceUpdate } = memo
+        const { memo, children, update = () => {} } = obj
+        const { ymap, yarr, forceUpdateRoot } = memo
+
+        if (!ymap || !yarr) return console.warn(notInitWarn(obj))
+        if (memo._sub) return console.warn(subWarn(obj))
 
         const _yarr = (e: any) => {
                 if (e.transaction.local) return
@@ -100,21 +118,22 @@ export const subConnect = (obj: PLObject) => {
                 // debug
                 if (!memo._yarr) memo._yarr = 0
                 memo._yarr++
+                let isUpdated = false
 
                 e.changes.keys.forEach((_: any, key: string) => {
                         const type = yarr.get(key)
-                        console.log(
-                                `plre/conenct sub _yarr { key: ${key}, type: ${type} } `,
-                                _
-                        )
+                        // prettier-ignore
+                        console.log(`plre/conenct sub _yarr { key: ${key}, type: ${type} } `, _)
                         if (type) {
                                 // create object
                                 const child = createObject(type)
+                                const ids = children.map((c) => c.id)
+                                child.id = addSuffix(ids, child.id)
                                 children.push(child)
                                 attachParent(obj)
                                 initConnect(child)
                                 subConnect(child)
-                                forceUpdate()
+                                isUpdated = true
                                 return
                         }
                         // delete object
@@ -123,9 +142,11 @@ export const subConnect = (obj: PLObject) => {
                         )
                         if (child) {
                                 deleteObject(child)
-                                forceUpdate()
+                                isUpdated = true
                         }
                 })
+
+                if (isUpdated) forceUpdateRoot()
         }
 
         const _ymap = (e: any) => {
@@ -134,14 +155,20 @@ export const subConnect = (obj: PLObject) => {
                 if (!memo.ymap) memo._ymap = 0
                 memo._ymap++
 
+                let isUpdated = false
+
                 e.changes.keys.forEach((_: any, key: string) => {
                         const value = ymap.get(key)
                         // prettier-ignore
                         console.log(`plre/conenct sub _ymap { key: ${key}, value: ${value} }`)
                         if (isIgnoreProp(value, key)) return
+                        if (obj[key] === value) return
+                        isUpdated = true
                         obj[key] = value
-                        forceUpdate()
+                        forceUpdateRoot()
                 })
+
+                if (isUpdated) update
         }
         yarr.observe(_yarr)
         ymap.observe(_ymap)
@@ -154,13 +181,9 @@ export const subConnect = (obj: PLObject) => {
         memo._sub++
 }
 
-export const initConnectAll = (
-        obj: PLObject,
-        ydoc?: any,
-        forceUpdate?: any
-) => {
+export const initConnectAll = (obj: PLObject) => {
         const { children } = obj
-        initConnect(obj, ydoc, forceUpdate)
+        initConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(initConnectAll)
 }
@@ -184,4 +207,16 @@ export const subConnectAll = (obj: PLObject) => {
         subConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(subConnectAll)
+}
+
+const notInitWarn = (obj: PLObject) => {
+        return `plre/connect pubConnect Warn: ${obj.id} is not initialized`
+}
+
+const initWarn = (obj: PLObject) => {
+        return `plre/connect subConnect Warn: ${obj.id} is already initialized`
+}
+
+const subWarn = (obj: PLObject) => {
+        return `plre/connect subConnect Warn: ${obj.id} is already subscribed`
 }

@@ -4,7 +4,7 @@ import { Flex } from '../../atoms/Flex'
 import { LayerItemCollapse } from './LayerItemCollapse'
 import { LayerItemField } from './LayerItemField'
 import { LayerItemIcon } from './LayerItemIcon'
-import { Draggable } from '../Draggable'
+import { Draggable } from '../../molecules/Draggable'
 import { useCall, useForceUpdate } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { DragState } from '../../atoms'
@@ -48,7 +48,6 @@ export const LayerItem = (props: LayerItemProps) => {
         const handleChange = useCall((value: string) => {
                 if (!value) value = 'Object'
                 obj.id = value
-                // @ts-ignore
                 obj.forceUpdate()
         })
 
@@ -132,6 +131,10 @@ export const LayerItem = (props: LayerItemProps) => {
                                         {_._sub ? ' Sub:' + _._sub : ''}
                                         {_._ymap ? ' Ymap:' + _._ymap : ''}
                                         {_._yarr ? ' Yarr' + _._yarr : ''}
+                                </div>
+                                <div style={{ marginLeft: '5rem' }}>
+                                        YMapSize: {obj.memo.ymap?.size}
+                                        YArrSize: {obj.memo.yarr?.size}
                                 </div>
                         </Flex>
                         <div

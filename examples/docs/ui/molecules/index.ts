@@ -1,5 +1,4 @@
 export * from './hooks'
-export * from './layers'
 export * from './Draggable'
 export * from './DropItems'
 export * from './Separate'

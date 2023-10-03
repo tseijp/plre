@@ -69,7 +69,3 @@ export const usePLImpl = (on = () => {}) => {
 
         return useMemo(() => self(memo), [self, memo]) as PL
 }
-
-const warn = () => {
-        console.warn('usePLImpl compileShader Warn: p.clean is not defined')
-}

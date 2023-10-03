@@ -3,11 +3,18 @@ import { PLObject } from './types'
 
 export const isMaterial = (obj: PLObject) => obj?.type === 'Material'
 
+export const isObject = (obj: PLObject) =>
+        !isMaterial(obj) && obj?.type?.length > 1
+
 export const isCollection = (obj: PLObject) =>
         !isMaterial(obj) && obj?.type?.length === 1
 
-export const isObject = (obj: PLObject) =>
-        !isMaterial(obj) && obj?.type?.length > 1
+export const isAddable = (target: PLObject, self: PLObject) => {
+        if (isCollection(target) && isCollection(self)) return true
+        if (isCollection(target) && isObject(self)) return true
+        if (isObject(target) && isMaterial(self)) return true
+        return false
+}
 
 export const attachParent = (self: PLObject) => {
         const ids = [] as string[]

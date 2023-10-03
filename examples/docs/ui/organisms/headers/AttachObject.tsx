@@ -10,9 +10,9 @@ import {
         deactivateAll,
         deleteObject,
 } from 'plre/control'
-import { getActiveObjects, isObject } from 'plre/utils'
+import { getActiveObjects } from 'plre/utils'
 import { DropItems } from '../../molecules'
-import { delConnectAll, pubConnect } from 'plre/connect'
+import { delConnectAll, initConnectAll, pubConnectAll } from 'plre/connect'
 import { ObjectTypes } from 'plre/types'
 
 interface AttachObjectHandles {
@@ -30,7 +30,11 @@ export const AttachObject = () => {
         const add = useCall((f, type: ObjectTypes) => {
                 getActiveObjects(objectTree).forEach((obj, i) => {
                         const child = f(obj, type)
-                        // pubConnect(obj) // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                        initConnectAll(child)
+                        pubConnectAll(child)
+                        pubConnectAll(child)
+
                         if (i !== 0) return
                         child.active = true
                         editorTree.changeActive?.(child)

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { LayerItemIcon } from '../../molecules'
+import { LayerItemIcon } from '../layers'
 import { useCompile } from '../hooks'
 
 export const CompileStart = () => {

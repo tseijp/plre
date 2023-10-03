@@ -4,12 +4,12 @@ import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
-import { initConnectAll, subConnect, subConnectAll } from 'plre/connect'
+import { initConnectAll, subConnectAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
 import { EditorState, PLObject } from 'plre/types'
 
-const isDev = false
-// const isDev = process.env.NODE_ENV === 'development'
+// const isDev = false
+const isDev = process.env.NODE_ENV === 'development'
 export interface WebrtcState {
         isDev: boolean
         isInit: boolean
@@ -23,7 +23,7 @@ export interface WebrtcState {
         mount(): void
         clean(): void
         connected(): void
-        forceUpdate(): void
+        forceUpdateRoot(): void
         updateUsers(): void
 
         // after mount
@@ -147,7 +147,9 @@ export const createWebrtc = (
                 self.user.set('color', self.color)
 
                 // init objects
-                initConnectAll(objectTree, self.ydoc, self.forceUpdate)
+                objectTree.memo.ydoc = self.ydoc
+                objectTree.memo.forceUpdateRoot = self.forceUpdateRoot
+                initConnectAll(objectTree)
                 subConnectAll(objectTree)
 
                 const tick = () => {
@@ -188,9 +190,13 @@ export const useInitWebrtc = (
         editorTree: EditorState
 ) => {
         const [isReady, set] = useState(false)
-        const forceUpdate = useForceUpdate()
+        const forceUpdateRoot = useForceUpdate()
         const self = useOnce(() => {
-                const self = createWebrtc(objectTree, editorTree, forceUpdate)
+                const self = createWebrtc(
+                        objectTree,
+                        editorTree,
+                        forceUpdateRoot
+                )
                 self('connected', () => set(true))
                 return self
         })
@@ -199,7 +205,7 @@ export const useInitWebrtc = (
         useEffect(() => () => self.clean(), [])
 
         self.isReady = isReady
-        self.forceUpdate = forceUpdate
+        self.forceUpdateRoot = forceUpdateRoot
 
         return self
 }

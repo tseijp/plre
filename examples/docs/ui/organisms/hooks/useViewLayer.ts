@@ -4,7 +4,7 @@ import { useMutable } from 'plre/react'
 import type { LayerItemHandlers } from '../../molecules'
 import { deactivateAll, moveObject } from 'plre/control'
 import { useOnce } from '../../atoms'
-import { isCollection, isMaterial, isObject } from 'plre/utils'
+import { isAddable, isCollection, isMaterial, isObject } from 'plre/utils'
 import { useCtx } from '../../ctx'
 import { useCompile } from '.'
 import { delConnectAll, pubConnectAll } from 'plre/connect'
@@ -49,18 +49,20 @@ export const useViewLayer = () => {
 
                         if (!hovered) return setHovered((cache.hovered = null))
 
-                        if (isMaterial(obj)) {
-                                if (!isObject(hovered)) hovered = hovered.parent
-                                if (!isObject(hovered)) hovered = hovered.parent
-                                if (!isObject(hovered)) isCancel = true
-                        } else {
-                                if (!isCollection(hovered))
-                                        hovered = hovered.parent
-                                if (!isCollection(hovered))
-                                        hovered = hovered.parent
-                                if (!isCollection(hovered)) isCancel = true
-                        }
-
+                        // if (isMaterial(obj)) {
+                        //         if (!isObject(hovered)) hovered = hovered.parent
+                        //         if (!isObject(hovered)) hovered = hovered.parent
+                        //         if (!isObject(hovered)) isCancel = true
+                        // } else {
+                        //         if (!isCollection(hovered))
+                        //                 hovered = hovered.parent
+                        //         if (!isCollection(hovered))
+                        //                 hovered = hovered.parent
+                        //         if (!isCollection(hovered)) isCancel = true
+                        // }
+                        if (!isAddable(hovered, obj)) hovered = hovered.parent
+                        if (!isAddable(hovered, obj)) hovered = hovered.parent
+                        if (!isAddable(hovered, obj)) isCancel = true
                         if (isCancel) setHovered((cache.hovered = null))
                         else setHovered(() => (cache.hovered = hovered))
                 },

@@ -49,9 +49,10 @@ export interface EditorState {
         memo: any
         // events
         update?(): void
-        trySuccess(): void
-        catchError(e: Error): void
+        trySuccess?(): void
+        catchError?(e: Error): void
         changeActive?(obj: PLObject): void
+        compileShader?(code: string): void
 }
 
 export interface PLObject {
@@ -76,8 +77,9 @@ export interface PLObject {
         shaderAll: string
         renderAll: string
         _shader: string // compiled result
-        compileShader(code: string): void
-        changeActive(obj: PLObject, prev: PLObject | null): void
+
+        // events
+        forceUpdate(): void
 }
 
 export interface PL extends GL {
