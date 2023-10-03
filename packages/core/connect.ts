@@ -198,7 +198,6 @@ export const pubShader = (obj: PLObject) => {
         if (!isEditted) return
         if (!ymap) return console.warn(notInitWarn(obj))
 
-        alert('SEND')
         obj.isEditted = false
         forceUpdate()
         ymap.set('shader', obj.shader)

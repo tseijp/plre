@@ -90,7 +90,6 @@ export const useViewLayer = () => {
 
                         // finish
                         compile()
-                        alert('COMPILED')
                 },
         })
 
