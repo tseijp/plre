@@ -102,6 +102,8 @@ export const useCodemirror = () => {
                 if (!v.docChanged || !cache.obj) return
                 const code = v.state.doc.toString()
                 cache.obj.shader = code
+                if (!cache.obj.isEditted) cache.obj.forceUpdate()
+                cache.obj.isEditted = true
         })
 
         useEffect(() => {

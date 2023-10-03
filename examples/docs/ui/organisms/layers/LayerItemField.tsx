@@ -6,13 +6,14 @@ import { useCall } from '../../atoms/hooks/useCall'
 import type { ReactNode } from 'react'
 
 export interface LayerItemFieldProps {
+        isEditted: boolean
         value: string
         children: ReactNode
         onChange?(value: string): void
 }
 
 export const LayerItemField = (props: LayerItemFieldProps) => {
-        const { value, children, onChange } = props
+        const { isEditted, value, children, onChange } = props
 
         const onFieldEventFinish = useCall(() => {
                 setIsActive(false)
@@ -35,6 +36,7 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
                                 marginLeft: '3px',
                                 fontSize: '12px',
                                 lineHeight: '20px',
+                                color: isEditted ? '#F0B72E' : 'white',
                         }}
                 >
                         <div
@@ -47,7 +49,7 @@ export const LayerItemField = (props: LayerItemFieldProps) => {
                                 // @ts-ignore
                                 ref={field.ref}
                                 height="20px"
-                                color="white"
+                                color={isEditted ? '#F0B72E' : 'white'}
                                 display={isActive ? '' : 'none'}
                                 value={value}
                         />

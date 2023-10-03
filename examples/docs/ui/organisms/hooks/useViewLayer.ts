@@ -7,6 +7,12 @@ import { isAddable } from 'plre/utils'
 import { useCtx } from '../../ctx'
 import { useCompile } from '.'
 import type { LayerItemHandlers } from '../layers'
+import {
+        delConnectAll,
+        initConnectAll,
+        pubConnectAll,
+        subConnectAll,
+} from 'plre/connect'
 
 interface ViewLayerCache {
         grabbed?: PLObject | null
@@ -63,12 +69,28 @@ export const useViewLayer = () => {
                         cache.grabbed = null
                         cache.hovered = null
                         setHovered(null)
-                        if (!grabbed || !hovered || grabbed === hovered) return
-                        // delConnectAll(grabbed) // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        if (
+                                !grabbed ||
+                                !hovered ||
+                                grabbed === hovered ||
+                                grabbed.parent === hovered // Subscribe will stop if the position is not moved
+                        )
+                                return
+
+                        // delete connection
+                        delConnectAll(grabbed)
+
+                        // attach parent
                         moveObject(grabbed, hovered)
-                        // pubConnectAll(grabbed) // !!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                        // create connection
+                        initConnectAll(grabbed)
+                        pubConnectAll(grabbed)
+                        subConnectAll(grabbed)
+
+                        // finish
                         compile()
-                        // alert('COMPILED')
+                        alert('COMPILED')
                 },
         })
 

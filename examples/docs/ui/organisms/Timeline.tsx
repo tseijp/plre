@@ -15,7 +15,7 @@ export const Timeline = (props: TimelineProps) => {
         return (
                 <Flex backgroundColor="#303030">
                         <Header editorItem={editorItem}>
-                                <button
+                                <div
                                         onClick={() => {
                                                 const w = window.open(
                                                         'http://localhost:3000/?roomId=0',
@@ -24,19 +24,35 @@ export const Timeline = (props: TimelineProps) => {
                                                 w.focus()
                                                 set.add(w)
                                         }}
+                                        style={{
+                                                height: '20px',
+                                                cursor: 'pointer',
+                                                border: '1px solid #696969',
+                                                background: '#535353',
+                                                lineHeight: '20px',
+                                                borderRadius: '4px',
+                                        }}
                                 >
-                                        OPEN
-                                </button>
-                                <button
+                                        Open
+                                </div>
+                                <div
                                         onClick={() => {
                                                 set.forEach((w) => {
                                                         w.close()
                                                 })
                                                 set.clear()
                                         }}
+                                        style={{
+                                                height: '20px',
+                                                cursor: 'pointer',
+                                                border: '1px solid #696969',
+                                                background: '#535353',
+                                                lineHeight: '20px',
+                                                borderRadius: '4px',
+                                        }}
                                 >
-                                        CLOSE
-                                </button>
+                                        Close
+                                </div>
                         </Header>
                         <Flex
                                 gap="1rem"

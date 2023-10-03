@@ -106,6 +106,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                         <div data-id={id}>{obj.type?.[0]}</div>
                                 </LayerItemIcon>
                                 <LayerItemField
+                                        isEditted={obj.isEditted}
                                         value={obj.id}
                                         onChange={handleChange}
                                 >

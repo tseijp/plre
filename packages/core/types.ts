@@ -76,6 +76,7 @@ export interface PLObject {
         shader: string
         shaderAll: string
         renderAll: string
+        isEditted: boolean
         _shader: string // compiled result
 
         // events

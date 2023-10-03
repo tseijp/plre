@@ -34,7 +34,6 @@ export const AttachObject = () => {
 
                         initConnectAll(child)
                         pubConnectAll(child)
-                        pubConnectAll(child)
 
                         if (i !== 0) return
                         child.active = true

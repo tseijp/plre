@@ -2,9 +2,9 @@
 import * as Y from 'yjs'
 // @ts-ignore
 import { WebrtcProvider } from 'y-webrtc'
-import { useForceUpdate, useOnce } from '../../atoms'
+import { useCall, useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
-import { initConnectAll, subConnectAll } from 'plre/connect'
+import { initConnectAll, pubShaderAll, subConnectAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
 import { EditorState, PLObject } from 'plre/types'
 import { useCompile_ } from '../../organisms'
@@ -193,20 +193,25 @@ export const useInitWebrtc = (
         editorTree: EditorState
 ) => {
         const [isReady, set] = useState(false)
-        // const compile = useCompile_({ editorTree, objectTree })
-        const forceUpdate = useForceUpdate()
+        const forceUpdateRoot = useForceUpdate()
+        const compile = useCompile_(objectTree, editorTree)
+        const trySuccess = useCall(() => {
+                pubShaderAll(objectTree)
+        })
+
         const self = useOnce(() => {
                 const self = createWebrtc(objectTree, editorTree)
                 self('connected', () => set(true))
+                // @ts-ignore
+                editorTree({ trySuccess })
                 return self
         })
 
-        useEffect(() => {
-                objectTree.memo.compile = forceUpdate
-                self.mount()
-        }, [])
+        useEffect(() => void self.mount(), [])
         useEffect(() => () => self.clean(), [])
 
+        objectTree.memo.compile = compile
+        objectTree.memo.forceUpdateRoot = forceUpdateRoot
         self.isReady = isReady
 
         return self

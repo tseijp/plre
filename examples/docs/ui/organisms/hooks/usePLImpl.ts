@@ -77,6 +77,8 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                                 self.mount?.()
                                 // @ts-ignore
                                 self.on?.()
+
+                                // Pub shader code if compile succeeds
                                 editorTree.trySuccess?.()
                         } catch (e) {
                                 console.warn(e)

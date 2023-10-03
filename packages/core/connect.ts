@@ -7,11 +7,12 @@ export const initConnect = (obj: PLObject) => {
         const { children, parent, memo } = obj
         const _key = getLayerKey(obj)
 
-        if (memo._init) return console.warn(initWarn(obj))
+        // if (memo._init) return console.warn(initWarn(obj))
 
         if (parent) {
                 memo.ydoc = parent.memo.ydoc
                 memo.compile = parent.memo.compile
+                memo.forceUpdateRoot = parent.memo.forceUpdateRoot
         }
 
         if (!memo.ydoc) return console.warn(notYDOCWarn(obj))
@@ -108,8 +109,8 @@ export const delConnect = (obj: PLObject) => {
 }
 
 export const subConnect = (obj: PLObject) => {
-        const { memo, children, forceUpdate = () => {} } = obj
-        const { ymap, yarr, compile } = memo
+        const { memo, children } = obj
+        const { ymap, yarr, forceUpdateRoot, compile } = memo
 
         if (!ymap || !yarr) return console.warn(notInitWarn(obj))
         if (memo._sub) return console.warn(subWarn(obj))
@@ -120,7 +121,9 @@ export const subConnect = (obj: PLObject) => {
                 // debug
                 if (!memo._yarr) memo._yarr = 0
                 memo._yarr++
+
                 let isUpdated = false
+                let isCompile = false
 
                 e.changes.keys.forEach((_: any, key: string) => {
                         const type = yarr.get(key)
@@ -136,6 +139,7 @@ export const subConnect = (obj: PLObject) => {
                                 initConnect(child)
                                 subConnect(child)
                                 isUpdated = true
+                                isCompile = true
                                 return
                         }
                         // delete object
@@ -145,10 +149,12 @@ export const subConnect = (obj: PLObject) => {
                         if (child) {
                                 deleteObject(child)
                                 isUpdated = true
+                                isCompile = true
                         }
                 })
 
-                if (isUpdated) compile()
+                if (isUpdated) forceUpdateRoot()
+                if (isCompile) compile()
         }
 
         const _ymap = (e: any) => {
@@ -158,6 +164,7 @@ export const subConnect = (obj: PLObject) => {
                 memo._ymap++
 
                 let isUpdated = false
+                let isCompile = false
 
                 e.changes.keys.forEach((_: any, key: string) => {
                         const value = ymap.get(key)
@@ -165,11 +172,13 @@ export const subConnect = (obj: PLObject) => {
                         console.log(`plre/conenct sub _ymap { key: ${key}, value: ${value} }`)
                         if (isIgnoreProp(value, key)) return
                         if (obj[key] === value) return
+                        if (key === 'shader') isCompile = true
                         isUpdated = true
                         obj[key] = value
                 })
 
-                if (isUpdated) forceUpdate()
+                if (isUpdated) forceUpdateRoot()
+                if (isCompile) compile()
         }
         yarr.observe(_yarr)
         ymap.observe(_ymap)
@@ -180,6 +189,19 @@ export const subConnect = (obj: PLObject) => {
         // debug
         if (!memo._sub) memo._sub = 0
         memo._sub++
+}
+
+export const pubShader = (obj: PLObject) => {
+        const { isEditted, memo, forceUpdate } = obj
+        const { ymap } = memo
+
+        if (!isEditted) return
+        if (!ymap) return console.warn(notInitWarn(obj))
+
+        alert('SEND')
+        obj.isEditted = false
+        forceUpdate()
+        ymap.set('shader', obj.shader)
 }
 
 export const initConnectAll = (obj: PLObject) => {
@@ -208,6 +230,13 @@ export const subConnectAll = (obj: PLObject) => {
         subConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(subConnectAll)
+}
+
+export const pubShaderAll = (obj: PLObject) => {
+        const { children } = obj
+        pubShader(obj)
+        if (!Array.isArray(children) || children.length === 0) return
+        children.forEach(pubShaderAll)
 }
 
 const notYDOCWarn = (obj: PLObject) => {
