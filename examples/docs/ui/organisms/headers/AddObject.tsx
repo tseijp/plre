@@ -21,9 +21,9 @@ export const AddObject = () => {
                 let objs = getActiveObjects(objectTree)
                 if (objs.length <= 0) objs = [objectTree]
                 objs.forEach((obj, i) => {
-                        if (!isCollection(obj)) obj = obj.parent
-                        if (!isCollection(obj)) obj = obj.parent
-                        if (!isCollection(obj)) return
+                        if (!isCollection(obj.type)) obj = obj.parent
+                        if (!isCollection(obj.type)) obj = obj.parent
+                        if (!isCollection(obj.type)) return
                         const child = addObject(obj, type)
 
                         initConnectAll(child)

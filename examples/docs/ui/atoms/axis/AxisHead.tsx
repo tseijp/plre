@@ -13,7 +13,7 @@ export const HEAD_POS = 2
 export const AxisHead = forwardRef((props: AxisHeadProps, ref) => {
         const { x, y, s } = props
         const X = x ? 'X' : y ? 'Y' : 'Z'
-        const color = x ? 'red' : y ? 'blue' : 'green'
+        const color = x ? 'red' : y ? 'green' : 'blue'
         return (
                 <div
                         style={{

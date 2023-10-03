@@ -32,14 +32,14 @@ export const Separate = (props: SeparateProps) => {
         const memo = useMutable<SplitterEventHandlers>({
                 onSplit(...args) {
                         splitEditor(editorItem, ...args)
-                        editorTree.update()
+                        editorTree.forceUpdate()
                 },
                 onShrinkStart(i) {
                         setShrinkIndex(i)
                 },
                 onShrinkEnd(i) {
                         shrinkEditor(editorTree, editorItem, i)
-                        editorTree.update()
+                        editorTree.forceUpdate()
                 },
                 onShrinkCancel() {
                         setShrinkIndex(null)

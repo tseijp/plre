@@ -1,7 +1,5 @@
-import { usePLImpl } from '.'
+import { usePLImpl } from './usePLImpl'
 import { useWheelEvent, useResizeEvent } from '../../atoms'
-import { useEffect } from 'react'
-import { useCtx } from '../../ctx'
 
 const { cos, sin, PI } = Math
 
@@ -35,7 +33,7 @@ export const useViewport = () => {
         /**
          * pl event
          */
-        const self = usePLImpl(() => {
+        const self = usePLImpl(wheel, () => {
                 let { tht, phi, rad } = wheel.memo
                 phi += Math.PI / 2 // @ts-ignore
                 const x = rad * sin(tht) * cos(phi)
@@ -52,20 +50,6 @@ export const useViewport = () => {
                         self.drawArrays()
                 })
         })
-
-        const { editorTree } = useCtx()
-
-        useEffect(() => {
-                try {
-                        // recompile shader
-                        self.ref?.(wheel.target)
-                        self.on?.()
-                        editorTree.trySuccess?.()
-                } catch (e) {
-                        console.warn(e)
-                        editorTree.catchError?.(e)
-                }
-        }, [self])
 
         return [wheel, resize, self] as const
 }

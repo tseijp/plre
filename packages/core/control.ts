@@ -20,8 +20,10 @@ export const addObject = (obj: PLObject, type: ObjectTypes) => {
         const shader = Objects[type]
         const ids = obj.children.map((c) => c.id)
         if (!shader) throw Error(`No shader for ${type}`)
+
         obj.children.push(child)
         attachParent(obj)
+
         const _key = getLayerKey(child)
         child.id = addSuffix(ids, child.id)
         child.shader = shader(_key).trim()
@@ -62,11 +64,39 @@ export const deleteObject = (obj: PLObject) => {
 }
 
 export const moveObject = (grabbed: PLObject, hovered: PLObject) => {
-        if (isOffspring(grabbed, hovered)) return alert('ERROR')
+        if (isOffspring(grabbed, hovered)) return alert(ALRT())
+
+        // save previous layer key
+        const set = registerFixAll(grabbed)
+
+        // change structure
         deleteObject(grabbed)
         hovered.children.push(grabbed)
+        attachParent(hovered)
+
+        // fix glsl code for new layer key
+        set.forEach((f) => f())
+
         return grabbed
 }
+
+export const registerFix = (obj: PLObject, set = new Set<Function>()) => {
+        const prev = getLayerKey(obj)
+        set.add(() => {
+                const next = getLayerKey(obj)
+                obj.shader = obj.shader.split(prev).join(next) // replaceAll
+        })
+        return set
+}
+
+export const registerFixAll = (obj: PLObject, _set = new Set<Function>()) => {
+        const set = registerFix(obj, _set)
+        if (!Array.isArray(obj.children) || obj.children.length <= 0) return set
+        obj.children.forEach((child) => registerFixAll(child, set))
+        return set
+}
+
+const ALRT = () => `Can't move object to its offspring.`
 
 // Don't sort because the order is also important.
 // export const sortObject = (obj: PLObject) => {

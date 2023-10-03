@@ -38,8 +38,8 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
                                 cache.err = ''
                         },
                         catchError(e: string) {
-                                set(e)
-                                cache.err = e
+                                set(e + '')
+                                cache.err = e + ''
                         },
                 })
         }, [self])

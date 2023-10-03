@@ -1,9 +1,9 @@
 import { useForceUpdate, useOnce } from '../../atoms'
 import { createEditor } from 'plre'
 
-export const createPLEditor = (update = () => {}) => {
-        const viewport = createEditor('viewlayer')
-        // const viewport = createEditor('viewport')
+export const createPLEditor = (forceUpdate = () => {}) => {
+        // const viewport = createEditor('viewlayer')
+        const viewport = createEditor('viewport')
         const timeline = createEditor('timeline')
         const viewlayer = createEditor('viewlayer')
         const properties = createEditor('properties')
@@ -17,7 +17,7 @@ export const createPLEditor = (update = () => {}) => {
         ])
         const top = createEditor(
                 'I',
-                { rate: [0.83, 0.17], row: true, top: true, update }, // @TODO RENAME
+                { rate: [0.83, 0.17], row: true, top: true, forceUpdate }, // @TODO RENAME
                 [left, right]
         )
 
@@ -25,6 +25,6 @@ export const createPLEditor = (update = () => {}) => {
 }
 
 export const useInitPLEditor = () => {
-        const update = useForceUpdate()
-        return useOnce(() => createPLEditor(update))
+        const forceUpdate = useForceUpdate()
+        return useOnce(() => createPLEditor(forceUpdate))
 }

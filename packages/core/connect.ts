@@ -1,4 +1,3 @@
-import { is } from './../../../tseijp/packages/use-midi/packages/core/src/utils/helpers'
 import { addSuffix, attachParent, getLayerKey, isIgnoreProp } from './utils'
 import { PLObject } from './types'
 import { createObject } from '.'
@@ -12,8 +11,10 @@ export const initConnect = (obj: PLObject) => {
 
         if (parent) {
                 memo.ydoc = parent.memo.ydoc
-                memo.forceUpdateRoot = parent.memo.forceUpdateRoot
+                memo.compile = parent.memo.compile
         }
+
+        if (!memo.ydoc) return console.warn(notYDOCWarn(obj))
 
         const ydoc = memo.ydoc
         const ymap = (memo.ymap = ydoc.getMap(_key))
@@ -36,6 +37,7 @@ export const initConnect = (obj: PLObject) => {
                         child.id = addSuffix(ids, child.id)
                         children.push(child)
                         attachParent(obj)
+
                         // initialize when open page
                         initConnect(child)
                         subConnect(child)
@@ -106,8 +108,8 @@ export const delConnect = (obj: PLObject) => {
 }
 
 export const subConnect = (obj: PLObject) => {
-        const { memo, children, update = () => {} } = obj
-        const { ymap, yarr, forceUpdateRoot } = memo
+        const { memo, children, forceUpdate = () => {} } = obj
+        const { ymap, yarr, compile } = memo
 
         if (!ymap || !yarr) return console.warn(notInitWarn(obj))
         if (memo._sub) return console.warn(subWarn(obj))
@@ -146,7 +148,7 @@ export const subConnect = (obj: PLObject) => {
                         }
                 })
 
-                if (isUpdated) forceUpdateRoot()
+                if (isUpdated) compile()
         }
 
         const _ymap = (e: any) => {
@@ -165,10 +167,9 @@ export const subConnect = (obj: PLObject) => {
                         if (obj[key] === value) return
                         isUpdated = true
                         obj[key] = value
-                        forceUpdateRoot()
                 })
 
-                if (isUpdated) update
+                if (isUpdated) forceUpdate()
         }
         yarr.observe(_yarr)
         ymap.observe(_ymap)
@@ -207,6 +208,10 @@ export const subConnectAll = (obj: PLObject) => {
         subConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(subConnectAll)
+}
+
+const notYDOCWarn = (obj: PLObject) => {
+        return `plre/connect subConnect Warn: ${obj.id} is not YDOC`
 }
 
 const notInitWarn = (obj: PLObject) => {

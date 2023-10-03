@@ -7,9 +7,14 @@ import event from 'reev'
 import { initConnectAll, subConnectAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
 import { EditorState, PLObject } from 'plre/types'
+import { useCompile_ } from '../../organisms'
 
-// const isDev = false
-const isDev = process.env.NODE_ENV === 'development'
+let isDev = false
+// isDev = process.env.NODE_ENV === 'development'
+
+let isPubSub = true
+// isPubSub = false
+
 export interface WebrtcState {
         isDev: boolean
         isInit: boolean
@@ -23,7 +28,6 @@ export interface WebrtcState {
         mount(): void
         clean(): void
         connected(): void
-        forceUpdateRoot(): void
         updateUsers(): void
 
         // after mount
@@ -117,19 +121,19 @@ export const createWebrtc = (
         }
 
         const mount = () => {
+                if (!isPubSub) return self.connected?.()
+
                 const params = new URLSearchParams(window.location.search)
-                const roomId = (self.roomId =
-                        params.get('roomId') || '' + floor(random() * 100))
-                const userId = (self.userId =
-                        params.get('userId') || floor(random() * 100) + '')
-                const query = `?roomId=${roomId}&userId=${userId}`
+                self.roomId = params.get('roomId') || '' + floor(random() * 100)
+                self.userId = params.get('userId') || floor(random() * 100) + ''
+
+                // random roomId if dev
+                if (self.isDev) self.roomId = floor(random() * 100) + ''
+
+                const query = `?roomId=${self.roomId}&userId=${self.userId}`
 
                 if (self.isInit) return
                 self.isInit = true
-
-                // random roomId if dev
-                if (self.isDev)
-                        self.roomId = self.roomId + floor(random() * 100)
 
                 // init yjs
                 self.ydoc = new Y.Doc()
@@ -138,22 +142,21 @@ export const createWebrtc = (
 
                 // set users
                 self.users = self.ydoc.getMap('users')
-                self.users.set(userId, roomId)
+                self.users.set(self.userId, self.roomId)
                 self.users.observe(observeUsers)
 
                 // set user info
-                self.user = self.ydoc.getMap(userId)
+                self.user = self.ydoc.getMap(self.userId)
                 self.user.set('username', username)
                 self.user.set('color', self.color)
 
                 // init objects
                 objectTree.memo.ydoc = self.ydoc
-                objectTree.memo.forceUpdateRoot = self.forceUpdateRoot
                 initConnectAll(objectTree)
                 subConnectAll(objectTree)
 
                 const tick = () => {
-                        self.users.set(userId, roomId)
+                        self.users.set(self.userId, self.roomId)
                         setTimeout(tick, TICK_TIMEOUT_MS)
                 }
 
@@ -190,22 +193,21 @@ export const useInitWebrtc = (
         editorTree: EditorState
 ) => {
         const [isReady, set] = useState(false)
-        const forceUpdateRoot = useForceUpdate()
+        // const compile = useCompile_({ editorTree, objectTree })
+        const forceUpdate = useForceUpdate()
         const self = useOnce(() => {
-                const self = createWebrtc(
-                        objectTree,
-                        editorTree,
-                        forceUpdateRoot
-                )
+                const self = createWebrtc(objectTree, editorTree)
                 self('connected', () => set(true))
                 return self
         })
 
-        useEffect(() => void self.mount(), [])
+        useEffect(() => {
+                objectTree.memo.compile = forceUpdate
+                self.mount()
+        }, [])
         useEffect(() => () => self.clean(), [])
 
         self.isReady = isReady
-        self.forceUpdateRoot = forceUpdateRoot
 
         return self
 }

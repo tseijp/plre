@@ -15,7 +15,7 @@ const LINE_HEIGHT = 0.2
 export const AxisLine = forwardRef((props: AxisLineProps, ref) => {
         const { x, y, z, s } = props
         const X = x ? 'X' : y ? 'Y' : 'Z'
-        const color = x ? 'red' : y ? 'blue' : 'green'
+        const color = x ? 'red' : y ? 'green' : 'blue'
         return (
                 <div
                         style={{

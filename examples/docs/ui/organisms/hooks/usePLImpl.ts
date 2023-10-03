@@ -1,15 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { frame } from 'refr'
 import { createGL } from 'glre'
+import { resolve } from 'plre/lygia'
 import { vs } from 'plre/shader'
 import { collectAll } from 'plre/compile'
 import { useMutable } from 'plre/react'
+import { useOnce } from '../../atoms'
 import { useCtx } from '../../ctx'
 import type { PL } from 'plre/types'
-import { useOnce } from '../../atoms'
+import type { WheelState } from '../../atoms'
 
-export const usePLImpl = (on = () => {}) => {
-        const { objectTree } = useCtx()
+export const usePLImpl = (wheel: WheelState, on = () => {}) => {
+        const { objectTree, editorTree } = useCtx()
         const [self, set] = useState(createGL)
         const cache = useOnce(() => ({ vs, fs: collectAll(objectTree) }))
         const memo = useMutable({
@@ -20,13 +22,12 @@ export const usePLImpl = (on = () => {}) => {
                                 self.mount()
                         } else self.clean()
                 },
-                mount() {
-                        // @ts-ignore
-                        self.X = (Math.random() * 100) << 0
-                        self.fs = cache.fs
-                        self.vs = cache.vs
+                async mount() {
+                        // using lygia
                         self.el = self.target
-                        self.gl = self.target.getContext('webgl2')
+                        self.vs = cache.vs
+                        self.fs = cache.fs
+                        self.gl = self.el.getContext('webgl2')
                         self.init()
                         self.resize()
                         frame.start()
@@ -34,7 +35,7 @@ export const usePLImpl = (on = () => {}) => {
                         self.el.addEventListener('mousemove', self.mousemove)
 
                         // @ts-ignore plre specific
-                        objectTree({ compileShader })
+                        editorTree({ compileShader })
                 },
                 clean() {
                         self(memo)
@@ -50,7 +51,7 @@ export const usePLImpl = (on = () => {}) => {
                         }
 
                         // @ts-ignore plre specific
-                        objectTree({ compileShader })
+                        editorTree({ compileShader })
                 },
         }) as Partial<PL>
 
@@ -66,6 +67,23 @@ export const usePLImpl = (on = () => {}) => {
                         return ret
                 })
         }
+
+        useEffect(() => {
+                ;(async () => {
+                        try {
+                                // recompile shader
+                                self.el = self.target = wheel.target
+                                cache.fs = await resolve(cache.fs)
+                                self.mount?.()
+                                // @ts-ignore
+                                self.on?.()
+                                editorTree.trySuccess?.()
+                        } catch (e) {
+                                console.warn(e)
+                                editorTree.catchError?.(e)
+                        }
+                })()
+        }, [self])
 
         return useMemo(() => self(memo), [self, memo]) as PL
 }

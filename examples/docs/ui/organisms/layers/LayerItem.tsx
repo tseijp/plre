@@ -49,6 +49,8 @@ export const LayerItem = (props: LayerItemProps) => {
                 if (!value) value = 'Object'
                 obj.id = value
                 obj.forceUpdate()
+                // connect
+                obj.memo.ymap.set('id', value)
         })
 
         const forceUpdate = useForceUpdate()
@@ -114,7 +116,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                                 <div data-id={id}>{obj.id}</div>
                                         </Draggable>
                                 </LayerItemField>
-                                <div
+                                {/* <div
                                         style={{
                                                 color: 'red',
                                                 marginLeft: '5rem',
@@ -123,6 +125,8 @@ export const LayerItem = (props: LayerItemProps) => {
                                         {!_.ydoc && 'NO YDOC'}
                                         {!_.ymap && 'NO YARR'}
                                         {!_.yarr && 'NO YMAP'}
+                                        {!_.forceUpdateRoot &&
+                                                'NO FORCE UPDATE'}
                                 </div>
                                 <div style={{ color: '#e2e2e2' }}>
                                         {_._init ? ' Init:' + _._init : ''}
@@ -135,7 +139,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                 <div style={{ marginLeft: '5rem' }}>
                                         YMapSize: {obj.memo.ymap?.size}
                                         YArrSize: {obj.memo.yarr?.size}
-                                </div>
+                                </div> */}
                         </Flex>
                         <div
                                 style={{

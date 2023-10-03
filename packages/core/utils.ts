@@ -1,18 +1,18 @@
 import * as ShaderChunk from './shader'
-import { PLObject } from './types'
+import { ObjectTypes, PLObject } from './types'
 
-export const isMaterial = (obj: PLObject) => obj?.type === 'Material'
+export const isMaterial = (type: ObjectTypes) => type === 'Material'
 
-export const isObject = (obj: PLObject) =>
-        !isMaterial(obj) && obj?.type?.length > 1
+export const isObject = (type: ObjectTypes) =>
+        !isMaterial(type) && type?.length > 1
 
-export const isCollection = (obj: PLObject) =>
-        !isMaterial(obj) && obj?.type?.length === 1
+export const isCollection = (type: ObjectTypes) =>
+        !isMaterial(type) && type?.length === 1
 
-export const isAddable = (target: PLObject, self: PLObject) => {
-        if (isCollection(target) && isCollection(self)) return true
-        if (isCollection(target) && isObject(self)) return true
-        if (isObject(target) && isMaterial(self)) return true
+export const isAddable = (target: ObjectTypes, type: ObjectTypes) => {
+        if (isCollection(target) && isCollection(type)) return true
+        if (isCollection(target) && isObject(type)) return true
+        if (isObject(target) && isMaterial(type)) return true
         return false
 }
 
@@ -38,7 +38,7 @@ export const isOffspring = <T extends { children: T[] }>(
 }
 
 export const isIgnoreProp = (value: unknown, key: string) => {
-        if (typeof value !== 'string' || typeof value !== 'number') return true
+        if (typeof value !== 'string' && typeof value !== 'number') return true
         if (key === 'children') return true
         if (key === 'parent') return true
         if (key === 'memo') return true

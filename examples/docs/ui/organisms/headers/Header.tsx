@@ -17,7 +17,7 @@ export const Header = (props: HeaderProps) => {
 
         const handleClickEditor = (_type: EditorType) => {
                 editorItem.type = _type
-                editorTree.update()
+                editorTree.forceUpdate()
         }
 
         const type = editorItem.type[0].toUpperCase()

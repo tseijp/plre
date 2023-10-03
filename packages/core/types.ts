@@ -48,7 +48,7 @@ export interface EditorState {
         children: EditorState[]
         memo: any
         // events
-        update?(): void
+        forceUpdate?(): void
         trySuccess?(): void
         catchError?(e: Error): void
         changeActive?(obj: PLObject): void

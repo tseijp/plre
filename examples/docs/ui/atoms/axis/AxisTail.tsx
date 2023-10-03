@@ -11,7 +11,7 @@ export interface AxisTailProps {
 export const AxisTail = forwardRef((props: AxisTailProps, ref) => {
         const { x, y, s } = props
         const X = x ? 'X' : y ? 'Y' : 'Z'
-        const color = x ? 'red' : y ? 'blue' : 'green'
+        const color = x ? 'red' : y ? 'green' : 'blue'
         const rgba = x ? '#493B3D' : y ? '#35485A' : '#4D652A'
         return (
                 <div

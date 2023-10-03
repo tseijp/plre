@@ -10,7 +10,7 @@ import {
         deactivateAll,
         deleteObject,
 } from 'plre/control'
-import { getActiveObjects } from 'plre/utils'
+import { getActiveObjects, isAddable } from 'plre/utils'
 import { DropItems } from '../../molecules'
 import { delConnectAll, initConnectAll, pubConnectAll } from 'plre/connect'
 import { ObjectTypes } from 'plre/types'
@@ -29,6 +29,7 @@ export const AttachObject = () => {
 
         const add = useCall((f, type: ObjectTypes) => {
                 getActiveObjects(objectTree).forEach((obj, i) => {
+                        if (!isAddable(obj.type, type)) return
                         const child = f(obj, type)
 
                         initConnectAll(child)
