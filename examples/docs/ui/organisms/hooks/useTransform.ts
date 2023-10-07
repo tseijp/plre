@@ -13,41 +13,10 @@ type Value = number | ((prev: number) => number)
 
 export const useTransform = (self: PL) => {
         const { editorTree, objectTree } = useCtx()
-        const forceUpdate = useForceUpdate()
+        const updateUniform = useForceUpdate()
         const [obj, set] = useState(() => getActiveObjects(objectTree)[0])
         const cache = useOnce(() => ({ current: obj, previous: null }))
-
-        // const change = (s
-        //         value: number,
-        //         arr: number[],
-        //         i: number,
-        //         key: string,
-        //         isRoot?: boolean
-        // ) => {
-        //         const obj = cache.current
-        //         // set value from listenned for slider drag or subscribe
-        //         if (!isNum(value)) return
-        //         if (isRoot) arr[i] = value
-
-        //         // update UI
-        //         forceUpdate()
-
-        //         // set matrix uniform and rerender via self.on()
-
-        //         value = toNum(isFun(value) ? value(arr[i]) : value)
-
-        //         // effect to other Viewport and other users
-        //         if (isRoot) {
-        //                 obj?.[key + 'Update']?.(value, false)
-        //                 obj?.memo.ymap?.set(key, value)
-        //                 editorTree.updateUniform(obj!) // uniformMat4(self, obj)
-        //         }
-        // }
-        const updateUniform = useCall(() => {
-                forceUpdate()
-        })
-
-        const changeValue = (key: string, value: Value | string) => {
+        const changeValue = useCall((key: string, value: Value | string) => {
                 const obj = cache.current
                 if (!obj) return
 
@@ -57,7 +26,7 @@ export const useTransform = (self: PL) => {
                 // effect to other Viewport and other users
                 editorTree.updateUniform(obj)
                 obj?.memo.ymap?.set(key, value)
-        }
+        })
 
         const handles = useMutable<any>({
                 px: (value: Value | string) => changeValue('px', value),
@@ -81,11 +50,9 @@ export const useTransform = (self: PL) => {
         useEffect(() => {
                 // @ts-ignore
                 editorTree({ updateUniform, changeActive })
-                // if (obj) obj(handles)
                 return () => {
                         // @ts-ignore
                         editorTree({ updateUniform, changeActive })
-                        // if (obj) obj(handles)
                 }
         }, [obj])
 
