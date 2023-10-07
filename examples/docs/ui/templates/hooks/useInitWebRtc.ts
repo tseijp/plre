@@ -6,11 +6,11 @@ import { useCall, useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
 import { initConnectAll, pubShaderAll, subConnectAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
-import { EditorState, PLObject } from 'plre/types'
+import { EditorState, PL, PLObject } from 'plre/types'
 import { useCompile_ } from '../../organisms'
 
 let isDev = false
-isDev = process.env.NODE_ENV === 'development'
+// isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false
@@ -194,12 +194,12 @@ export const useInitWebrtc = (
 ) => {
         const [isReady, set] = useState(false)
         const forceUpdateRoot = useForceUpdate()
-        const compile = useCompile_(objectTree, editorTree)
+        const compileShader = useCompile_(objectTree, editorTree)
         const trySuccess = useCall(() => {
                 pubShaderAll(objectTree)
         })
 
-        const self = useOnce(() => {
+        const webrtcTree = useOnce(() => {
                 const self = createWebrtc(objectTree, editorTree)
                 self('connected', () => set(true))
                 // @ts-ignore
@@ -207,14 +207,19 @@ export const useInitWebrtc = (
                 return self
         })
 
-        useEffect(() => void self.mount(), [])
-        useEffect(() => () => self.clean(), [])
+        const updateUniform = useCall((obj) => {
+                editorTree.updateUniform?.(obj)
+        })
 
-        objectTree.memo.compile = compile
+        useEffect(() => void webrtcTree.mount(), [])
+        useEffect(() => () => webrtcTree.clean(), [])
+
+        objectTree.memo.updateUniform = updateUniform
+        objectTree.memo.compileShader = compileShader
         objectTree.memo.forceUpdateRoot = forceUpdateRoot
-        self.isReady = isReady
+        webrtcTree.isReady = isReady
 
-        return self
+        return webrtcTree
 }
 
 const USER_NAMES = [
@@ -257,8 +262,4 @@ const NICE_COLORS = [
         '#e4007f',
         '#9caeb7',
         '#00a0e9',
-        // '#ffffff',
-        // '#f5f4f4',
-        // '#d9d9d9',
-        // '#666666',
 ]

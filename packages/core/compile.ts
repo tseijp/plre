@@ -1,6 +1,13 @@
 import { PLObject } from './types'
 import * as ShaderChunk from './shader'
-import { getLayerKey, resolveIncludes, shaderChunkMap } from './utils'
+import {
+        getLayerKey,
+        isCollection,
+        isMaterial,
+        isObject,
+        resolveIncludes,
+        shaderChunkMap,
+} from './utils'
 
 export const withDirective = (shader = '', key = '') => {
         const header = `#ifndef ${key}\n#define ${key}\n`
@@ -58,8 +65,8 @@ export const complieVector = (arr: number[]) => {
 }
 
 export const compile = (obj: PLObject) => {
-        if (obj.type === 'Material') return compileMaterial(obj)
-        if (obj.type.length === 1) return (obj.shader = compileCollection(obj))
+        if (isMaterial(obj.type)) return compileMaterial(obj)
+        if (isCollection(obj.type)) return (obj.shader = compileCollection(obj))
         return compileObject(obj)
 }
 
@@ -74,7 +81,12 @@ export const collectAll = (obj: PLObject) => {
         let max = compileFloat(obj.index + 0.01)
         const _if = `if (${min} < res.y && res.y < ${max})`
 
+        // initialize
         obj.renderAll = ''
+        obj.geometryAll = ''
+        obj.materialAll = ''
+        obj.collectionAll = ''
+
         const mat = getMaterial(obj)
 
         if (mat) {
@@ -87,27 +99,34 @@ export const collectAll = (obj: PLObject) => {
                 obj.renderAll += NEW_LINE
         }
 
-        obj.shaderAll = ''
-
         if (obj.children) {
                 children.forEach((child) => {
                         collectAll(child)
-                        obj.shaderAll += child.shaderAll
+                        obj.geometryAll += child.geometryAll
+                        obj.materialAll += child.materialAll
                         obj.renderAll += child.renderAll
                 })
         }
 
-        obj.shaderAll += compile(obj) + '\n\n'
+        if (isMaterial(obj.type))
+                obj.materialAll += compileMaterial(obj) + '\n\n'
+        else if (isObject(obj.type))
+                obj.geometryAll += compileObject(obj) + '\n\n'
+        else if (isCollection(obj.type))
+                obj.geometryAll += compileCollection(obj) + '\n\n'
 
         if (!obj.parent) {
                 // console.log('\t\t\trenderAll')
                 // console.log(obj.renderAll)
                 // console.log('\t\t\tshaderAll')
                 // console.log(obj.shaderAll)
-                shaderChunkMap.set('PLRE_SHADER', obj.shaderAll)
+                shaderChunkMap.set('PLRE_GEOMETRY', obj.geometryAll)
+                shaderChunkMap.set('PLRE_MATERIAL', obj.materialAll)
+                shaderChunkMap.set('PLRE_COLLECTION', obj.collectionAll)
                 shaderChunkMap.set('PLRE_RENDER', renderShader(obj.renderAll))
                 return (obj.shaderAll = resolveIncludes(ShaderChunk.fs))
         }
+
         return ''
 }
 

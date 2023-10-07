@@ -19,10 +19,9 @@ export interface CursorProps {
 
 export const Cursor = (props: CursorProps) => {
         const { userId } = props
-        // const { ref, username } = useUserObserve(userId)
         const ref = useRef()
-        const [username, setUsername] = useState('anonymous')
         const [color, setColor] = useState('#212121')
+        const [username, setUsername] = useState('anonymous')
 
         const user = useUserObserve(userId, {
                 onUpdate(key) {
@@ -35,10 +34,10 @@ export const Cursor = (props: CursorProps) => {
                         if (key === 'y') gsap.to(el, { top: value })
                 },
                 onActive() {
-                        gsap.to(ref.current, { opacity: 1 })
+                        if (ref.current) gsap.to(ref.current, { opacity: 1 })
                 },
                 onDeactive() {
-                        gsap.to(ref.current, { opacity: 0.2 })
+                        if (ref.current) gsap.to(ref.current, { opacity: 0.2 })
                 },
         })
 

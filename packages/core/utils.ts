@@ -1,5 +1,5 @@
 import * as ShaderChunk from './shader'
-import { ObjectTypes, PL, PLObject } from './types'
+import { ObjectTypes, PL, PLObject, Vec3 } from './types'
 
 export const isMaterial = (type: ObjectTypes) => type === 'Material'
 
@@ -56,6 +56,23 @@ export const isTransformKey = (key = '') => {
         if (x === 'z') return true
         return false
 }
+const isFun = (a: unknown): a is Function => typeof a === 'function'
+
+type Value = number | ((prev: number) => number)
+
+export const setTransformFromKey = (obj: PLObject, key = '', value: Value) => {
+        const [p, x] = key.split('')
+        let target: Vec3
+        if (p === 'p') target = obj.position
+        else if (p === 'r') target = obj.rotation
+        else if (p === 's') target = obj.scale
+        if (x === 'x')
+                return (target[0] = isFun(value) ? value(target[0]) : value)
+        if (x === 'y')
+                return (target[1] = isFun(value) ? value(target[1]) : value)
+        if (x === 'z')
+                return (target[2] = isFun(value) ? value(target[2]) : value)
+}
 
 export const includePattern = /^[ \t]*#include +<([\w\d./]+)>/gm
 
@@ -88,6 +105,14 @@ export const getLayerKey = (obj: PLObject) => {
         if (!obj.parent) return obj.key
         return getLayerKey(obj.parent) + '_' + obj.key
 }
+
+export const replaceAll = (key: string, prev = ' ', next = '') => {
+        return key.split(prev).join(next)
+}
+
+export const withMat = (key: string) => key + '_Material'
+
+export const withoutMat = (key: string) => replaceAll(key, '_Material', '')
 
 export const getActiveObjects = (obj: PLObject) => {
         const ret = [] as PLObject[]

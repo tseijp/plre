@@ -6,9 +6,11 @@ uniform vec3 cameraPosition;
 uniform vec3 lookAt;
 uniform vec3 floorColor;
 
-#ifndef PI
-#define PI 3.14159265359
-#endif
+const vec2 EPS = vec2(.00001, 0.0);
+const vec2 MAX = vec2( 9999, -1);
+const vec2 MIN = vec2(-9999, -1);
+const float PI = 3.14159265359;
+
 #ifndef opU
 #define opU(d1, d2) d1.x < d2.x ? d1 : d2
 #endif
@@ -22,20 +24,18 @@ uniform vec3 floorColor;
 #define TRANSFORM(m, p) pos = (m * vec4(p, 1.)).xyz
 #endif
 #ifndef NORMAL
-#define NORMAL(F, p) (\
+#define NORMAL(SDF, pos) (\
   normalize(vec3( \
-    F(p + EPS.xyy) - F(p - EPS.xyy),\
-    F(p + EPS.yxy) - F(p - EPS.yxy),\
-    F(p + EPS.yyx) - F(p - EPS.yyx) \
+    SDF(pos + EPS.xyy) - SDF(pos - EPS.xyy),\
+    SDF(pos + EPS.yxy) - SDF(pos - EPS.yxy),\
+    SDF(pos + EPS.yyx) - SDF(pos - EPS.yyx) \
   ))\
 )
 #endif
 
-const vec2 EPS = vec2(.00001, 0.0);
-const vec2 MAX = vec2( 9999, -1);
-const vec2 MIN = vec2(-9999, -1);
-
-#include <PLRE_SHADER>
+#include <PLRE_GEOMETRY>
+#include <PLRE_COLLECTION>
+#include <PLRE_MATERIAL>
 vec3 normal(vec3 pos) {
         float dx = map(pos + EPS.xyy).x - map(pos - EPS.xyy).x;
         float dy = map(pos + EPS.yxy).x - map(pos - EPS.yxy).x;

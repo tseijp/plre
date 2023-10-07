@@ -53,6 +53,7 @@ export interface EditorState {
         catchError?(e: Error): void
         changeActive?(obj: PLObject): void
         compileShader?(code: string): void
+        updateUniform?(obj: PLObject): void
 }
 
 export interface PLObject {
@@ -75,20 +76,12 @@ export interface PLObject {
         // shader
         shader: string
         shaderAll: string
+        geometryAll: string
+        materialAll: string
+        collectionAll: string
         renderAll: string
         isEditted: boolean
         _shader: string // compiled result
-
-        // events
-        px(value?: number): void
-        py(value?: number): void
-        pz(value?: number): void
-        rx(value?: number): void
-        ry(value?: number): void
-        rz(value?: number): void
-        sx(value?: number): void
-        sy(value?: number): void
-        sz(value?: number): void
         forceUpdate(): void
 }
 

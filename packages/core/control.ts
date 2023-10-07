@@ -1,7 +1,15 @@
 import * as Objects from './objects'
 import * as Materials from './materials'
 import { createObject } from 'plre'
-import { isOffspring, attachParent, getLayerKey, addSuffix } from './utils'
+import {
+        isOffspring,
+        attachParent,
+        getLayerKey,
+        addSuffix,
+        withoutMat,
+        replaceAll,
+        isMaterial,
+} from './utils'
 import type { ObjectTypes, PLObject } from './types'
 import { compileCollection } from './compile'
 
@@ -82,9 +90,18 @@ export const moveObject = (grabbed: PLObject, hovered: PLObject) => {
 
 export const registerFix = (obj: PLObject, set = new Set<Function>()) => {
         const prev = getLayerKey(obj)
+        const _prev =
+                obj.parent && isMaterial(obj.type)
+                        ? getLayerKey(obj.parent)
+                        : ''
+
         set.add(() => {
                 const next = getLayerKey(obj)
-                obj.shader = obj.shader.split(prev).join(next) // replaceAll
+                obj.shader = replaceAll(obj.shader, prev, next)
+                if (_prev) {
+                        const _next = getLayerKey(obj.parent!)
+                        obj.shader = replaceAll(obj.shader, _prev, _next)
+                }
         })
         return set
 }

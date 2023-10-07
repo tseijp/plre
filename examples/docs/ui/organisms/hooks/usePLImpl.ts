@@ -7,9 +7,9 @@ import { collectAll } from 'plre/compile'
 import { useMutable } from 'plre/react'
 import { useOnce } from '../../atoms'
 import { useCtx } from '../../ctx'
-import type { PL } from 'plre/types'
+import { uniformMat4, uniformMat4All } from 'plre/utils'
+import type { PL, PLObject } from 'plre/types'
 import type { WheelState } from '../../atoms'
-import { uniformMat4All } from 'plre/utils'
 
 const aMat = [
         1.0,
@@ -47,7 +47,6 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                         self.el = self.target
                         self.vs = cache.vs
                         self.fs = cache.fs
-                        console.log(self.fs)
                         self.gl = self.el.getContext('webgl2')
                         self.init()
                         uniformMat4All(self as PL, objectTree)
@@ -79,6 +78,9 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                 },
         }) as Partial<PL>
 
+        /**
+         * compile if subscribe glsl code or click start button after edit
+         */
         const compileShader = (code: string) => {
                 const ret = createGL()
                 // @ts-ignore
@@ -92,6 +94,15 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                 })
         }
 
+        /**
+         * update if subscribe uniform or change uniform via slider
+         */
+        const updateUniform = (obj: PLObject) => {
+                uniformMat4(self as PL, obj)
+                // @ts-ignore
+                self.on?.()
+        }
+
         useEffect(() => {
                 ;(async () => {
                         try {
@@ -102,6 +113,9 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                                 // @ts-ignore
                                 self.on?.()
 
+                                // @ts-ignore register event to update uniform by subscribe
+                                editorTree({ updateUniform })
+
                                 // Pub shader code if compile succeeds
                                 editorTree.trySuccess?.()
                         } catch (e) {
@@ -109,6 +123,10 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                                 editorTree.catchError?.(e)
                         }
                 })()
+                return () => {
+                        // @ts-ignore
+                        editorTree({ updateUniform })
+                }
         }, [self])
 
         return useMemo(() => self(memo), [self, memo]) as PL

@@ -128,6 +128,8 @@ export const LayerItem = (props: LayerItemProps) => {
                                         {!_.yarr && 'NO YMAP'}
                                         {!_.forceUpdateRoot &&
                                                 'NO FORCE UPDATE'}
+                                        {!_.updateUniform &&
+                                                'NO UPDATE UNIFORM'}
                                 </div>
                                 <div style={{ color: '#e2e2e2' }}>
                                         {_._init ? ' Init:' + _._init : ''}

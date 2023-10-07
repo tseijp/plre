@@ -4,10 +4,13 @@ import {
         getLayerKey,
         isIgnoreProp,
         isTransformKey,
+        setTransformFromKey,
 } from './utils'
 import { PLObject } from './types'
 import { createObject } from '.'
 import { deleteObject } from './control'
+
+const TIMEOUT_MS = 1000
 
 export const initConnect = (obj: PLObject) => {
         const { children, parent, memo } = obj
@@ -17,7 +20,8 @@ export const initConnect = (obj: PLObject) => {
 
         if (parent) {
                 memo.ydoc = parent.memo.ydoc
-                memo.compile = parent.memo.compile
+                memo.updateUniform = parent.memo.updateUniform
+                memo.compileShader = parent.memo.compileShader
                 memo.forceUpdateRoot = parent.memo.forceUpdateRoot
         }
 
@@ -116,11 +120,25 @@ export const delConnect = (obj: PLObject) => {
 
 export const subConnect = (obj: PLObject) => {
         const { memo, children } = obj
-        const { ymap, yarr, forceUpdateRoot, compile } = memo
+        const { ymap, yarr, forceUpdateRoot, compileShader, updateUniform } =
+                memo
 
         if (!ymap || !yarr) return console.warn(notInitWarn(obj))
         if (memo._sub) return console.warn(subWarn(obj))
 
+        const _forceUpdate = () => {
+                const id = setTimeout(forceUpdateRoot, TIMEOUT_MS)
+                memo._forceUpdateRoot?.()
+                memo._forceUpdateRoot = () => window.clearTimeout(id)
+        }
+        const _compileShader = () => {
+                const id = setTimeout(compileShader, TIMEOUT_MS)
+                memo._compileShader?.()
+                memo._compileShader = () => window.clearTimeout(id)
+        }
+        /**
+         * subscribe children
+         */
         const _yarr = (e: any) => {
                 if (e.transaction.local) return
 
@@ -131,6 +149,7 @@ export const subConnect = (obj: PLObject) => {
                 let isUpdated = false
                 let isCompile = false
 
+                console.log(`plre/conenct sub yarr START`)
                 e.changes.keys.forEach((_: any, key: string) => {
                         const type = yarr.get(key)
                         // prettier-ignore
@@ -148,21 +167,25 @@ export const subConnect = (obj: PLObject) => {
                                 isCompile = true
                                 return
                         }
+
                         // delete object
-                        const child = children.find(
-                                (c) => getLayerKey(c) === key
-                        )
+                        const child = children.find((c) => {
+                                return getLayerKey(c) === key
+                        })
+
                         if (child) {
                                 deleteObject(child)
                                 isUpdated = true
                                 isCompile = true
                         }
                 })
-
-                if (isUpdated) forceUpdateRoot()
-                if (isCompile) compile()
+                if (isUpdated) _forceUpdate()
+                if (isCompile) _compileShader()
         }
 
+        /**
+         * subscribe uniform and glsl code
+         */
         const _ymap = (e: any) => {
                 if (e.transaction.local) return
 
@@ -172,6 +195,7 @@ export const subConnect = (obj: PLObject) => {
                 let isUpdated = false
                 let isCompile = false
 
+                console.log(`plre/conenct sub ymap START`)
                 e.changes.keys.forEach((_: any, key: string) => {
                         const value = ymap.get(key)
                         // prettier-ignore
@@ -180,7 +204,8 @@ export const subConnect = (obj: PLObject) => {
 
                         // update transform
                         if (isTransformKey(key)) {
-                                obj[key]?.(value)
+                                setTransformFromKey(obj, key, value)
+                                updateUniform(obj) // Update WebGL Uniform events
                                 return
                         }
 
@@ -192,9 +217,8 @@ export const subConnect = (obj: PLObject) => {
                         isUpdated = true
                         obj[key] = value
                 })
-
-                if (isUpdated) forceUpdateRoot()
-                if (isCompile) compile()
+                if (isUpdated) _forceUpdate()
+                if (isCompile) _compileShader()
         }
         yarr.observe(_yarr)
         ymap.observe(_ymap)
