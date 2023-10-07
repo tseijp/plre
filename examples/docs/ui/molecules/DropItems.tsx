@@ -10,7 +10,7 @@ export const DropItems = (props: DropItemsProps) => {
         const { items, children } = props
         return (
                 <Flex
-                        gap="0.25rem"
+                        gap="0.5rem"
                         color="white"
                         padding="0.5rem"
                         alignItems="start"

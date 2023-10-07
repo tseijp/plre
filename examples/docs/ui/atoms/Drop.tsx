@@ -49,7 +49,10 @@ export const Drop = (props: DropProps) => {
                                         position: 'absolute',
                                         zIndex: 100,
                                         lineHeight: 'normal',
-                                        background: '#1D1D1D',
+                                        backdropFilter: 'blur(1px)',
+                                        borderRadius: 5,
+                                        backgroundColor:
+                                                'rgba(61, 61, 61, 0.75)',
                                         display: isOpen ? 'flex' : 'none',
                                 }}
                                 onClick={handleClick}

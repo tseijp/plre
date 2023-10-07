@@ -1,14 +1,30 @@
 import * as React from 'react'
 import type { CSSProperties } from 'react'
 
-export const Arrow = (props: CSSProperties) => {
+export interface ArrowProps extends CSSProperties {
+        w?: boolean
+        a?: boolean
+        d?: boolean
+        s?: boolean
+}
+
+export const Arrow = React.forwardRef((props: ArrowProps, ref) => {
+        let { w, a, d, s, transform = '', ...other } = props
+
+        if (w) transform += ' rotate(180deg)'
+        if (a) transform += ' rotate(90deg)'
+        if (d) transform += ' rotate(-90deg)'
+        if (s) transform += ' rotate(0deg)'
+
         return (
                 <span
+                        ref={ref as any}
                         style={{
                                 position: 'relative',
                                 width: '1em',
                                 height: '1em',
-                                ...props,
+                                transform,
+                                ...other,
                         }}
                 >
                         <span
@@ -27,4 +43,4 @@ export const Arrow = (props: CSSProperties) => {
                         />
                 </span>
         )
-}
+})

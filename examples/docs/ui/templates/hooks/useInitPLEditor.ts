@@ -7,6 +7,7 @@ export const createPLEditor = (forceUpdate = () => {}) => {
         const timeline = createEditor('timeline')
         const viewlayer = createEditor('viewlayer')
         const properties = createEditor('properties')
+        // const properties = createEditor('viewport')
         const left = createEditor('I', { rate: [0.92, 0.08] }, [
                 viewport,
                 timeline,

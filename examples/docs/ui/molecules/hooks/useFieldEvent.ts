@@ -9,7 +9,7 @@ export interface FieldEventState {
         mount(): void
         clean(): void
         target: HTMLInputElement | null
-        value: string
+        value: string | number
         ref: RefObject<Element>
 }
 

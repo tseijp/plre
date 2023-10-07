@@ -8,9 +8,8 @@ export interface TimelineProps {
         editorItem: EditorState
 }
 
-const set = new Set<any>()
-
 export const Timeline = (props: TimelineProps) => {
+        const [ws, set] = React.useState([])
         const { editorItem } = props
         return (
                 <Flex backgroundColor="#303030">
@@ -22,11 +21,12 @@ export const Timeline = (props: TimelineProps) => {
                                                         '_blank'
                                                 )
                                                 w.focus()
-                                                set.add(w)
+                                                set((p) => [...p, w])
                                         }}
                                         style={{
                                                 height: '20px',
                                                 cursor: 'pointer',
+                                                userSelect: 'none',
                                                 border: '1px solid #696969',
                                                 background: '#535353',
                                                 lineHeight: '20px',
@@ -37,21 +37,27 @@ export const Timeline = (props: TimelineProps) => {
                                 </div>
                                 <div
                                         onClick={() => {
-                                                set.forEach((w) => {
+                                                ws.forEach((w) => {
                                                         w.close()
                                                 })
-                                                set.clear()
+                                                set([])
                                         }}
                                         style={{
                                                 height: '20px',
                                                 cursor: 'pointer',
+                                                userSelect: 'none',
                                                 border: '1px solid #696969',
                                                 background: '#535353',
                                                 lineHeight: '20px',
                                                 borderRadius: '4px',
+                                                display:
+                                                        ws.length > 0
+                                                                ? ''
+                                                                : 'none',
                                         }}
                                 >
                                         Close
+                                        {ws.length > 1 ? ' ' + ws.length : ''}
                                 </div>
                         </Header>
                         <Flex

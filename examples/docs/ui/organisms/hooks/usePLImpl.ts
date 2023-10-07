@@ -9,6 +9,26 @@ import { useOnce } from '../../atoms'
 import { useCtx } from '../../ctx'
 import type { PL } from 'plre/types'
 import type { WheelState } from '../../atoms'
+import { uniformMat4All } from 'plre/utils'
+
+const aMat = [
+        1.0,
+        0.0,
+        0.0,
+        1.0, // 1. column
+        0.0,
+        1.0,
+        0.0,
+        100.0, // 2. column
+        0.0,
+        0.0,
+        0.1,
+        1.0, // 3. column
+        1.0,
+        -1.0,
+        0.0,
+        1.0,
+]
 
 export const usePLImpl = (wheel: WheelState, on = () => {}) => {
         const { objectTree, editorTree } = useCtx()
@@ -27,8 +47,12 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                         self.el = self.target
                         self.vs = cache.vs
                         self.fs = cache.fs
+                        console.log(self.fs)
                         self.gl = self.el.getContext('webgl2')
                         self.init()
+                        uniformMat4All(self as PL, objectTree)
+                        // @ts-ignore
+                        self.uniform('aMat', aMat, true)
                         self.resize()
                         frame.start()
                         window.addEventListener('resize', self.resize)

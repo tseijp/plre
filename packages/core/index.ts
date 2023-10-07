@@ -1,4 +1,4 @@
-import { attachParent } from './utils'
+import { attachParent, mat4 } from './utils'
 import { event } from 'reev'
 import { createGL } from 'glre'
 import { fs, vs } from './shader'
@@ -21,6 +21,7 @@ export const createObject = (
                 rotation = [0, 0, 0],
                 scale = [1, 1, 1],
                 color = [1, 1, 1],
+                matrix,
                 shader = '',
                 index = currentIndex++,
                 memo = {},
@@ -36,6 +37,7 @@ export const createObject = (
                 position,
                 rotation,
                 scale,
+                matrix: mat4(position, rotation, scale),
                 color,
                 children,
                 shader: shader.trim(),

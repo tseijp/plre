@@ -5,7 +5,7 @@ import { useCall, useOnce } from '../../atoms'
 import { useCtx } from '../../ctx'
 import type { EditorView } from '@codemirror/view'
 import type { EditorState } from '@codemirror/state'
-import { collectAll } from 'plre/compile'
+import { getActiveObjects } from 'plre/utils'
 
 export interface CodemirrorEvent {
         mount?(): void
@@ -34,7 +34,7 @@ export const codemirrorEvent = (doc = '') => {
                 ])
                 const parent = self.target
                 const myTheme = EditorView.theme(theme, { dark: true })
-                const listener = EditorView.updateListener.of((v) => {
+                const listenner = EditorView.updateListener.of((v) => {
                         self.changeEditor(v)
                 })
                 const extensions = [
@@ -42,7 +42,7 @@ export const codemirrorEvent = (doc = '') => {
                         lineNumbers(),
                         githubDark,
                         myTheme,
-                        listener,
+                        listenner,
                 ]
                 const state = EditorState.create({ doc, extensions })
 
@@ -83,8 +83,11 @@ interface UseCodemirrorCache {
 
 export const useCodemirror = () => {
         const { editorTree, objectTree } = useCtx()
-        const self = useOnce(() => codemirrorEvent(collectAll(objectTree)))
-        const cache = useOnce<UseCodemirrorCache>(() => ({}))
+        const cache = useOnce<UseCodemirrorCache>(() => ({
+                obj: getActiveObjects(objectTree)[0],
+        }))
+        const self = useOnce(() => codemirrorEvent(cache.obj?.shader))
+
         const changeActive = useCall((obj) => {
                 // cache to save changed code
                 cache.obj = obj
@@ -110,7 +113,6 @@ export const useCodemirror = () => {
                 // @ts-ignore
                 editorTree({ changeActive })
                 self({ changeEditor })
-
                 return () => {
                         // @ts-ignore
                         editorTree({ changeActive })

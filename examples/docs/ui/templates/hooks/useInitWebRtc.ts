@@ -10,7 +10,7 @@ import { EditorState, PLObject } from 'plre/types'
 import { useCompile_ } from '../../organisms'
 
 let isDev = false
-// isDev = process.env.NODE_ENV === 'development'
+isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false
@@ -124,7 +124,7 @@ export const createWebrtc = (
                 if (!isPubSub) return self.connected?.()
 
                 const params = new URLSearchParams(window.location.search)
-                self.roomId = params.get('roomId') || '' + floor(random() * 100)
+                self.roomId = params.get('roomId') || floor(random() * 100) + ''
                 self.userId = params.get('userId') || floor(random() * 100) + ''
 
                 // random roomId if dev

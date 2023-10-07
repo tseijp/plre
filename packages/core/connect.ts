@@ -1,4 +1,10 @@
-import { addSuffix, attachParent, getLayerKey, isIgnoreProp } from './utils'
+import {
+        addSuffix,
+        attachParent,
+        getLayerKey,
+        isIgnoreProp,
+        isTransformKey,
+} from './utils'
 import { PLObject } from './types'
 import { createObject } from '.'
 import { deleteObject } from './control'
@@ -171,8 +177,18 @@ export const subConnect = (obj: PLObject) => {
                         // prettier-ignore
                         console.log(`plre/conenct sub _ymap { key: ${key}, value: ${value} }`)
                         if (isIgnoreProp(value, key)) return
+
+                        // update transform
+                        if (isTransformKey(key)) {
+                                obj[key]?.(value)
+                                return
+                        }
+
                         if (obj[key] === value) return
+
+                        // update shader
                         if (key === 'shader') isCompile = true
+
                         isUpdated = true
                         obj[key] = value
                 })

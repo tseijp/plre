@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { Flex, useWheelEvent } from '../atoms'
+import { Flex } from '../atoms'
 import { AddObject, AttachObject, Header } from './headers'
 import { useViewport } from './hooks'
 import { Viewpoint } from '../molecules'
 import { ErrorMessage } from './ErrorMessage'
-import type { EditorState } from 'plre/types'
+import { Tools } from './tools'
 import { useCtx } from '../ctx'
+import type { EditorState } from 'plre/types'
 
 export interface ViewportProps {
         editorItem: EditorState
@@ -21,6 +22,7 @@ export const Viewport = (props: ViewportProps) => {
                                 <AddObject />
                                 <AttachObject />
                         </Header>
+                        <Tools self={{} as any} />
                         <Flex background="#3A3A3A" />
                 </Flex>
         )
@@ -44,6 +46,7 @@ const ViewportImpl = (props: ViewportProps) => {
                                 <canvas ref={wheel.ref} />
                         </Flex>
                         <Viewpoint s={16} wheel={wheel} />
+                        <Tools self={self} />
                         <ErrorMessage self={self} />
                 </Flex>
         )

@@ -61,11 +61,11 @@ export interface PLObject {
         key: string
         matrix: Mat4
         matrixWorld: Mat4
-        position: Vec3 | null
-        rotation: Vec3 | null
+        position: Vec3
+        rotation: Vec3
         parent: PLObject | null
-        scale: Vec3 | null
-        color: Vec3 | null
+        scale: Vec3
+        color: Vec3
         index: number
         active: boolean
         children: PLObject[]
@@ -80,6 +80,15 @@ export interface PLObject {
         _shader: string // compiled result
 
         // events
+        px(value?: number): void
+        py(value?: number): void
+        pz(value?: number): void
+        rx(value?: number): void
+        ry(value?: number): void
+        rz(value?: number): void
+        sx(value?: number): void
+        sy(value?: number): void
+        sz(value?: number): void
         forceUpdate(): void
 }
 

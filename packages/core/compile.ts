@@ -13,10 +13,13 @@ const NEW_LINE = '\n        '
 export const compileCollection = (obj: PLObject) => {
         const { parent, children, type } = obj
         const _key = parent ? getLayerKey(obj) : 'map'
+        const _mat = _key + '_M'
         const isU = type === 'U'
 
-        let ret = `vec2 ${_key}(vec3 pos) {` + NEW_LINE
-        ret += `vec2 res = vec2(${isU ? '9999.' : '-9999.'}, -1.);`
+        let ret = `uniform mat4 ${_mat};\n`
+        ret += `vec2 ${_key}(vec3 pos) {` + NEW_LINE
+        ret += `TRANSFORM(${_mat}, pos);` + NEW_LINE
+        ret += `vec2 res = ${isU ? 'MAX' : 'MIN'};`
         children.forEach((child) => {
                 let ind = compileFloat(child.index)
                 const isI = child.type.length === 1
@@ -32,7 +35,6 @@ export const compileCollection = (obj: PLObject) => {
 
 export const compileObject = (obj: PLObject) => {
         let ret = obj.shader.trim()
-        // const _key = getLayerKey(obj)
         // ret = withDirective(ret, _key)
         return ret
 }
@@ -57,7 +59,7 @@ export const complieVector = (arr: number[]) => {
 
 export const compile = (obj: PLObject) => {
         if (obj.type === 'Material') return compileMaterial(obj)
-        if (obj.type.length === 1) return compileCollection(obj)
+        if (obj.type.length === 1) return (obj.shader = compileCollection(obj))
         return compileObject(obj)
 }
 
@@ -110,7 +112,7 @@ export const collectAll = (obj: PLObject) => {
 }
 
 const renderShader = (rebderAll = '') =>
-        `
+        /* CPP */ `
 vec3 render(vec3 ro, vec3 rd) {
         vec2 res = raymarch(ro, rd);
 

@@ -1,3 +1,5 @@
+import { PL, PLObject } from 'plre/types'
+import { getLayerKey } from 'plre/utils'
 import type { EventState } from 'reev/types'
 
 export const HEADER_PADDING_SIZE = 63
@@ -40,7 +42,10 @@ export const range = (n = 1) => [...Array(n)].map((_, i) => i)
 export const clamp = (n = 0, min = 0, max = 1) =>
         Math.max(min, Math.min(max, n))
 
-const { PI, floor } = Math
+const { PI, pow, floor } = Math
+
+export const round = (v: number, n: number = 3, m = pow(10, n)) =>
+        floor(v * m) / m
 
 const TAU = PI * 2
 
@@ -50,8 +55,6 @@ export const rot = <T extends { tht: number; phi: number }>(a: T, b: T) => {
         let tht = mod(b.tht - a.tht, TAU)
         let phi = mod(b.phi - a.phi, TAU)
 
-        // if (tht > PI) tht = tht - TAU
-        // if (phi > PI) phi = phi - TAU
         tht = mod(tht + PI, TAU) - PI
         phi = mod(phi + PI, TAU) - PI
 

@@ -6,17 +6,34 @@ uniform vec3 cameraPosition;
 uniform vec3 lookAt;
 uniform vec3 floorColor;
 
-// #define AA 2
-#define AA 1
+#ifndef PI
 #define PI 3.14159265359
-#define ITERATION 256 // 64
-#define min2 vec2(-9999, -1)
-#define max2 vec2( 9999, -1)
+#endif
+#ifndef opU
 #define opU(d1, d2) d1.x < d2.x ? d1 : d2
+#endif
+#ifndef opI
 #define opI(d1, d2) d1.x > d2.x ? d1 : d2
+#endif
+#ifndef opS
 #define opS(d1, d2) d1.x > -d2.x ? d1 : vec2(-d2.x, d2.y);
+#endif
+#ifndef TRANSFORM
+#define TRANSFORM(m, p) pos = (m * vec4(p, 1.)).xyz
+#endif
+#ifndef NORMAL
+#define NORMAL(F, p) (\
+  normalize(vec3( \
+    F(p + EPS.xyy) - F(p - EPS.xyy),\
+    F(p + EPS.yxy) - F(p - EPS.yxy),\
+    F(p + EPS.yyx) - F(p - EPS.yyx) \
+  ))\
+)
+#endif
 
 const vec2 EPS = vec2(.00001, 0.0);
+const vec2 MAX = vec2( 9999, -1);
+const vec2 MIN = vec2(-9999, -1);
 
 #include <PLRE_SHADER>
 vec3 normal(vec3 pos) {
@@ -25,6 +42,10 @@ vec3 normal(vec3 pos) {
         float dz = map(pos + EPS.yyx).x - map(pos - EPS.yyx).x;
         return normalize(vec3(dx, dy, dz));
 }
+
+#ifndef ITERATION
+#define ITERATION 256 // 64
+#endif
 
 vec2 raymarch(vec3 ro, vec3 rd) {
         // raymarch primitives
@@ -50,6 +71,11 @@ out vec4 outColor;
 
 // Focal length
 const float fl = 2.25;
+
+#ifndef AA
+#define AA 1
+// #define AA 2
+#endif
 
 void main() {
         // Setup viewport coordinates: -0.5, -0.5 to 0.5, 0.5

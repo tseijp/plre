@@ -4,22 +4,29 @@ import { compile } from 'plre/compile'
 import { useOnce } from '../../atoms'
 
 const boxSDF = (key = '') => /* CPP */ `
-float ${key}(vec3 p) {
+uniform mat4 ${key}_M;
+
+float ${key}(vec3 pos) {
+  TRANSFORM(${key}_M, pos);
   vec3 boxSize = vec3(1.);
-  vec3 d = abs(p) - boxSize;
+  vec3 d = abs(pos) - boxSize;
   return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
 }
 `
 
 const boxFrameSDF = (key = '') => /* CPP */ `
+uniform mat4 ${key}_M;
+
 #ifndef min3
 #define min3(a, b, c) min(a, min(b, c))
 #define max3(a, b, c) max(a, max(b, c))
 #endif
-float ${key}(vec3 _p) {
+
+float ${key}(vec3 pos) {
+  TRANSFORM(${key}_M, pos);
   float boxFrameThickness = .001;
   vec3 boxFrameSize = vec3(1.);
-  vec3 p = abs(_p) - boxFrameSize;
+  vec3 p = abs(pos) - boxFrameSize;
   vec3 q = abs(p + boxFrameThickness) - boxFrameThickness;
   return min3(
     length(max(vec3(p.x, q.y, q.z) ,0.)) + min(max3(p.x, q.y, q.z), 0.),
@@ -30,19 +37,23 @@ float ${key}(vec3 _p) {
 `
 
 const formulaSDF = (key = '') => /* CPP */ `
-float ${key}_Formula(vec3 p) {
-  // return p.x * p.x + p.z * p.z - 1.0;
+uniform mat4 ${key}_M;
+
+float ${key}_Formula(vec3 pos) {
+  TRANSFORM(${key}_M, pos);
+  // return pos.x * pos.x + pos.z * pos.z - 1.0;
   float sigma = .3;
-  float a = p.x * p.x + p.z * p.z;
+  float a = pos.x * pos.x + pos.z * pos.z;
   float b = -.5 * a / (sigma * sigma);
   float c = sigma * sqrt(2. * PI);
   return 1. / c * exp(b) - 1.;
 }
 
-float ${key}(vec3 p) {
-  float f = ${key}_Formula(p);
+float ${key}(vec3 pos) {
+  TRANSFORM(${key}_M, pos);
+  float f = ${key}_Formula(pos);
   float formulaThickness = .05;
-  return min(abs(p.y - f) - formulaThickness, 30.);
+  return min(abs(pos.y - f) - formulaThickness, 30.);
 }
 `
 

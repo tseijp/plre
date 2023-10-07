@@ -1,5 +1,5 @@
 import * as ShaderChunk from './shader'
-import { ObjectTypes, PLObject } from './types'
+import { ObjectTypes, PL, PLObject } from './types'
 
 export const isMaterial = (type: ObjectTypes) => type === 'Material'
 
@@ -45,6 +45,18 @@ export const isIgnoreProp = (value: unknown, key: string) => {
         return false
 }
 
+export const isTransformKey = (key = '') => {
+        if (key.length !== 2) return false
+        const [p, x] = key.split('')
+        if (p === 'p') return true
+        if (p === 'r') return true
+        if (p === 's') return true
+        if (x === 'x') return true
+        if (x === 'y') return true
+        if (x === 'z') return true
+        return false
+}
+
 export const includePattern = /^[ \t]*#include +<([\w\d./]+)>/gm
 
 export const resolveIncludes = (str = '') => {
@@ -86,4 +98,54 @@ export const getActiveObjects = (obj: PLObject) => {
                 })
         })
         return ret
+}
+
+const { sin, cos } = Math
+
+export const mat4 = (
+        position = [0, 0, 0],
+        rotation = [0, 0, 0],
+        scale = [1, 1, 1],
+        ret: number[] = []
+) => {
+        const [px, py, pz] = position
+        const [ax, ay, az] = rotation.map(cos)
+        const [bx, by, bz] = rotation.map(sin)
+        const [sx, sy, sz] = scale.map((s) => 1 / s)
+        ret[0] = sx * az * ay
+        ret[1] = sx * (az * by * bx - bz * ax)
+        ret[2] = sx * (az * by * ax + bz * bx)
+        ret[3] = 0
+        ret[4] = sy * bz * ay
+        ret[5] = sy * (bz * by * bx + az * ax)
+        ret[6] = sy * (bz * by * ax - az * bx)
+        ret[7] = 0
+        ret[8] = sz * -by
+        ret[9] = sz * ay * bx
+        ret[10] = sz * ay * ax
+        ret[11] = 0
+        ret[12] = px
+        ret[13] = py
+        ret[14] = pz
+        ret[15] = 1
+        return ret
+}
+
+export const uniformMat4 = (self: PL, obj: PLObject) => {
+        const { parent, position, rotation, scale } = obj
+
+        // @NOTE function name of obj in top is fixed in map
+        const _key = parent ? getLayerKey(obj) : 'map'
+        const _mat = mat4(position, rotation, scale, obj.matrix)
+        // @ts-ignore TODO FIX glre type
+        self.uniform(_key + '_M', _mat, true)
+}
+
+export const uniformMat4All = (self: PL, obj: PLObject) => {
+        const { children } = obj
+        uniformMat4(self, obj)
+        if (!Array.isArray(children) || children.length === 0) return
+        obj.children.forEach((child) => {
+                uniformMat4All(self, child)
+        })
 }

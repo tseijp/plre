@@ -3,7 +3,7 @@ import type { ChangeEvent, CSSProperties, RefObject } from 'react'
 
 export interface FieldProps extends CSSProperties {
         as?: any
-        value?: string
+        value?: string | number
         placeholder?: string
         onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
