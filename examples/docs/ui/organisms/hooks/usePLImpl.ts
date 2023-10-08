@@ -11,25 +11,6 @@ import { uniformMat4, uniformMat4All } from 'plre/utils'
 import type { PL, PLObject } from 'plre/types'
 import type { WheelState } from '../../atoms'
 
-const aMat = [
-        1.0,
-        0.0,
-        0.0,
-        1.0, // 1. column
-        0.0,
-        1.0,
-        0.0,
-        100.0, // 2. column
-        0.0,
-        0.0,
-        0.1,
-        1.0, // 3. column
-        1.0,
-        -1.0,
-        0.0,
-        1.0,
-]
-
 export const usePLImpl = (wheel: WheelState, on = () => {}) => {
         const { objectTree, editorTree } = useCtx()
         const [self, set] = useState(createGL)
@@ -43,15 +24,12 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                         } else self.clean()
                 },
                 async mount() {
-                        // using lygia
                         self.el = self.target
                         self.vs = cache.vs
                         self.fs = cache.fs
                         self.gl = self.el.getContext('webgl2')
                         self.init()
                         uniformMat4All(self as PL, objectTree)
-                        // @ts-ignore
-                        self.uniform('aMat', aMat, true)
                         self.resize()
                         frame.start()
                         window.addEventListener('resize', self.resize)
