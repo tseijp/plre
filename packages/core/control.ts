@@ -6,12 +6,11 @@ import {
         attachParent,
         getLayerKey,
         addSuffix,
-        withoutMat,
         replaceAll,
         isMaterial,
 } from './utils'
 import type { ObjectTypes, PLObject } from './types'
-import { compileCollection } from './compile'
+import { compileCollection, modifyAdd, modifyDelete } from './compile'
 
 export const activateAll = (obj: PLObject) => {
         obj.children.forEach(activateAll)
@@ -36,8 +35,12 @@ export const addObject = (obj: PLObject, type: ObjectTypes) => {
         child.id = addSuffix(ids, child.id)
         child.shader = shader(_key).trim()
 
+        // change parent code
+        modifyAdd(child)
+
         // optional
         addMaterial(child)
+
         return child
 }
 
@@ -61,6 +64,10 @@ export const addCollection = (obj: PLObject, type: ObjectTypes) => {
         obj.children.push(child)
         obj.shader = shader
         attachParent(obj)
+
+        // change parent code
+        modifyAdd(child)
+
         return child
 }
 
@@ -69,6 +76,9 @@ export const deleteObject = (obj: PLObject) => {
         if (!parent || !parent.children) return
         const index = parent.children.indexOf(obj)
         parent.children.splice(index, 1)
+
+        // chage parent code
+        modifyDelete(obj)
 }
 
 export const moveObject = (grabbed: PLObject, hovered: PLObject) => {

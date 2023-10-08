@@ -24,10 +24,11 @@ export const AddObject = () => {
                         if (!isCollection(obj.type)) obj = obj.parent
                         if (!isCollection(obj.type)) obj = obj.parent
                         if (!isCollection(obj.type)) return
+
                         const child = addObject(obj, type)
 
                         initConnectAll(child)
-                        pubConnectAll(child)
+                        pubConnectAll(obj) // publish parent sicne parent code is changed if Collection
                         subConnectAll(child)
 
                         if (i === 0) {

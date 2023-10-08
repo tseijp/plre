@@ -33,7 +33,7 @@ export const AttachObject = () => {
                         const child = f(obj, type)
 
                         initConnectAll(child)
-                        pubConnectAll(child)
+                        pubConnectAll(obj) // publish parent sicne parent code is changed if Collection
 
                         if (i !== 0) return
                         child.active = true

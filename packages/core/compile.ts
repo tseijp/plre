@@ -1,3 +1,4 @@
+import { mod } from './../../examples/docs/ui/utils'
 import { PLObject } from './types'
 import * as ShaderChunk from './shader'
 import {
@@ -16,6 +17,30 @@ export const withDirective = (shader = '', key = '') => {
 }
 
 const NEW_LINE = '\n        '
+
+export const modifyAdd = (obj: PLObject) => {
+        const { parent } = obj
+        if (!parent || !isCollection(parent.type)) return
+        const type = parent.type
+        const key = getLayerKey(obj)
+        const ind = compileFloat(obj.index)
+        const add = `vec2(${key}(pos), ${ind})`
+        const position = parent.shader.lastIndexOf('return res;')
+        let ret = `res = op${type}(res, ${add});`
+        ret += NEW_LINE
+        ret = parent.shader.slice(0, position) + ret
+        ret += parent.shader.slice(position)
+        return (parent.shader = ret)
+}
+
+export const modifyDelete = (obj: PLObject) => {
+        const { parent } = obj
+        if (!parent || !isCollection(parent.type)) return
+        const key = getLayerKey(obj)
+        // const regex = new RegExp(`.*${key}\\(pos\\).*\\n`, 'g')
+        const regex = new RegExp(`.*${key}\\([^)]*\\).*\n`, 'g')
+        return (parent.shader = parent.shader.replace(regex, ''))
+}
 
 export const compileCollection = (obj: PLObject) => {
         const { parent, children, type } = obj
@@ -65,9 +90,10 @@ export const complieVector = (arr: number[]) => {
 }
 
 export const compile = (obj: PLObject) => {
+        if (isObject(obj.type)) return compileObject(obj)
         if (isMaterial(obj.type)) return compileMaterial(obj)
-        if (isCollection(obj.type)) return (obj.shader = compileCollection(obj))
-        return compileObject(obj)
+        if (isCollection(obj.type)) return compileCollection(obj)
+        return ''
 }
 
 const getMaterial = (obj: PLObject) => {
@@ -108,18 +134,13 @@ export const collectAll = (obj: PLObject) => {
                 })
         }
 
-        if (isMaterial(obj.type))
-                obj.materialAll += compileMaterial(obj) + '\n\n'
+        if (isMaterial(obj.type)) obj.materialAll += obj.shader.trim() + '\n\n'
         else if (isObject(obj.type))
-                obj.geometryAll += compileObject(obj) + '\n\n'
+                obj.geometryAll += obj.shader.trim() + '\n\n'
         else if (isCollection(obj.type))
-                obj.geometryAll += compileCollection(obj) + '\n\n'
+                obj.geometryAll += obj.shader.trim() + '\n\n'
 
         if (!obj.parent) {
-                // console.log('\t\t\trenderAll')
-                // console.log(obj.renderAll)
-                // console.log('\t\t\tshaderAll')
-                // console.log(obj.shaderAll)
                 shaderChunkMap.set('PLRE_GEOMETRY', obj.geometryAll)
                 shaderChunkMap.set('PLRE_MATERIAL', obj.materialAll)
                 shaderChunkMap.set('PLRE_COLLECTION', obj.collectionAll)

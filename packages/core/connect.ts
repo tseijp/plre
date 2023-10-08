@@ -9,6 +9,7 @@ import {
 import { PLObject } from './types'
 import { createObject } from '.'
 import { deleteObject } from './control'
+import { modifyAdd } from './compile'
 
 const TIMEOUT_MS = 1000
 
@@ -161,6 +162,7 @@ export const subConnect = (obj: PLObject) => {
                                 child.id = addSuffix(ids, child.id)
                                 children.push(child)
                                 attachParent(obj)
+                                modifyAdd(obj)
                                 initConnect(child)
                                 subConnect(child)
                                 isUpdated = true
@@ -284,10 +286,6 @@ const notYDOCWarn = (obj: PLObject) => {
 
 const notInitWarn = (obj: PLObject) => {
         return `plre/connect pubConnect Warn: ${obj.id} is not initialized`
-}
-
-const initWarn = (obj: PLObject) => {
-        return `plre/connect subConnect Warn: ${obj.id} is already initialized`
 }
 
 const subWarn = (obj: PLObject) => {
