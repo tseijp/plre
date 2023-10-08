@@ -1,13 +1,13 @@
 import * as React from 'react'
+import * as Objects from 'plre/objects'
 import { Up } from '../../utils'
 import { Drop } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useCompile } from '../hooks'
 import { addObject, deactivateAll } from 'plre/control'
-import { getActiveObjects, isCollection } from 'plre/utils'
+import { getActiveObjects, isAddable } from 'plre/utils'
 import { DropItems } from '../../molecules'
 import { initConnectAll, pubConnectAll, subConnectAll } from 'plre/connect'
-import * as Objects from 'plre/objects'
 import type { ObjectTypes } from 'plre/types'
 
 const objectTypes = Object.keys(Objects) as ObjectTypes[]
@@ -21,9 +21,9 @@ export const AddObject = () => {
                 let objs = getActiveObjects(objectTree)
                 if (objs.length <= 0) objs = [objectTree]
                 objs.forEach((obj, i) => {
-                        if (!isCollection(obj.type)) obj = obj.parent
-                        if (!isCollection(obj.type)) obj = obj.parent
-                        if (!isCollection(obj.type)) return
+                        if (!isAddable(obj.type, type)) obj = obj.parent
+                        if (!isAddable(obj.type, type)) obj = obj.parent
+                        if (!isAddable(obj.type, type)) return
                         const child = addObject(obj, type)
 
                         initConnectAll(child)

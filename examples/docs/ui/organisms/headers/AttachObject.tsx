@@ -29,6 +29,8 @@ export const AttachObject = () => {
 
         const add = useCall((f, type: ObjectTypes) => {
                 getActiveObjects(objectTree).forEach((obj, i) => {
+                        if (!isAddable(obj.type, type)) obj = obj.parent
+                        if (!isAddable(obj.type, type)) obj = obj.parent
                         if (!isAddable(obj.type, type)) return
                         const child = f(obj, type)
 
