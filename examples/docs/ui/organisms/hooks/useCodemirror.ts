@@ -13,6 +13,7 @@ export interface CodemirrorEvent {
         target?: HTMLElement
         extensions: any[]
         libs: any
+        shader: string
         changeEditor(v: any): void
         state?: EditorState
         view?: EditorView & any
@@ -88,6 +89,7 @@ export const useCodemirror = () => {
         }))
         const self = useOnce(() => codemirrorEvent(cache.obj?.shader))
 
+        // change code when user click other object
         const changeActive = useCall((obj) => {
                 // cache to save changed code
                 cache.obj = obj
@@ -99,8 +101,10 @@ export const useCodemirror = () => {
                 const state = EditorState.create({ doc, extensions })
                 self.view.setState(state)
                 self.state = state
+                self.shader = doc
         })
 
+        // run if user change editor code
         const changeEditor = useCall((v: any) => {
                 if (!v.docChanged || !cache.obj) return
                 const code = v.state.doc.toString()
@@ -109,13 +113,19 @@ export const useCodemirror = () => {
                 cache.obj.isEditted = true
         })
 
+        // update editor code if subscribe object change
+        const compileShader = useCall(() => {
+                if (cache.obj && cache.obj.shader !== self.shader)
+                        changeActive(cache.obj)
+        })
+
         useEffect(() => {
                 // @ts-ignore
-                editorTree({ changeActive })
+                editorTree({ changeActive, compileShader })
                 self({ changeEditor })
                 return () => {
                         // @ts-ignore
-                        editorTree({ changeActive })
+                        editorTree({ changeActive, compileShader })
                         self({ changeEditor })
                 }
         }, [])
