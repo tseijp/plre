@@ -11,25 +11,28 @@ export interface TimelineProps {
 export const Timeline = (props: TimelineProps) => {
         const [ws, set] = React.useState([])
         const { editorItem } = props
+        const handleOpen = () => {
+                const params = new URLSearchParams(window.location.search)
+
+                const roomId = params.get('roomId') || '0'
+                const url = `http://localhost:3000/?roomId=${roomId}`
+                const w = window.open(url, '_blank')
+                w.focus()
+                set((p) => [...p, w])
+        }
         return (
                 <Flex backgroundColor="#303030">
                         <Header editorItem={editorItem}>
                                 <div
-                                        onClick={() => {
-                                                const w = window.open(
-                                                        'http://localhost:3000/?roomId=0',
-                                                        '_blank'
-                                                )
-                                                w.focus()
-                                                set((p) => [...p, w])
-                                        }}
+                                        onClick={handleOpen}
                                         style={{
                                                 height: '20px',
                                                 cursor: 'pointer',
                                                 userSelect: 'none',
+                                                fontSize: 12,
                                                 border: '1px solid #696969',
                                                 background: '#535353',
-                                                lineHeight: '20px',
+                                                lineHeight: '18px',
                                                 borderRadius: '4px',
                                         }}
                                 >

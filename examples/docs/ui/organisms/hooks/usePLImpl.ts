@@ -23,7 +23,7 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                                 self.mount()
                         } else self.clean()
                 },
-                async mount() {
+                mount() {
                         self.el = self.target
                         self.vs = cache.vs
                         self.fs = cache.fs
@@ -36,7 +36,6 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                         self.el.addEventListener('mousemove', self.mousemove)
 
                         // @ts-ignore plre specific
-                        editorTree({ compileShader })
                 },
                 clean() {
                         self(memo)
@@ -49,10 +48,8 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                                 gl.deleteProgram(pg)
                         } catch (e) {
                                 console.warn(e)
+                                editorTree.catchError?.(e)
                         }
-
-                        // @ts-ignore plre specific
-                        editorTree({ compileShader })
                 },
         }) as Partial<PL>
 
@@ -82,17 +79,15 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
         }
 
         useEffect(() => {
+                // @ts-ignore register event to update uniform by subscribe
+                editorTree({ updateUniform, compileShader })
                 ;(async () => {
                         try {
-                                // recompile shader
                                 self.el = self.target = wheel.target
                                 cache.fs = await resolve(cache.fs)
                                 self.mount?.()
                                 // @ts-ignore
                                 self.on?.()
-
-                                // @ts-ignore register event to update uniform by subscribe
-                                editorTree({ updateUniform })
 
                                 // Pub shader code if compile succeeds
                                 editorTree.trySuccess?.()
@@ -103,7 +98,7 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                 })()
                 return () => {
                         // @ts-ignore
-                        editorTree({ updateUniform })
+                        editorTree({ updateUniform, compileShader })
                 }
         }, [self])
 

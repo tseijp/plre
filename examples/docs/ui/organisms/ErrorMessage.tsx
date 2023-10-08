@@ -11,14 +11,18 @@ export interface ErrorMessageProps {
 export const ErrorMessage = (props: ErrorMessageProps) => {
         const { self } = props
         const { editorTree } = useCtx()
-        const [err, set] = useState('')
+        const [display, setDisplay] = useState(false)
+        const [err, setErr] = useState('')
         const cache = useOnce(() => ({ err }))
         const refs = useRefs()
 
         useEffect(() => {
                 const { flex, box } = refs as any
                 if (!flex || !box || !flex.current || !box.current) return
-                const _flex = () => set('')
+                const _flex = () => {
+                        setErr('')
+                        if (cache.err) setDisplay(true)
+                }
                 const _box = (e: Event) => e.stopPropagation()
                 flex.current.addEventListener('click', _flex)
                 box.current.addEventListener('click', _box)
@@ -34,15 +38,20 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
                 // @ts-ignore
                 editorTree({
                         trySuccess() {
-                                set('')
-                                cache.err = ''
+                                setErr((cache.err = ''))
+                                setDisplay(false)
                         },
                         catchError(e: string) {
-                                set(e + '')
-                                cache.err = e + ''
+                                setErr((cache.err = e + ''))
+                                setDisplay(false)
                         },
                 })
         }, [self])
+
+        const handleClickShowError = () => {
+                setErr(cache.err)
+                setDisplay(false)
+        }
 
         return (
                 <>
@@ -95,11 +104,7 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
                         </Flex>
                         <div
                                 style={{
-                                        display: !cache.err
-                                                ? 'none'
-                                                : err
-                                                ? 'none'
-                                                : 'block',
+                                        display: display ? 'block' : 'none',
                                         position: 'absolute',
                                         left: '1.5rem',
                                         fontSize: '1.5rem',
@@ -108,7 +113,7 @@ export const ErrorMessage = (props: ErrorMessageProps) => {
                                         padding: '0.1rem 1rem',
                                         backgroundColor: '#E83A46',
                                 }}
-                                onClick={() => set(cache.err)}
+                                onClick={handleClickShowError}
                         >
                                 Show Error
                         </div>

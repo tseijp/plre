@@ -10,7 +10,7 @@ import { EditorState, PL, PLObject } from 'plre/types'
 import { useCompile_ } from '../../organisms'
 
 let isDev = false
-// isDev = process.env.NODE_ENV === 'development'
+isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false
@@ -130,7 +130,7 @@ export const createWebrtc = (
                 // random roomId if dev
                 if (self.isDev) self.roomId = floor(random() * 100) + ''
 
-                const query = `?roomId=${self.roomId}&userId=${self.userId}`
+                const query = `?userId=${self.userId}&roomId=${self.roomId}`
 
                 if (self.isInit) return
                 self.isInit = true
