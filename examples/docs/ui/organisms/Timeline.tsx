@@ -26,13 +26,13 @@ export const Timeline = (props: TimelineProps) => {
                                 <div
                                         onClick={handleOpen}
                                         style={{
-                                                height: '20px',
                                                 cursor: 'pointer',
-                                                userSelect: 'none',
+                                                height: '20px',
                                                 fontSize: 12,
+                                                lineHeight: '18px',
+                                                userSelect: 'none',
                                                 border: '1px solid #696969',
                                                 background: '#535353',
-                                                lineHeight: '18px',
                                                 borderRadius: '4px',
                                         }}
                                 >
@@ -46,12 +46,13 @@ export const Timeline = (props: TimelineProps) => {
                                                 set([])
                                         }}
                                         style={{
-                                                height: '20px',
                                                 cursor: 'pointer',
+                                                height: '20px',
+                                                fontSize: 12,
+                                                lineHeight: '18px',
                                                 userSelect: 'none',
                                                 border: '1px solid #696969',
                                                 background: '#535353',
-                                                lineHeight: '20px',
                                                 borderRadius: '4px',
                                                 display:
                                                         ws.length > 0

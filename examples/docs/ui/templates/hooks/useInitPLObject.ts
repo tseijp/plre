@@ -1,5 +1,5 @@
 import { createObject } from 'plre'
-import { getLayerKey, withoutMat } from 'plre/utils'
+import { getLayerKey } from 'plre/utils'
 import { compile } from 'plre/compile'
 import { useOnce } from '../../atoms'
 
@@ -29,8 +29,8 @@ float ${key}(vec3 pos) {
   vec3 p = abs(pos) - boxFrameSize;
   vec3 q = abs(p + boxFrameThickness) - boxFrameThickness;
   return min3(
-    length(max(vec3(p.x, q.y, q.z) ,0.)) + min(max3(p.x, q.y, q.z), 0.),
-    length(max(vec3(q.x, p.y, q.z) ,0.)) + min(max3(q.x, p.y, q.z), 0.),
+    length(max(vec3(p.x, q.y, q.z), 0.)) + min(max3(p.x, q.y, q.z), 0.),
+    length(max(vec3(q.x, p.y, q.z), 0.)) + min(max3(q.x, p.y, q.z), 0.),
     length(max(vec3(q.x, q.y, p.z), 0.)) + min(max3(q.x, q.y, p.z), 0.)
   );
 }
@@ -81,13 +81,13 @@ export const createInitPLObject = () => {
         const boxFrame = createObject('boxFrame', { color: [0, 0, 0] })
         const U = createObject('U', { children: [I, boxFrame], active: true })
 
-        M1.shader = gridMaterial(getLayerKey(M1))
-        M2.shader = gridMaterial(getLayerKey(M2))
-        box.shader = boxSDF(getLayerKey(box))
-        formula.shader = formulaSDF(getLayerKey(formula))
-        boxFrame.shader = boxFrameSDF(getLayerKey(boxFrame))
-        I.shader = compile(I)
-        U.shader = compile(U)
+        M1.shader = gridMaterial(getLayerKey(M1)).trim()
+        M2.shader = gridMaterial(getLayerKey(M2)).trim()
+        box.shader = boxSDF(getLayerKey(box)).trim()
+        formula.shader = formulaSDF(getLayerKey(formula)).trim()
+        boxFrame.shader = boxFrameSDF(getLayerKey(boxFrame)).trim()
+        I.shader = compile(I).trim()
+        U.shader = compile(U).trim()
 
         return U
 }
