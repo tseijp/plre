@@ -17,7 +17,7 @@ export type ObjectTypes =
         | 'icosahedron'
         | 'link'
         | 'octahedron'
-        | 'octagonPrism'
+        | 'octogonPrism'
         | 'plane'
         | 'pyramid'
         | 'sphere'

@@ -6,9 +6,10 @@ import { LayerItemField } from './LayerItemField'
 import { LayerItemIcon } from './LayerItemIcon'
 import { Draggable } from '../../molecules/Draggable'
 import { useCall, useForceUpdate } from '../../atoms'
+import { OBJECT_ICONS } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { DragState } from '../../atoms'
-import type { PLObject } from 'plre/types'
+import type { EditorType, PLObject } from 'plre/types'
 
 export interface LayerItemHandlers {
         mount(obj: PLObject, id: string): void
@@ -77,6 +78,8 @@ export const LayerItem = (props: LayerItemProps) => {
         // debug
         const { memo: _ = {} } = obj
 
+        const Icon = OBJECT_ICONS[obj.type]
+
         return (
                 <div
                         style={{
@@ -103,7 +106,9 @@ export const LayerItem = (props: LayerItemProps) => {
                                         onClick={handleClickCollapse}
                                 />
                                 <LayerItemIcon active={active}>
-                                        <div data-id={id}>{obj.type?.[0]}</div>
+                                        <div data-id={id}>
+                                                {Icon && <Icon />}
+                                        </div>
                                 </LayerItemIcon>
                                 <LayerItemField
                                         isEditted={obj.isEditted}

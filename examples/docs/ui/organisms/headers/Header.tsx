@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Flex, Drop } from '../../atoms'
+import { Flex } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { EditorState, EditorType } from 'plre/types'
 import { useCtx } from '../../ctx'
@@ -20,7 +20,7 @@ export const Header = (props: HeaderProps) => {
                 editorTree.forceUpdate()
         }
 
-        const type = editorItem.type[0].toUpperCase()
+        const type = editorItem.type
 
         return (
                 <Flex

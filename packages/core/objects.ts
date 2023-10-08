@@ -147,7 +147,7 @@ float ${key}(vec3 pos) {
 }
 `
 
-export const pylamid = (key = '') => /* CPP */ `
+export const pyramid = (key = '') => /* CPP */ `
 #include "lygia/sdf/pyramidSDF.glsl"
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
@@ -189,7 +189,7 @@ float ${key}(vec3 pos) {
 }
 `
 
-export const triPrismSDF = (key = '') => /* CPP */ `
+export const triPrism = (key = '') => /* CPP */ `
 #include "lygia/sdf/triPrismSDF.glsl"
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {

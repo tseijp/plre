@@ -15,6 +15,7 @@ export const DropItems = (props: DropItemsProps) => {
                         padding="0.5rem"
                         alignItems="start"
                         borderRadius="5px"
+                        whiteSpace="nowrap"
                 >
                         {items.map(children)}
                 </Flex>

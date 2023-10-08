@@ -15,6 +15,7 @@ export const LayerItemIcon = (props: LayerItemIconProps) => {
                         height="20px"
                         marginLeft="2px"
                         userSelect="none"
+                        lineHeight="15px"
                         borderRadius="4px"
                         border={active ? '1px solid #696969' : ''}
                         background={active ? '#535353' : ''}

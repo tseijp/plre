@@ -2,10 +2,11 @@ import * as React from 'react'
 import { Drop } from '../../atoms'
 import { DropItems } from '../../molecules'
 import { Up } from '../../utils'
+import { WINDOW_ICONS } from '../../atoms'
 import type { EditorType } from 'plre/types'
 
 export interface SwitchEditorProps {
-        type: string
+        type: EditorType
         onClick(type: EditorType): void
 }
 
@@ -13,18 +14,28 @@ const editorItems = ['viewport', 'viewlayer', 'timeline', 'properties']
 
 export const SwitchEditor = (props: SwitchEditorProps) => {
         const { type, onClick } = props
-        const render = (type: EditorType) => (
-                <div
-                        onClick={() => onClick(type)}
-                        key={type}
-                        style={{
-                                width: '100%',
-                                cursor: 'pointer',
-                        }}
-                >
-                        {Up(type)}
-                </div>
-        )
+
+        const Icon = WINDOW_ICONS[type]
+
+        const render = (type: EditorType) => {
+                const Icon_ = WINDOW_ICONS[type]
+                return (
+                        <div
+                                onClick={() => onClick(type)}
+                                key={type}
+                                style={{
+                                        gap: '0.5rem',
+                                        width: '100%',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                }}
+                        >
+                                {Icon_ && <Icon_ />}
+                                {Up(type)}
+                        </div>
+                )
+        }
 
         return (
                 <Drop marginTop="2px">
@@ -35,7 +46,7 @@ export const SwitchEditor = (props: SwitchEditorProps) => {
                                         textAlign: 'center',
                                 }}
                         >
-                                {type}
+                                {Icon && <Icon />}
                         </span>
                         <DropItems items={editorItems}>{render}</DropItems>
                 </Drop>

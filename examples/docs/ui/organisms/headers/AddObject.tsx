@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Objects from 'plre/objects'
 import { Up } from '../../utils'
-import { Drop } from '../../atoms'
+import { Drop, OBJECT_ICONS } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useCompile } from '../hooks'
 import { addObject, deactivateAll } from 'plre/control'
@@ -39,18 +39,25 @@ export const AddObject = () => {
                 compile()
         }
 
-        const render = (type: ObjectTypes) => (
-                <div
-                        onClick={() => handleClick(type)}
-                        key={type}
-                        style={{
-                                width: '100%',
-                                cursor: 'pointer',
-                        }}
-                >
-                        {Up(type)}
-                </div>
-        )
+        const render = (type: ObjectTypes) => {
+                const Icon = OBJECT_ICONS[type]
+                return (
+                        <div
+                                onClick={() => handleClick(type)}
+                                key={type}
+                                style={{
+                                        gap: '0.5rem',
+                                        width: '100%',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                }}
+                        >
+                                {Icon && <Icon />}
+                                {Up(type)}
+                        </div>
+                )
+        }
 
         return (
                 <Drop>

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Up } from '../../utils'
-import { Drop, useCall } from '../../atoms'
+import { Drop, ATTACH_ICONS, useCall } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useMutable } from 'plre/react'
 import { useCompile } from '../hooks'
@@ -70,18 +70,25 @@ export const AttachObject = () => {
                 },
         })
 
-        const render = (key: keyof typeof handles) => (
-                <div
-                        onClick={() => handles[key]()}
-                        key={key}
-                        style={{
-                                width: '100%',
-                                cursor: 'pointer',
-                        }}
-                >
-                        {Up(key)}
-                </div>
-        )
+        const render = (key: keyof typeof handles) => {
+                const Icon = ATTACH_ICONS[key]
+                return (
+                        <div
+                                onClick={() => handles[key]()}
+                                key={key}
+                                style={{
+                                        gap: '0.5rem',
+                                        width: '100%',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                }}
+                        >
+                                {Icon && <Icon />}
+                                {Up(key)}
+                        </div>
+                )
+        }
 
         return (
                 <Drop>

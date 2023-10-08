@@ -1,6 +1,6 @@
 export * from './axis'
 export * from './hooks'
-// export * from './icon'
+export * from './icon'
 export * from './Arrow'
 export * from './Box'
 export * from './Drop'
