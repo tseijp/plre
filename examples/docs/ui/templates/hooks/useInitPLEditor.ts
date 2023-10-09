@@ -2,7 +2,7 @@ import { useForceUpdate, useOnce } from '../../atoms'
 import { createEditor } from 'plre'
 
 export const createPLEditor = (forceUpdate = () => {}) => {
-        // const viewport = createEditor('viewlayer')
+        // const viewport = createEditor('tutorial')
         const viewport = createEditor('viewport')
         const timeline = createEditor('timeline')
         const viewlayer = createEditor('viewlayer')

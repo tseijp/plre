@@ -27,6 +27,7 @@ export const Header = (props: HeaderProps) => {
                         row
                         gap="1rem"
                         height="25px"
+                        paddingTop="1px"
                         overflow="visible"
                         justifyContent="start"
                         paddingLeft="6px"

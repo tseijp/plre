@@ -10,7 +10,7 @@ float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
   vec3 boxSize = vec3(1.);
   vec3 d = abs(pos) - boxSize;
-  return min(max(d.x, max(d.y, d.z)), 0.0) + length(max(d, 0.0));
+  return min(max(d.x, max(d.y, d.z)), 0.) + length(max(d, 0.));
 }
 `
 
@@ -39,9 +39,12 @@ float ${key}(vec3 pos) {
 const formulaSDF = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 
-float ${key}_Formula(vec3 pos) {
-  TRANSFORM(${key}_M, pos);
-  // return pos.x * pos.x + pos.z * pos.z - 1.0;
+float ${key}_F(vec3 pos) {
+  /**
+   * Please try to remove ↓this comment out to add new formula!
+   */
+  // return pos.x * pos.x + pos.z * pos.z - 1.;
+
   float sigma = .3;
   float a = pos.x * pos.x + pos.z * pos.z;
   float b = -.5 * a / (sigma * sigma);
@@ -50,10 +53,15 @@ float ${key}_Formula(vec3 pos) {
 }
 
 float ${key}(vec3 pos) {
-  TRANSFORM(${key}_M, pos);
-  float f = ${key}_Formula(pos);
-  float formulaThickness = .05;
-  return min(abs(pos.y - f) - formulaThickness, 30.);
+  TRANSFORM(U_I_formula_M, pos);
+  float f = U_I_formula_F(pos);
+
+  /**
+   * Please try to remove ↓this comment out to add formula thickness!
+   */
+  // return min(abs(pos.y - f) - .05, 30.);
+
+  return pos.y - f;
 }
 `
 
@@ -63,23 +71,26 @@ const gridMaterial = (key = '') => /* CPP */ `
 #endif
 vec3 ${key}(vec3 pos, vec3 nor) {
   vec3 light = normalize(vec3(0., 0., 1));
-  vec3 col = vec3(dot(nor, light)) * 0.5 + 0.5;
+  vec3 col = vec3(dot(nor, light)) * .5 + .5;
   col *= grid(pos.x);
   col *= grid(pos.z);
   return col;
 }
 `
-
 export const createInitPLObject = () => {
         // X^2 + y^2 formula
         const M1 = createObject('Material', { id: 'Material' })
-        const formula = createObject('formula', { children: [M1] })
+        const formula = createObject('formula', {
+                children: [M1],
+                color: [1, 0, 1],
+                active: true,
+        })
         const M2 = createObject('Material', { id: 'Material' })
-        const box = createObject('box', { color: null, children: [M2] })
+        const box = createObject('box', { color: [1, 0, 1], children: [M2] })
         const I = createObject('I', { children: [formula, box] })
         // box frame
         const boxFrame = createObject('boxFrame', { color: [0, 0, 0] })
-        const U = createObject('U', { children: [I, boxFrame], active: true })
+        const U = createObject('U', { children: [I, boxFrame] })
 
         M1.shader = gridMaterial(getLayerKey(M1)).trim()
         M2.shader = gridMaterial(getLayerKey(M2)).trim()

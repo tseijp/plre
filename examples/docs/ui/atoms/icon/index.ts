@@ -10,12 +10,14 @@ import { OperationSIcon } from './OperationSIcon'
 import { OperationUIcon } from './OperationUIcon'
 
 import { TransformIcon } from './TransformIcon'
+import { LaptopIcon } from './LaptopIcon'
 
 export const WINDOW_ICONS: Partial<Record<EditorType, any>> = {
         viewport: FrameIcon,
         timeline: AvatarIcon,
         viewlayer: LayersIcon,
         properties: CodeIcon,
+        tutorial: LaptopIcon,
 }
 
 export const OBJECT_ICONS: Partial<Record<ObjectTypes, any>> = {
@@ -47,11 +49,18 @@ export const OBJECT_ICONS: Partial<Record<ObjectTypes, any>> = {
 }
 
 export const ATTACH_ICONS = {
-        delete: CrossIcon,
-        union: OperationUIcon,
-        intersection: OperationIIcon,
-        subtraction: OperationSIcon,
-        material: ShadowIcon,
+        Delete: CrossIcon,
+        'Add Union': OperationUIcon,
+        'Add Intersection': OperationIIcon,
+        'Add Subtraction': OperationSIcon,
+        'Add Material': ShadowIcon,
+        'Add Landscape': ShadowIcon,
+        'Add Tetrahedron': ShadowIcon,
+        'Add MengerSponge': ShadowIcon,
+        'Add Mandelbulb': ShadowIcon,
+        'Add QuaternionMandelbrot': ShadowIcon,
+        'Add QuaternionJuliaSet': ShadowIcon,
+        'Add QuaternionSet': ShadowIcon,
 }
 
 export * from './AvatarIcon'

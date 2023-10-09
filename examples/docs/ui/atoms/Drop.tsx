@@ -3,6 +3,7 @@ import { useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { Arrow } from './Arrow'
 import { useCall } from './hooks'
+import { Button } from './Button'
 
 export interface DropProps extends CSSProperties {
         isOpen?: boolean
@@ -25,25 +26,15 @@ export const Drop = (props: DropProps) => {
                         onBlur={() => setIsOpen(false)}
                         style={{ position: 'relative', lineHeight: 0 }}
                 >
-                        <div
+                        <Button
+                                paddingRight="5px"
+                                lineHeight="18px"
                                 onClick={() => setIsOpen((p) => !p)}
-                                style={{
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        padding: '0 2px',
-                                        alignItems: 'center',
-                                        userSelect: 'none',
-                                        lineHeight: 'normal',
-                                        background: '#282828',
-                                        borderRadius: '4px',
-                                        border: '1px solid #3D3D3D',
-                                        justifyContent: 'center',
-                                        ...other,
-                                }}
+                                {...other}
                         >
                                 {children[0]}
-                                <Arrow fontSize="7px" />
-                        </div>
+                                <Arrow marginLeft="1px" fontSize="7px" />
+                        </Button>
                         <div
                                 style={{
                                         position: 'absolute',

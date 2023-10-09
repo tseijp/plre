@@ -3,8 +3,8 @@ export const boxFrame = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec3 boxFrameSize = vec3(1.0);
-  float boxFrameThickness = 0.1;
+  vec3 boxFrameSize = vec3(1.);
+  float boxFrameThickness = .1;
   return boxFrameSDF(pos, boxFrameSize, boxFrameThickness);
 }
 `
@@ -14,7 +14,7 @@ export const box = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec3 boxSize = vec3(1.0);
+  vec3 boxSize = vec3(1.);
   return boxSDF(pos, boxSize);
 }
 `
@@ -24,9 +24,9 @@ export const capsule = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec3 capsuleA = vec3(0.0, -0.5, 0.0);
-  vec3 capsuleB = vec3(0.0, 0.5, 0.0);
-  float capsuleRadius = 1.0;
+  vec3 capsuleA = vec3(0., -.5, 0.);
+  vec3 capsuleB = vec3(0., .5, 0.);
+  float capsuleRadius = 1.;
   return capsuleSDF(pos, capsuleA, capsuleB, capsuleRadius);
 }
 `
@@ -36,8 +36,8 @@ export const cone = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec2 coneSize = vec2(1.0);
-  float coneRadius = 1.0;
+  vec2 coneSize = vec2(1.);
+  float coneRadius = 1.;
   return coneSDF(pos, coneSize, coneRadius);
 }
 `
@@ -47,9 +47,9 @@ export const cylinder = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec3 cylinderA = vec3(0.0, -1.0, 0.0);
-  vec3 cylinderB = vec3(0.0, 1.0, 0.0);
-  float cylinderRadius = 1.0;
+  vec3 cylinderA = vec3(0., -1., 0.);
+  vec3 cylinderB = vec3(0., 1., 0.);
+  float cylinderRadius = 1.;
   return cylinderSDF(pos, cylinderA, cylinderB, cylinderRadius);
 }
 `
@@ -59,7 +59,7 @@ export const dodecahedron = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float dodecahedronRadius = 1.0;
+  float dodecahedronRadius = 1.;
   return dodecahedronSDF(pos, dodecahedronRadius);
 }
 `
@@ -69,18 +69,17 @@ export const ellipsoid = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec3 ellipsoidRadius = vec3(0.5, 1.0, 0.5);
+  vec3 ellipsoidRadius = vec3(.5, 1., .5);
   return ellipsoidSDF(pos, ellipsoidRadius);
 }
 `
 
 export const formula = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
-float ${key}(vec3 p) {
+float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float f = p.x * p.x + p.z * p.z - 1.0;
-  float formulaThickness = .05;
-  return min(abs(p.y - f) - formulaThickness, 30.);
+  float f = pos.x * pos.x + pos.z * pos.z - 1.;
+  return min(abs(pos.y - f) - .5, 30.);
 }
 `
 
@@ -89,7 +88,7 @@ export const hexPrism = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec2 hexPrismSize = vec2(1.0);
+  vec2 hexPrismSize = vec2(1.);
   return hexPrismSDF(pos, hexPrismSize);
 }
 `
@@ -99,7 +98,7 @@ export const icosahedron = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float icosahedronRadius = 1.0;
+  float icosahedronRadius = 1.;
   return icosahedronSDF(pos, icosahedronRadius);
 }
 `
@@ -109,9 +108,9 @@ export const link = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float linkLength = 0.5;
-  float linkRadius1 = 0.5;
-  float linkRadius2 = 0.1;
+  float linkLength = .5;
+  float linkRadius1 = .5;
+  float linkRadius2 = .1;
   return linkSDF(pos, linkLength, linkRadius1, linkRadius2);
 }
 `
@@ -121,7 +120,7 @@ export const octahedron = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float octahedronSize = 1.0;
+  float octahedronSize = 1.;
   return octahedronSDF(pos, octahedronSize);
 }
 `
@@ -131,8 +130,8 @@ export const octogonPrism = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float octogonPrismRadius = 1.0;
-  float octogonPrismHeight = 1.0;
+  float octogonPrismRadius = 1.;
+  float octogonPrismHeight = 1.;
   return octogonPrismSDF(pos, octogonPrismRadius, octogonPrismHeight);
 }
 `
@@ -142,7 +141,7 @@ export const plane = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec3 planeSize = vec3(1.0);
+  vec3 planeSize = vec3(1.);
   return planeSDF(pos);
 }
 `
@@ -152,7 +151,7 @@ export const pyramid = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float pyramidHeight = 1.0;
+  float pyramidHeight = 1.;
   return pyramidSDF(pos, pyramidHeight);
 }
 `
@@ -162,7 +161,7 @@ export const sphere = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float sphereSize = 1.0;
+  float sphereSize = 1.;
   return sphereSDF(pos, sphereSize);
 }
 `
@@ -172,7 +171,7 @@ export const tetrahedron = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  float tetrahedronHeight = 1.0;
+  float tetrahedronHeight = 1.;
   return tetrahedronSDF(pos, tetrahedronHeight);
 }
 `
@@ -182,9 +181,9 @@ export const torus = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec2 torusSize = vec2(1.0);
-  float torusRadiusA = 1.0;
-  float torusRadiusB = 1.0;
+  vec2 torusSize = vec2(1.);
+  float torusRadiusA = 1.;
+  float torusRadiusB = 1.;
   return torusSDF(pos, torusSize, torusRadiusA, torusRadiusB);
 }
 `
@@ -194,7 +193,7 @@ export const triPrism = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  vec2 triPrismSize = vec2(1.0);
+  vec2 triPrismSize = vec2(1.);
   return triPrismSDF(pos, triPrismSize);
 }
 `

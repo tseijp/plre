@@ -5,6 +5,7 @@ export type Vec3<T = number> = [T, T, T]
 export type Mat4<T = number> = [T, T, T, T, T, T, T, T, T, T, T, T, T, T, T, T]
 
 export type ObjectTypes =
+        | 'object'
         | 'boxFrame'
         | 'box'
         | 'capsule'
@@ -36,6 +37,7 @@ export type EditorType =
         | 'timeline'
         | 'viewlayer'
         | 'properties'
+        | 'tutorial'
         | 'I'
 
 export interface EditorState {

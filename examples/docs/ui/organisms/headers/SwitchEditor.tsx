@@ -10,7 +10,13 @@ export interface SwitchEditorProps {
         onClick(type: EditorType): void
 }
 
-const editorItems = ['viewport', 'viewlayer', 'timeline', 'properties']
+const editorItems = [
+        'viewport',
+        'viewlayer',
+        'timeline',
+        'properties',
+        'tutorial',
+]
 
 export const SwitchEditor = (props: SwitchEditorProps) => {
         const { type, onClick } = props
@@ -38,10 +44,13 @@ export const SwitchEditor = (props: SwitchEditorProps) => {
         }
 
         return (
-                <Drop marginTop="2px">
+                <Drop>
                         <span
                                 style={{
+                                        display: 'flex',
                                         height: 18,
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
                                         padding: '0 0.25rem',
                                         textAlign: 'center',
                                 }}

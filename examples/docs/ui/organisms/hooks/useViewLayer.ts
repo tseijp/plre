@@ -3,7 +3,7 @@ import { PLObject } from 'plre/types'
 import { useMutable } from 'plre/react'
 import { deactivateAll, moveObject } from 'plre/control'
 import { useOnce } from '../../atoms'
-import { isAddable } from 'plre/utils'
+import { getActiveObjects, isAddable } from 'plre/utils'
 import { useCtx } from '../../ctx'
 import { useCompile } from '.'
 import type { LayerItemHandlers } from '../layers'
@@ -24,7 +24,9 @@ export const useViewLayer = () => {
         const compile = useCompile()
         const { editorTree, objectTree } = useCtx()
         const [hovered, setHovered] = useState<PLObject | null>(null)
-        const [selected, setSelected] = useState<PLObject | null>(objectTree)
+        const [selected, setSelected] = useState<PLObject | null>(
+                getActiveObjects(objectTree)[0]
+        )
         const cache = useOnce<ViewLayerCache>(() => ({ id2Item: new Map() }))
 
         const handlers = useMutable<LayerItemHandlers>({

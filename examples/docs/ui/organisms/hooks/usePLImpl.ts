@@ -32,6 +32,8 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                         uniformMat4All(self as PL, objectTree)
                         self.resize()
                         frame.start()
+                        // @ts-ignore
+                        self({ mousemove: self.on })
                         window.addEventListener('resize', self.resize)
                         self.el.addEventListener('mousemove', self.mousemove)
 

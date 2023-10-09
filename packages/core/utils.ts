@@ -133,7 +133,7 @@ export const mat4 = (
         scale = [1, 1, 1],
         ret: number[] = []
 ) => {
-        const [px, py, pz] = position
+        const [px, py, pz] = position.map((p) => -p)
         const [ax, ay, az] = rotation.map(cos)
         const [bx, by, bz] = rotation.map(sin)
         const [sx, sy, sz] = scale.map((s) => 1 / s)

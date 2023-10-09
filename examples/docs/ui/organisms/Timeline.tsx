@@ -3,6 +3,7 @@ import { Box, Flex } from '../atoms'
 import { Header } from './headers/Header'
 import { UserProfile, UserProfiles } from './users'
 import type { EditorState } from 'plre/types'
+import { Button } from '../atoms/Button'
 
 export interface TimelineProps {
         editorItem: EditorState
@@ -23,46 +24,27 @@ export const Timeline = (props: TimelineProps) => {
         return (
                 <Flex backgroundColor="#303030">
                         <Header editorItem={editorItem}>
-                                <div
+                                <Button
+                                        fontSize="16px"
+                                        padding="0 2px"
                                         onClick={handleOpen}
-                                        style={{
-                                                cursor: 'pointer',
-                                                height: '20px',
-                                                fontSize: 12,
-                                                lineHeight: '18px',
-                                                userSelect: 'none',
-                                                border: '1px solid #696969',
-                                                background: '#535353',
-                                                borderRadius: '4px',
-                                        }}
                                 >
                                         Open
-                                </div>
-                                <div
+                                </Button>
+                                <Button
+                                        fontSize="16px"
+                                        padding="0 2px"
+                                        display={ws.length > 0 ? '' : 'none'}
                                         onClick={() => {
                                                 ws.forEach((w) => {
                                                         w.close()
                                                 })
                                                 set([])
                                         }}
-                                        style={{
-                                                cursor: 'pointer',
-                                                height: '20px',
-                                                fontSize: 12,
-                                                lineHeight: '18px',
-                                                userSelect: 'none',
-                                                border: '1px solid #696969',
-                                                background: '#535353',
-                                                borderRadius: '4px',
-                                                display:
-                                                        ws.length > 0
-                                                                ? ''
-                                                                : 'none',
-                                        }}
                                 >
                                         Close
                                         {ws.length > 1 ? ' ' + ws.length : ''}
-                                </div>
+                                </Button>
                         </Header>
                         <Flex
                                 gap="1rem"

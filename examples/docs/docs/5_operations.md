@@ -1,10 +1,9 @@
 ---
+marp: true
 hide_table_of_contents: true
-sidebar_position: -1
-title: 'Introducton'
-description: 'Introducton'
+title: 'Operations'
+description: 'Operations'
 image: https://github.com/tseijp.png
-
 keywords:
         [
                 glsl,
@@ -19,5 +18,3 @@ keywords:
         ]
 date: 2023-01-01
 ---
-
-# Introduction

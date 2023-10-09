@@ -1,5 +1,4 @@
 import * as React from 'react'
-import { Up } from '../../utils'
 import { Drop, ATTACH_ICONS, useCall } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useMutable } from 'plre/react'
@@ -10,28 +9,26 @@ import {
         deactivateAll,
         deleteObject,
 } from 'plre/control'
+import { addFractal } from './fractal'
+import { addLandscape } from './landscape'
 import { getActiveObjects, isAddable } from 'plre/utils'
 import { DropItems } from '../../molecules'
 import { delConnectAll, initConnectAll, pubConnectAll } from 'plre/connect'
 import { ObjectTypes } from 'plre/types'
 
-interface AttachObjectHandles {
-        delete(): void
-        union(): void
-        subtraction(): void
-        intersection(): void
-        material(): void
-}
+type AttachObjectHandles = Record<keyof typeof ATTACH_ICONS, () => void>
 
 export const AttachObject = () => {
         const { editorTree, objectTree } = useCtx()
         const compile = useCompile()
 
         const add = useCall((f, type: ObjectTypes) => {
-                getActiveObjects(objectTree).forEach((obj, i) => {
-                        if (!isAddable(obj.type, type)) obj = obj.parent
-                        if (!isAddable(obj.type, type)) obj = obj.parent
-                        if (!isAddable(obj.type, type)) return
+                let objs = getActiveObjects(objectTree)
+                if (objs.length <= 0) objs = [objectTree]
+                objs.forEach((obj, i) => {
+                        if (!isAddable(obj?.type, type)) obj = obj?.parent
+                        if (!isAddable(obj?.type, type)) obj = obj?.parent
+                        if (!isAddable(obj?.type, type)) return
                         const child = f(obj, type)
 
                         initConnectAll(child)
@@ -43,9 +40,8 @@ export const AttachObject = () => {
                         compile()
                 })
         })
-
         const handles = useMutable<AttachObjectHandles>({
-                delete() {
+                Delete() {
                         getActiveObjects(objectTree).forEach((obj) => {
                                 deleteObject(obj)
                                 delConnectAll(obj) // !!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -54,19 +50,39 @@ export const AttachObject = () => {
                         editorTree.changeActive?.(null)
                         compile()
                 },
-                union() {
+                'Add Union'() {
                         add(addCollection, 'U')
                 },
-                subtraction() {
+                'Add Subtraction'() {
                         add(addCollection, 'S')
                 },
-                intersection() {
+                'Add Intersection'() {
                         add(addCollection, 'I')
                 },
-                material() {
+                'Add Material'() {
                         add(addMaterial, 'Material')
                         deactivateAll(objectTree)
-                        compile()
+                },
+                'Add Landscape'() {
+                        add(addLandscape, 'object')
+                },
+                'Add Tetrahedron'() {
+                        add(addFractal('tetrahedron'), 'object')
+                },
+                'Add MengerSponge'() {
+                        add(addFractal('mengerSponge'), 'object')
+                },
+                'Add Mandelbulb'() {
+                        add(addFractal('mandelbulb'), 'object')
+                },
+                'Add QuaternionMandelbrot'() {
+                        add(addFractal('quaternionMandelbrot'), 'object')
+                },
+                'Add QuaternionJuliaSet'() {
+                        add(addFractal('quaternionJuliaSet'), 'object')
+                },
+                'Add QuaternionSet'() {
+                        add(addFractal('quaternionSet'), 'object')
                 },
         })
 
@@ -85,7 +101,7 @@ export const AttachObject = () => {
                                 }}
                         >
                                 {Icon && <Icon />}
-                                {Up(key)}
+                                {key}
                         </div>
                 )
         }

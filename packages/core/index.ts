@@ -20,7 +20,7 @@ export const createObject = (
                 position = [0, 0, 0],
                 rotation = [0, 0, 0],
                 scale = [1, 1, 1],
-                color = [1, 1, 1],
+                color = [1, 0, 1],
                 matrix,
                 shader = '',
                 index = currentIndex++,

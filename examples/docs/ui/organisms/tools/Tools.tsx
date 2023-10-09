@@ -13,6 +13,7 @@ export const Tools = (props: ToolsProps) => {
         return (
                 <>
                         <Flex
+                                color="white"
                                 gap="1rem"
                                 top="initial"
                                 bottom={0}

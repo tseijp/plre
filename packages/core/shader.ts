@@ -2,6 +2,7 @@ export const fs = /* cpp */ `#version 300 es
 precision highp float;
 uniform float cameraAngle;
 uniform vec2 iResolution;
+uniform vec2 iMouse;
 uniform vec3 cameraPosition;
 uniform vec3 lookAt;
 uniform vec3 floorColor;

@@ -6,9 +6,9 @@ import {
         attachParent,
         getLayerKey,
         addSuffix,
-        withoutMat,
         replaceAll,
         isMaterial,
+        isObject,
 } from './utils'
 import type { ObjectTypes, PLObject } from './types'
 import { compileCollection } from './compile'
