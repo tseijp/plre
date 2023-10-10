@@ -4,14 +4,15 @@ import { ObjectTypes, PLObject } from 'plre/types'
 import { addSuffix, attachParent, getLayerKey } from 'plre/utils'
 
 export const addLandscape = (obj: PLObject, type: ObjectTypes) => {
+        const ids = obj.children.map((c) => c.id) // get ids before attach to parent
         const child = createObject(type)
+
+        child.id = addSuffix(ids, child.id)
         obj.children.push(child)
         attachParent(obj)
 
-        const key = getLayerKey(child)
-        const ids = obj.children.map((c) => c.id)
+        const key = getLayerKey(child) // make layer key after attach parent
         child.shader = landscapeObject(key).trim()
-        child.id = addSuffix(ids, child.id)
 
         // optional
         const mat = addMaterial(child)

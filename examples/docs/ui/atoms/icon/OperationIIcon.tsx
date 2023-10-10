@@ -8,6 +8,7 @@ export const OperationIIcon = (props: React.CSSProperties) => {
                         viewBox="0 0 21 21"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
+                        style={props}
                 >
                         <path
                                 d="M14 5.5C14 5.22386 13.7761 5 13.5 5C13.2239 5 13 5.22386 13 5.5C13 5.77614 13.2239 6 13.5 6C13.7761 6 14 5.77614 14 5.5Z"

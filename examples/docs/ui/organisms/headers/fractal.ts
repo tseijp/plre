@@ -8,14 +8,15 @@ import { addMaterial } from 'plre/control'
 type FRACTAL_TYPES = keyof typeof FRACTALS
 
 export const addFractal = (type: FRACTAL_TYPES) => (obj: PLObject) => {
+        const ids = obj.children.map((c) => c.id) // get ids before attach to parent
         const child = createObject('object')
+        child.id = addSuffix(ids, child.id)
+
         obj.children.push(child)
         attachParent(obj)
 
-        const key = getLayerKey(child)
-        const ids = obj.children.map((c) => c.id)
+        const key = getLayerKey(child) // make layer key after attach parent
         child.shader = FRACTALS[type](key).trim()
-        child.id = addSuffix(ids, child.id)
 
         // optional
         const mat = addMaterial(child)

@@ -24,17 +24,17 @@ export const deactivateAll = (obj: PLObject) => {
 }
 
 export const addObject = (obj: PLObject, type: ObjectTypes) => {
+        const ids = obj.children.map((c) => c.id) // get ids before attach to parent
         const child = createObject(type)
         const shader = Objects[type]
-        const ids = obj.children.map((c) => c.id)
         if (!shader) throw Error(`No shader for ${type}`)
 
         obj.children.push(child)
         attachParent(obj)
 
-        const _key = getLayerKey(child)
+        const key = getLayerKey(child) // make layer key after attach parent
         child.id = addSuffix(ids, child.id)
-        child.shader = shader(_key).trim()
+        child.shader = shader(key).trim()
 
         // optional
         addMaterial(child)

@@ -43,9 +43,10 @@ export const initConnect = (obj: PLObject) => {
                 let child = children.find((c) => c.type === type)
                 if (type) {
                         if (child) return
-                        const ids = children.map((c) => c.id)
+                        const ids = children.map((c) => c.id) // get ids before attach to parent
                         child = createObject(type as any)
                         child.id = addSuffix(ids, child.id)
+
                         children.push(child)
                         attachParent(obj)
 
