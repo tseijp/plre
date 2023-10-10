@@ -21,6 +21,7 @@ export const WINDOW_ICONS: Partial<Record<EditorType, any>> = {
 }
 
 export const OBJECT_ICONS: Partial<Record<ObjectTypes, any>> = {
+        object: TransformIcon,
         boxFrame: TransformIcon,
         box: TransformIcon,
         capsule: TransformIcon,
