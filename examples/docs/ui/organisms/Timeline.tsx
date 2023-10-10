@@ -16,7 +16,7 @@ export const Timeline = (props: TimelineProps) => {
                 const params = new URLSearchParams(window.location.search)
 
                 const roomId = params.get('roomId') || '0'
-                const url = `http://localhost:3000/?roomId=${roomId}`
+                const url = `${window.location.origin}/?roomId=${roomId}`
                 const w = window.open(url, '_blank')
                 w.focus()
                 set((p) => [...p, w])

@@ -47,7 +47,7 @@ uniform mat4 ${key}_M;
 
 float ${key}(vec3 pos) {
   TRANSFORM(${key}_M, pos);
-  return ${key}_DE(pos, vec3(1.), 3. - 1. * iMouse.x);
+  return ${key}_DE(pos, abs(iMouse.y) + 0.5, 2. - iMouse.x);
 }
 `
 
