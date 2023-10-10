@@ -1,5 +1,5 @@
+import * as FRACTALS from 'plre/fractals'
 import { createObject } from 'plre'
-import * as FRACTALS from './fractals'
 import { addSuffix, attachParent, getLayerKey } from 'plre/utils'
 import { PLObject } from 'plre/types'
 import { normalMaterial } from 'plre/materials'

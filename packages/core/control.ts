@@ -90,18 +90,18 @@ export const moveObject = (grabbed: PLObject, hovered: PLObject) => {
 
 export const registerFix = (obj: PLObject, set = new Set<Function>()) => {
         const prev = getLayerKey(obj)
-        const _prev =
-                obj.parent && isMaterial(obj.type)
-                        ? getLayerKey(obj.parent)
-                        : ''
+        // const _prev =
+        //         obj.parent && isMaterial(obj.type)
+        //                 ? getLayerKey(obj.parent)
+        //                 : ''
 
         set.add(() => {
+                // if (_prev) {
+                //         const _next = getLayerKey(obj.parent!)
+                //         obj.shader = replaceAll(obj.shader, _prev, _next)
+                // }
                 const next = getLayerKey(obj)
                 obj.shader = replaceAll(obj.shader, prev, next)
-                if (_prev) {
-                        const _next = getLayerKey(obj.parent!)
-                        obj.shader = replaceAll(obj.shader, _prev, _next)
-                }
         })
         return set
 }

@@ -37,8 +37,9 @@ export const AttachObject = () => {
                         if (i !== 0) return
                         child.active = true
                         editorTree.changeActive?.(child)
-                        compile()
                 })
+                deactivateAll(objectTree)
+                compile()
         })
         const handles = useMutable<AttachObjectHandles>({
                 Delete() {
