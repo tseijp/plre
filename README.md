@@ -2,10 +2,14 @@
 
 <table>
   <td>
-    <img src="https://plre.tsei.jp/img/1_ui_5.gif" />
+    <a href="https://plre.tsei.jp">
+      <img src="https://plre.tsei.jp/img/1_ui_5.gif" />
+    </a>
   </td>
   <td>
-    <img src="https://plre.tsei.jp/img/1_ui_6.gif"/>
+    <a href="https://plre.tsei.jp">
+      <img src="https://plre.tsei.jp/img/1_ui_6.gif"/>
+    </a>
   </td>
 </table>
 
