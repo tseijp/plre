@@ -72,27 +72,6 @@ given the data expectations are mere MBs, which can quickly exhaust with just a 
 
 </details>
 
-<details>
-<summary>
-
-The magnitude of this innovation isn't limited to its technical prowess.
-It's an empowerment of artists, creators, and innovators worldwide.
-The approach, although intricate, aims to make 3D modeling more accessible,
-making it accessible even to those with limited resources.
-The lightweight nature ensures that even in areas with bandwidth constraints,
-real-time collaborative 3D modeling becomes a reality.
-
-</summary>
-
-この革新の影響は、その技術的な力に限定されるものではありません。
-これは、世界中のアーティスト、クリエイター、イノベーターを強化するものです。
-このアプローチは複雑であるにも関わらず、3D モデリングをよりアクセス可能にすることを目指しており、
-限られたリソースを持つ人々にもアクセス可能にします。
-軽量な性質により、帯域幅に制約のある地域でも、
-リアルタイムの共同 3D モデリングが現実になることを保証します。
-
-</details>
-
 ### Projected Future:
 
 <details>
@@ -215,6 +194,25 @@ it's a powerhouse that makes reproducing in varied environments feasible.
 動的な変化を可能にします。数式の一部を微調整したり、パラメータを調整することで、
 オブジェクトの本質を元の概念をはるかに超えて進化させることができます。
 raymarch アルゴリズムのシンプルさにも関わらず、それはさまざまな環境での再現を実現可能にする強力なものです。
+
+</details>
+
+<details>
+<summary>
+  
+Another advantage lies in our ability to derive from the vast realm of external resources.
+The inclusion of shape definitions from repositories, like lygia, saves users from constantly reinventing the wheel.
+If the math is understood, any shape becomes feasible.
+This freedom extends not just to object creation but its very material.
+How an object interacts with light, its texture, its sheen — all can be customized to precision.
+
+</summary>
+
+外部リソースの広大な領域から得ることができる別の利点があります。
+lygiaのようなリポジトリからの形状定義を取り入れることで、ユーザーは常に同じことを繰り返し行う必要がなくなります。
+数学が理解されれば、どんな形も実現可能になります。
+この自由は、オブジェクトの作成だけでなく、その実質的な素材にも及びます。
+オブジェクトが光とどのように相互作用するか、そのテクスチャ、その光沢 - すべてが精度を持ってカスタマイズできます。
 
 </details>
 
