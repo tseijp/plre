@@ -40,25 +40,6 @@ and unrealistic communication conditions.
 <details>
 <summary>
 
-The problem amplifies when we consider current game models.
-Such models, based on polygons, are incredibly resource-intensive.
-The nature of 3D models, with their detailed structures, makes real-time sharing challenging.
-While typical apps and games allow pre-downloading of large data,
-real-time sharing in environments without pre-downloading, such as browsers, remains a challenge.
-
-</summary>
-
-現在のゲームモデルを考慮すると、問題は拡大します。
-これらのモデルは、ポリゴンに基づいており、非常にリソースを多く消費します。
-詳細な構造を持つ 3D モデルの性質は、リアルタイムでの共有を困難にします。
-通常のアプリやゲームは大量のデータの事前ダウンロードを許可していますが、
-ブラウザのような事前ダウンロードなしの環境でのリアルタイム共有は、引き続き課題となっています。
-
-</details>
-
-<details>
-<summary>
-
 From my experience in developing realistic web-based 3D games and metaverse office services,
 the challenge of downloading 3D models due to data volume stands out.
 In my work, I often resort to advanced compression techniques when handling realistic models.
