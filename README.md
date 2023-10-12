@@ -2,10 +2,14 @@
 
 <table>
   <td>
-    <img src="https://plre.tsei.jp/img/1_ui_5.gif" />
+    <a href="https://plre.tsei.jp">
+      <img src="https://plre.tsei.jp/img/1_ui_5.gif" />
+    </a>
   </td>
   <td>
-    <img src="https://plre.tsei.jp/img/1_ui_6.gif"/>
+    <a href="https://plre.tsei.jp">
+      <img src="https://plre.tsei.jp/img/1_ui_6.gif"/>
+    </a>
   </td>
 </table>
 
@@ -30,25 +34,6 @@ and unrealistic communication conditions.
 主な理由の一つは、彼らが生成するファイルの非常に大きなサイズです。
 これらのファイルは、しばしば数ギガバイトのサイズであり、
 リアルタイムでの共有は、データベースの要件や非現実的な通信条件のため、ほぼ不可能です。
-
-</details>
-
-<details>
-<summary>
-
-The problem amplifies when we consider current game models.
-Such models, based on polygons, are incredibly resource-intensive.
-The nature of 3D models, with their detailed structures, makes real-time sharing challenging.
-While typical apps and games allow pre-downloading of large data,
-real-time sharing in environments without pre-downloading, such as browsers, remains a challenge.
-
-</summary>
-
-現在のゲームモデルを考慮すると、問題は拡大します。
-これらのモデルは、ポリゴンに基づいており、非常にリソースを多く消費します。
-詳細な構造を持つ 3D モデルの性質は、リアルタイムでの共有を困難にします。
-通常のアプリやゲームは大量のデータの事前ダウンロードを許可していますが、
-ブラウザのような事前ダウンロードなしの環境でのリアルタイム共有は、引き続き課題となっています。
 
 </details>
 
