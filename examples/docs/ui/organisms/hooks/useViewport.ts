@@ -8,10 +8,11 @@ export const useViewport = () => {
          * wheel event
          */
         const wheel = useWheelEvent((state) => {
-                if (!state.active) return self.on()
+                const { active, e, memo } = state
+                if (!active) return self.on()
                 let [dx, dy] = state.delta
                 const _ = wheel.memo
-                if (state.e?.ctrlKey) {
+                if (e?.ctrlKey || memo.zoom) {
                         _.rad += dy / 10
                 } else {
                         _.tht += (dy / 300) * (_.rad < 0 ? -1 : 1)

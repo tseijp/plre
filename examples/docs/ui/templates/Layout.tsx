@@ -2,7 +2,7 @@ import * as React from 'react'
 import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-// import { Debug } from '../atoms'
+import { Debug } from '../atoms'
 import { Tree, Flex } from '../atoms'
 import { Separate } from '../molecules'
 import {
@@ -68,7 +68,7 @@ export const Layout = () => {
                                 >
                                         <Tree tree={editorTree}>{render}</Tree>
                                 </Flex>
-                                {/* <Debug /> */}
+                                <Debug />
                         </CtxProvider>
                 </LayoutImpl>
         )
