@@ -43,10 +43,10 @@ const ViewportImpl = (props: ViewportProps) => {
                                 <AddObject />
                                 <AttachObject />
                         </Header>
-                        <Tools self={self} />
                         <Flex background="#3A3A3A">
                                 <canvas ref={wheel.ref} />
                         </Flex>
+                        <Tools self={self} />
                         <Viewpoint s={16} wheel={wheel} />
                         <ZoomIn wheel={wheel} />
                         <ZoomOut wheel={wheel} />
