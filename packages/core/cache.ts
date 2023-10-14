@@ -7,13 +7,13 @@ export type CacheValue = string | number | (string | number)[]
 
 export interface CacheState {
         _all?: { [key: string]: CacheState }
+        id: string
         byte: string
         data: string
-        roomId: string
         createdAt: string
         updatedAt: string
         mount(): void
-        trySuccess?(): void
+        trySuccess?(str: string): void
         catchError?(e: Error): void
         changeCache?(target: CacheState): void
 }
@@ -91,7 +91,7 @@ export const byteSize = (byte: number | string) => {
         if (typeof byte === 'string') byte = parseInt(byte)
         if (isNaN(byte)) throw Error('byteSize: byte is NaN')
 
-        if (byte < 1024) return byte + ' Byte'
+        if (byte < 1024) return byte + ' B'
         byte /= 1024
         if (byte < 1024) return floor(byte * 10) / 10 + ' KB'
         byte /= 1024
@@ -123,13 +123,19 @@ export const getCache = (key: string) => {
         return cache
 }
 
+export const strCache = (cache: CacheState) => {
+        const { id, byte, data, createdAt, updatedAt } = cache
+        const str = JSON.stringify({ id, byte, createdAt, updatedAt, data })
+        return str
+}
+
 export const setCache = (cache: CacheState) => {
         if (typeof localStorage === 'undefined') return null
-        const { byte, data, roomId, createdAt, updatedAt } = cache
-        const key = 'PLRE' + createdAt
-        const str = JSON.stringify({ createdAt, updatedAt, roomId, byte, data })
+        const str = strCache(cache)
+        const key = 'PLRE' + cache.id
         try {
-                return localStorage.setItem(key, str)
+                localStorage.setItem(key, str)
+                return str
         } catch (e) {
                 throw e
         }
@@ -137,9 +143,9 @@ export const setCache = (cache: CacheState) => {
 
 export const isCachedKey = (key: string) => {
         if (
+                key === 'id' ||
                 key === 'byte' ||
                 key === 'data' ||
-                key === 'roomId' ||
                 key === 'createdAt' ||
                 key === 'updatedAt'
         )

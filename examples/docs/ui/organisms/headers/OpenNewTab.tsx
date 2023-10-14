@@ -1,14 +1,14 @@
 import * as React from 'react'
 
 import { Button } from '../../atoms/Button'
+import { createURL } from './utils'
 
 export const OpenNewTab = () => {
         const [ws, set] = React.useState([])
+
         const handleOpen = () => {
-                const params = new URLSearchParams(window.location.search)
-                const roomId = params.get('roomId') || '0'
-                const url = `${window.location.origin}/?roomId=${roomId}`
-                const w = window.open(url, '_blank')
+                const url = createURL()
+                const w = window.open(url + '', '_blank')
                 w.focus()
                 set((p) => [...p, w])
         }

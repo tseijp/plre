@@ -3,6 +3,7 @@ import { Box, Flex } from '../atoms'
 import { Header, OpenNewTab, OpenRecent } from './headers'
 import { UserProfile, UserProfiles } from './users'
 import type { EditorState } from 'plre/types'
+import { CacheExport, CacheUpload } from './headers'
 export interface TimelineProps {
         editorItem: EditorState
 }
@@ -14,6 +15,8 @@ export const Timeline = (props: TimelineProps) => {
                         <Header editorItem={editorItem}>
                                 <OpenNewTab />
                                 <OpenRecent />
+                                <CacheExport />
+                                <CacheUpload />
                         </Header>
                         <Flex
                                 gap="1rem"

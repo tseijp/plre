@@ -6,15 +6,15 @@ import { useCall, useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
 import { initConnectAll, pubShaderAll, subConnectAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
-import { EditorState, PL, PLObject } from 'plre/types'
+import { EditorState, PLObject } from 'plre/types'
 import { useCompile_ } from '../../organisms'
+import { createURL } from '../../organisms/headers/utils'
 
 let isDev = false
 isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false
-
 // @TODO move to connection
 
 export interface WebrtcState {
@@ -125,14 +125,15 @@ export const createWebrtc = (
         const mount = () => {
                 if (!isPubSub) return self.connected?.()
 
-                const params = new URLSearchParams(window.location.search)
-                self.roomId = params.get('roomId') || floor(random() * 100) + ''
-                self.userId = params.get('userId') || floor(random() * 100) + ''
+                const url = createURL()
+
+                self.roomId = url.get('id') || floor(random() * 100) + ''
+                self.userId = url.get('userId') || floor(random() * 100000) + ''
 
                 // random roomId if dev
-                if (self.isDev) self.roomId = floor(random() * 100) + ''
+                if (self.isDev) self.roomId = floor(random() * 100) + 'DEV'
 
-                const query = `?userId=${self.userId}&roomId=${self.roomId}`
+                url.set('id', self.roomId)
 
                 if (self.isInit) return
                 self.isInit = true
@@ -163,7 +164,7 @@ export const createWebrtc = (
                 }
 
                 setTimeout(tick, TICK_TIMEOUT_MS)
-                window.history.replaceState(null, '', query)
+                url.replaceState()
                 window.addEventListener('mousemove', mousemove)
         }
 

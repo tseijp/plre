@@ -1,16 +1,17 @@
 import { EditorState, PLObject } from 'plre/types'
 import { useCall, useOnce } from '../../atoms'
 import { encode } from './utils'
-import { getCacheAll, isCachedKey } from 'plre/cache'
+import { getCacheAll, isCachedKey, setCache, strCache } from 'plre/cache'
 import { useEffect } from 'react'
+import { createURL } from '../../organisms'
 import type { CacheState } from 'plre/cache'
 import event from 'reev'
 
+let isDev = false
+// isDev = process.env.NODE_ENV === 'development'
+
 export const createStorage = () => {
         const self = event({
-                mount() {
-                        self._all = getCacheAll()
-                },
                 changeCache(cache: CacheState) {
                         for (const key in cache) {
                                 if (!isCachedKey(key)) continue
@@ -30,35 +31,42 @@ export const useInitStorage = (
         const trySuccess = useCall(() => {
                 const updatedAt = new Date().toISOString()
                 const createdAt = self.createdAt || updatedAt
-
+                const isDuplicate = updatedAt === self.updatedAt
+                const isInitMount = updatedAt === createdAt
                 self.createdAt = createdAt
-
-                if (updatedAt === createdAt) return
-                if (updatedAt === objectTree.memo.updatedAt) return
-
                 self.updatedAt = updatedAt
-                self.data = encode(objectTree)
-                self.byte = new Blob([self.data]).size + ''
+
+                if (isDuplicate) return
 
                 try {
-                        // setCache(self)
-                        self._all = getCacheAll()
-                        self.trySuccess?.()
+                        if (isDev) return
+                        // calc data if init mount
+                        self.id = createURL().get('id')
+                        self.data = encode(objectTree)
+                        self.byte = new Blob([self.data]).size + ''
+
+                        if (isInitMount) {
+                                if (!self._all) self._all = getCacheAll()
+                                const cache = strCache(self)
+                                return self.trySuccess?.(cache)
+                        } else {
+                                const cache = setCache(self)
+                                self.trySuccess?.(cache)
+                        }
                 } catch (e) {
-                        alert('Local storage quota exceeded')
-                        console.warn(e)
-                        self.catchError?.(e)
+                        if (e.name === 'QuotaExceededError') {
+                                alert('Local storage quota exceeded')
+                                console.warn(e)
+                                self.catchError?.(e)
+                        }
                 }
         })
 
         useEffect(() => {
-                self.mount()
                 // @ts-ignore
-                editorTree({ trySuccess })
-                return () => {
-                        // @ts-ignore
-                        editorTree({ trySuccess })
-                }
+                const tick = () => editorTree({ trySuccess })
+                tick()
+                return tick
         }, [])
 
         return self
