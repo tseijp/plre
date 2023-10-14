@@ -7,20 +7,20 @@ export type CacheValue = string | number | (string | number)[]
 
 export interface CacheState {
         _all?: { [key: string]: CacheState }
+        isCached?: boolean
         id: string
         byte: string
         data: string
         createdAt: string
         updatedAt: string
-        mount(): void
         trySuccess?(str: string): void
         catchError?(e: Error): void
         changeCache?(target: CacheState): void
 }
 
-export interface CacheState extends Partial<Record<CacheKey, CacheValue>> {
+export interface CachedObject extends Partial<Record<CacheKey, CacheValue>> {
         _type: ObjectTypes
-        _children: CacheState[]
+        _children: CachedObject[]
 }
 
 const isInitArray = (arr: unknown, initValue = 0) => {
@@ -30,17 +30,17 @@ const isInitArray = (arr: unknown, initValue = 0) => {
 
 export const isIgnoreCache = (key: string, value: unknown) => {
         if (key === 'memo') return true
+        if (key === 'matrix') return true
         if (value === undefined) return true
         if (typeof value === 'function') return true
-        if (key === 'matrix') return true
-        if (key === 'scale') if (isInitArray(value, 1)) return true
-        if (key === 'position') if (isInitArray(value, 0)) return true
-        if (key === 'rotation') if (isInitArray(value, 0)) return true
+        if (key === 'scale' && isInitArray(value, 1)) return true
+        if (key === 'position' && isInitArray(value, 0)) return true
+        if (key === 'rotation' && isInitArray(value, 0)) return true
         return false
 }
 
 export const encodeCache = (obj: PLObject) => {
-        const cache = {} as CacheState
+        const cache = {} as CachedObject
         for (const key in obj) {
                 const value = obj[key]
                 if (isIgnoreCache(key, value)) continue
@@ -50,7 +50,7 @@ export const encodeCache = (obj: PLObject) => {
                 }
                 if (key === 'children') {
                         if (!Array.isArray(value) || !value.length) continue
-                        cache._children = [] as CacheState[]
+                        cache._children = [] as CachedObject[]
                         value.forEach((child) => {
                                 const ret = encodeCache(child)
                                 cache._children.push(ret)
@@ -62,7 +62,7 @@ export const encodeCache = (obj: PLObject) => {
         return cache
 }
 
-export const decodeCache = (cache: CacheState) => {
+export const decodeCache = (cache: CachedObject) => {
         const ret = {} as PLObject
         if (!cache._type) {
                 console.log(cache)

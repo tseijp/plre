@@ -1,4 +1,4 @@
-import { CacheState, byteSize } from 'plre/cache'
+import { CacheState } from 'plre/cache'
 
 export const createURL = () => {
         const url = new URL(window.location.href)
@@ -29,6 +29,7 @@ export const makeYMD = (date = new Date()) => {
         const D = String(date.getDate()).padStart(2, '0')
         return `${Y}-${M}-${D}`
 }
+
 export const makeHMS = (date = new Date()) => {
         const h = String(date.getHours()).padStart(2, '0')
         const m = String(date.getMinutes()).padStart(2, '0')

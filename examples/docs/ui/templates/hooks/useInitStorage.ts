@@ -46,10 +46,11 @@ export const useInitStorage = (
                         self.byte = new Blob([self.data]).size + ''
 
                         if (isInitMount) {
-                                if (!self._all) self._all = getCacheAll()
+                                self._all = getCacheAll()
                                 const cache = strCache(self)
                                 return self.trySuccess?.(cache)
                         } else {
+                                self.isCached = true
                                 const cache = setCache(self)
                                 self.trySuccess?.(cache)
                         }

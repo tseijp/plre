@@ -6,8 +6,8 @@ import { Viewpoint, ZoomIn, ZoomOut } from '../molecules'
 import { ErrorMessage } from './ErrorMessage'
 import { Tools } from './tools'
 import { useCtx } from '../ctx'
+import { OpenRecent } from './headers'
 import type { EditorState } from 'plre/types'
-import { useZoom } from './hooks/useZOom'
 
 export interface ViewportProps {
         editorItem: EditorState
@@ -42,6 +42,7 @@ const ViewportImpl = (props: ViewportProps) => {
                         <Header editorItem={editorItem}>
                                 <AddObject />
                                 <AttachObject />
+                                {/* <OpenRecent /> */}
                         </Header>
                         <Flex background="#3A3A3A">
                                 <canvas ref={wheel.ref} />

@@ -5,7 +5,7 @@ import { DropItems } from '../../molecules'
 import { useCtx } from '../../ctx'
 import { TimerIcon } from '../../atoms'
 import { byteSize, type CacheState } from 'plre/cache'
-import { makeId, makeRecentName } from '.'
+import { makeRecentName } from '.'
 
 export const OpenRecent = () => {
         const { storage } = useCtx()
@@ -24,27 +24,71 @@ export const OpenRecent = () => {
                 return tick
         }, [])
 
-        const items = storage._all ? Object.keys(storage._all) : []
+        let items = storage._all ? Object.values(storage._all) : []
 
-        const render = (key: string) => {
-                // console.log(storage._all)
-                const cache = storage._all?.[key]
+        items = items.sort((a, b) => {
+                if (a.id === storage.id) return -1
+                if (!a || !b) return 0
+                return b.updatedAt < a.updatedAt ? -1 : 1
+        })
+
+        items = items.filter((item) => item.id !== storage.id)
+
+        // add current cache to the top if it is compiled
+        if (storage.isCached) items = [storage, ...items]
+
+        const render = (cache: CacheState) => {
                 return (
                         <div
                                 onClick={handleClick(cache)}
-                                key={key}
+                                key={cache.id}
                                 style={{
                                         gap: '0.5rem',
                                         width: '100%',
                                         cursor: 'pointer',
                                         display: 'flex',
                                         alignItems: 'center',
+                                        background:
+                                                cache.id === storage.id
+                                                        ? 'rgba(255,255,255,0.1)'
+                                                        : 'transparent',
                                 }}
                         >
                                 <TimerIcon />
-                                <span>{makeRecentName(cache)}</span>
-                                <span>{cache.id}</span>
-                                <span>{byteSize(cache.byte)}</span>
+                                <span
+                                        style={{
+                                                width: '8.5rem',
+                                                textOverflow: 'ellipsis',
+                                        }}
+                                >
+                                        {makeRecentName(cache)}
+                                </span>
+                                <span
+                                        style={{
+                                                width: '5rem',
+                                                textOverflow: 'ellipsis',
+                                        }}
+                                >
+                                        {cache.id}
+                                </span>
+                                <span style={{ fontSize: '0.75rem' }}>
+                                        {byteSize(cache.byte)}
+                                </span>
+                        </div>
+                )
+        }
+
+        const noRender = (key: number) => {
+                return (
+                        <div
+                                key={key}
+                                style={{
+                                        width: '100%',
+                                        textAlign: 'center',
+                                        color: 'rgba(255,255,255,0.5)',
+                                }}
+                        >
+                                No recent files
                         </div>
                 )
         }
@@ -63,7 +107,9 @@ export const OpenRecent = () => {
                         >
                                 Open Recent
                         </span>
-                        <DropItems items={items}>{render}</DropItems>
+                        <DropItems items={items.length === 0 ? [1] : items}>
+                                {items.length === 0 ? noRender : render}
+                        </DropItems>
                 </Drop>
         )
 }
