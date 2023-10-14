@@ -100,6 +100,9 @@ export const createInitPLObject = () => {
         I.shader = compile(I).trim()
         U.shader = compile(U).trim()
 
+        // @ts-ignore
+        window.xxx = U
+
         return U
 }
 
