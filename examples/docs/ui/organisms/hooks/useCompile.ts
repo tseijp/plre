@@ -1,9 +1,8 @@
 import frame from 'refr'
 import { useCtx } from '../../ctx'
 import { collectAll } from 'plre/compile'
-import { compress, deCompress, decode, encode } from './utils'
+
 import type { EditorState, PLObject } from 'plre/types'
-import { exportCache, importCache } from 'plre/cache'
 
 export const useCompile = () => {
         const { editorTree, objectTree } = useCtx()
@@ -12,12 +11,6 @@ export const useCompile = () => {
                 let code = collectAll(objectTree)
                 editorTree.compileShader?.(code)
                 editorTree.forceUpdate?.()
-                console.log({
-                        export: exportCache(objectTree),
-                        encode: encode(objectTree),
-                        import: importCache(exportCache(objectTree)),
-                        decode: decode(encode(objectTree)),
-                })
         }
 }
 

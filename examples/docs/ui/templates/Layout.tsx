@@ -12,7 +12,12 @@ import {
         Viewport,
         UserCursors,
 } from '../organisms'
-import { useInitPLObject, useInitPLEditor, useInitWebrtc } from './hooks'
+import {
+        useInitPLObject,
+        useInitPLEditor,
+        useInitWebrtc,
+        useInitCache,
+} from './hooks'
 import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
 import type { ReactNode } from 'react'
@@ -23,6 +28,7 @@ export const Layout = () => {
         const objectTree = useInitPLObject()
         const editorTree = useInitPLEditor()
         const webrtcTree = useInitWebrtc(objectTree, editorTree)
+        const cacheItems = useInitCache(objectTree, editorTree)
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 switch (editorItem.type) {
@@ -44,11 +50,15 @@ export const Layout = () => {
                                 return <Flex background="#3A3A3A" />
                 }
         }
-
         return (
                 <LayoutImpl noFooter>
                         <CtxProvider
-                                value={{ objectTree, editorTree, webrtcTree }}
+                                value={{
+                                        objectTree,
+                                        editorTree,
+                                        webrtcTree,
+                                        cacheItems,
+                                }}
                         >
                                 <Head>
                                         <title>

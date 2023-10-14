@@ -6,6 +6,7 @@ export interface CtxState {
         objectTree: PLObject
         editorTree: EditorState
         webrtcTree: WebrtcState
+        cacheItems: CacheItem[]
 }
 
 export const CtxContext = createContext(null as unknown as CtxState)

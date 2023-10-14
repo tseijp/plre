@@ -15,6 +15,8 @@ isDev = process.env.NODE_ENV === 'development'
 let isPubSub = true
 // isPubSub = false
 
+// @TODO move to connection
+
 export interface WebrtcState {
         isDev: boolean
         isInit: boolean
