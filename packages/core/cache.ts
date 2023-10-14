@@ -6,13 +6,16 @@ export type CacheKey = keyof PLObject
 export type CacheValue = string | number | (string | number)[]
 
 export interface CacheState {
-        _byte?: string
+        _all?: { [key: string]: CacheState }
         byte: string
         data: string
+        roomId: string
         createdAt: string
         updatedAt: string
+        mount(): void
         trySuccess?(): void
         catchError?(e: Error): void
+        changeCache?(target: CacheState): void
 }
 
 export interface CacheState extends Partial<Record<CacheKey, CacheValue>> {
@@ -100,31 +103,46 @@ export const byteSize = (byte: number | string) => {
 }
 
 export const getCacheAll = () => {
+        if (typeof localStorage === 'undefined') return null
         const ret = {}
+        let count = 0
         for (const key in localStorage) {
                 if (!key.startsWith('PLRE')) continue
-                const str = localStorage.getItem(key)
-                if (!str) continue
-                const cache = JSON.parse(str)
-                ret[key] = cache
+                ret[key] = getCache(key)
+                count++
         }
-        return ret
+        return count > 0 ? ret : null
 }
 
-export const getCache = (iso: string) => {
-        const str = localStorage.getItem('PLRE' + iso)
+export const getCache = (key: string) => {
+        if (!key.startsWith('PLRE')) return null
+        if (typeof localStorage === 'undefined') return null // for SSR
+        const str = localStorage.getItem(key)
         if (!str) return null
         const cache = JSON.parse(str)
         return cache
 }
 
 export const setCache = (cache: CacheState) => {
-        const { byte, data, createdAt, updatedAt } = cache
+        if (typeof localStorage === 'undefined') return null
+        const { byte, data, roomId, createdAt, updatedAt } = cache
         const key = 'PLRE' + createdAt
-        const str = JSON.stringify({ createdAt, updatedAt, byte, data })
+        const str = JSON.stringify({ createdAt, updatedAt, roomId, byte, data })
         try {
-                localStorage.setItem(key, str)
+                return localStorage.setItem(key, str)
         } catch (e) {
                 throw e
         }
+}
+
+export const isCachedKey = (key: string) => {
+        if (
+                key === 'byte' ||
+                key === 'data' ||
+                key === 'roomId' ||
+                key === 'createdAt' ||
+                key === 'updatedAt'
+        )
+                return true
+        return false
 }

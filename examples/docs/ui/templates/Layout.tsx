@@ -16,7 +16,7 @@ import {
         useInitPLObject,
         useInitPLEditor,
         useInitWebrtc,
-        useInitCache,
+        useInitStorage,
 } from './hooks'
 import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
@@ -28,7 +28,7 @@ export const Layout = () => {
         const objectTree = useInitPLObject()
         const editorTree = useInitPLEditor()
         const webrtcTree = useInitWebrtc(objectTree, editorTree)
-        const cacheItems = useInitCache(objectTree, editorTree)
+        const storage = useInitStorage(objectTree, editorTree)
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 switch (editorItem.type) {
@@ -57,7 +57,7 @@ export const Layout = () => {
                                         objectTree,
                                         editorTree,
                                         webrtcTree,
-                                        cacheItems,
+                                        storage,
                                 }}
                         >
                                 <Head>

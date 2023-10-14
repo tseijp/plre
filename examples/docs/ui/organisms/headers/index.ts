@@ -1,4 +1,6 @@
 export * from './AddObject'
 export * from './AttachObject'
 export * from './CompileStart'
+export * from './OpenNewTab'
+export * from './OpenRecent'
 export * from './Header'
