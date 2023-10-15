@@ -77,11 +77,6 @@ export const decodeObject = (cache: CachedObject) => {
                 }
                 ret[key] = value
         }
-        console.log('decodeObject', {
-                cache,
-                ret,
-                'ret.children': ret.children,
-        })
         return createObject(cache.type as ObjectTypes, ret)
 }
 

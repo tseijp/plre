@@ -76,7 +76,6 @@ const getMaterial = (obj: PLObject) => {
 
 export const collectAll = (obj: PLObject) => {
         const { children, memo: _ } = obj
-        console.log(_)
         // obj.shader = compile(obj)
         let min = compileFloat(obj.index - 0.01)
         let max = compileFloat(obj.index + 0.01)
