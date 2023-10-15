@@ -51,6 +51,22 @@ export const makeRecentName = (cache: CacheState) => {
         const date = new Date(cache.updatedAt)
         const YMD = makeYMD(date)
         const HMS = makeHMS(date)
-        const id = cache.id
         return [YMD, HMS].join(' ')
+}
+
+const { floor } = Math
+
+export const byteSize = (byte: number | string) => {
+        if (typeof byte === 'string') byte = parseInt(byte)
+        if (isNaN(byte)) throw Error('byteSize: byte is NaN')
+
+        if (byte < 1024) return byte + ' B'
+        byte /= 1024
+        if (byte < 1024) return floor(byte * 10) / 10 + ' KB'
+        byte /= 1024
+        if (byte < 1024) return floor(byte * 10) / 10 + ' MB'
+        byte /= 1024
+        if (byte < 1024) return floor(byte * 10) / 10 + ' GB'
+        byte /= 1024
+        return byte.toFixed(2) + 'TB'
 }

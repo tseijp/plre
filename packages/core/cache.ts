@@ -16,10 +16,10 @@ export interface CacheState {
         trySuccess?(str: string): void
         catchError?(e: Error): void
         changeCache?(target: CacheState): void
+        memo: any
 }
 
 export interface CachedObject extends Partial<Record<CacheKey, CacheValue>> {
-        _type: ObjectTypes
         _children: CachedObject[]
 }
 
@@ -39,73 +39,55 @@ export const isIgnoreCache = (key: string, value: unknown) => {
         return false
 }
 
-export const encodeCache = (obj: PLObject) => {
-        const cache = {} as CachedObject
+export const encodeObject = (obj: PLObject) => {
+        const ret = {} as CachedObject
         for (const key in obj) {
                 const value = obj[key]
                 if (isIgnoreCache(key, value)) continue
-                if (key === 'type') {
-                        cache._type = value
-                        continue
-                }
                 if (key === 'children') {
                         if (!Array.isArray(value) || !value.length) continue
-                        cache._children = [] as CachedObject[]
+                        // not children but _children !!
+                        ret._children = [] as CachedObject[]
                         value.forEach((child) => {
-                                const ret = encodeCache(child)
-                                cache._children.push(ret)
+                                const _ret = encodeObject(child)
+                                ret._children.push(_ret)
                         })
                         continue
                 }
-                cache[key] = value
+                ret[key] = value
         }
-        return cache
+        return ret
 }
 
-export const decodeCache = (cache: CachedObject) => {
-        const ret = {} as PLObject
-        if (!cache._type) {
-                console.log(cache)
-                throw Error('decodeCache: cache._type is undefined')
+export const decodeObject = (cache: CachedObject) => {
+        const ret = { children: [] } as PLObject
+        if (!cache.type) {
+                throw Error('decodeObject: cache._type is undefined')
         }
         for (const key in cache) {
                 const value = cache[key]
-                if (key === 'type' || key === 'children') continue
+                // not children but _children !!
                 if (key === '_children') {
-                        if (!Array.isArray(value) || !value.length) continue
-                        ret.children = []
+                        if (!Array.isArray(value)) continue
                         value.forEach((child) => {
-                                const ret = decodeCache(child)
-                                ret.children?.push(ret)
+                                const childObj = decodeObject(child)
+                                ret.children.push(childObj)
                         })
                         continue
                 }
+                ret[key] = value
         }
-
-        return createObject(cache._type, ret)
-}
-
-const { floor } = Math
-
-export const byteSize = (byte: number | string) => {
-        if (typeof byte === 'string') byte = parseInt(byte)
-        if (isNaN(byte)) throw Error('byteSize: byte is NaN')
-
-        if (byte < 1024) return byte + ' B'
-        byte /= 1024
-        if (byte < 1024) return floor(byte * 10) / 10 + ' KB'
-        byte /= 1024
-        if (byte < 1024) return floor(byte * 10) / 10 + ' MB'
-        byte /= 1024
-        if (byte < 1024) return floor(byte * 10) / 10 + ' GB'
-        byte /= 1024
-        return byte.toFixed(2) + 'TB'
+        console.log('decodeObject', {
+                cache,
+                ret,
+                'ret.children': ret.children,
+        })
+        return createObject(cache.type as ObjectTypes, ret)
 }
 
 export const getCacheAll = () => {
-        if (typeof localStorage === 'undefined') return null
         const ret = {}
-        let count = 0
+        let count = 0 // @ts-ignore
         for (const key in localStorage) {
                 if (!key.startsWith('PLRE')) continue
                 ret[key] = getCache(key)
@@ -116,11 +98,8 @@ export const getCacheAll = () => {
 
 export const getCache = (key: string) => {
         if (!key.startsWith('PLRE')) return null
-        if (typeof localStorage === 'undefined') return null // for SSR
         const str = localStorage.getItem(key)
-        if (!str) return null
-        const cache = JSON.parse(str)
-        return cache
+        return !str ? null : JSON.parse(str)
 }
 
 export const strCache = (cache: CacheState) => {

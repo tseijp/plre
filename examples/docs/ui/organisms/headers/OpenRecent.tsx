@@ -4,8 +4,8 @@ import { Drop, useForceUpdate } from '../../atoms'
 import { DropItems } from '../../molecules'
 import { useCtx } from '../../ctx'
 import { TimerIcon } from '../../atoms'
-import { byteSize, type CacheState } from 'plre/cache'
-import { makeRecentName } from '.'
+import { byteSize, makeRecentName } from '.'
+import type { CacheState } from 'plre/cache'
 
 export const OpenRecent = () => {
         const { storage } = useCtx()
@@ -17,7 +17,7 @@ export const OpenRecent = () => {
 
         useEffect(() => {
                 const tick = () => {
-                        // @ts-ignore
+                        // @ts-ignore for init storage
                         storage({ trySuccess: forceUpdate })
                 }
                 tick()
@@ -32,10 +32,11 @@ export const OpenRecent = () => {
                 return b.updatedAt < a.updatedAt ? -1 : 1
         })
 
-        items = items.filter((item) => item.id !== storage.id)
-
-        // add current cache to the top if it is compiled
-        if (storage.isCached) items = [storage, ...items]
+        if (storage.isCached) {
+                // add current cache to the top if it is compiled
+                items = items.filter((item) => item.id !== storage.id)
+                items = [storage, ...items]
+        }
 
         const render = (cache: CacheState) => {
                 return (
@@ -57,22 +58,23 @@ export const OpenRecent = () => {
                                 <TimerIcon />
                                 <span
                                         style={{
-                                                width: '8.5rem',
+                                                width: '8rem',
                                                 textOverflow: 'ellipsis',
                                         }}
                                 >
                                         {makeRecentName(cache)}
                                 </span>
+                                <span style={{ fontSize: '0.75rem' }}>
+                                        {byteSize(cache.byte)}
+                                </span>
                                 <span
                                         style={{
                                                 width: '5rem',
+                                                overflow: 'hidden',
                                                 textOverflow: 'ellipsis',
                                         }}
                                 >
                                         {cache.id}
-                                </span>
-                                <span style={{ fontSize: '0.75rem' }}>
-                                        {byteSize(cache.byte)}
                                 </span>
                         </div>
                 )

@@ -20,7 +20,7 @@ export const CacheExport = () => {
 
         useEffect(() => {
                 const tick = () => {
-                        // @ts-ignore
+                        // @ts-ignore for init storage
                         storage({ trySuccess })
                 }
                 tick()

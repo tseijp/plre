@@ -76,6 +76,7 @@ const getMaterial = (obj: PLObject) => {
 
 export const collectAll = (obj: PLObject) => {
         const { children, memo: _ } = obj
+        console.log(_)
         // obj.shader = compile(obj)
         let min = compileFloat(obj.index - 0.01)
         let max = compileFloat(obj.index + 0.01)
@@ -115,10 +116,6 @@ export const collectAll = (obj: PLObject) => {
                 _.geometryAll += compileCollection(obj) + '\n\n'
 
         if (!obj.parent) {
-                // console.log('\t\t\trenderAll')
-                // console.log(obj.renderAll)
-                // console.log('\t\t\tshaderAll')
-                // console.log(obj.shaderAll)
                 shaderChunkMap.set('PLRE_GEOMETRY', _.geometryAll)
                 shaderChunkMap.set('PLRE_MATERIAL', _.materialAll)
                 shaderChunkMap.set('PLRE_COLLECTION', _.collectionAll)
