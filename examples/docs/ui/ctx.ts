@@ -8,6 +8,7 @@ export interface CtxState {
         editorTree: EditorState
         webrtcTree: WebrtcState
         storage: CacheState
+        isReady: boolean // webrtcTree.isReady && storage.isReady
 }
 
 export const CtxContext = createContext(null as unknown as CtxState)

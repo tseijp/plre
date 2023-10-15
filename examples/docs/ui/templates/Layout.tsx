@@ -28,7 +28,8 @@ export const Layout = () => {
         const objectTree = useInitPLObject()
         const editorTree = useInitPLEditor()
         const webrtcTree = useInitWebrtc(objectTree, editorTree)
-        const storage = useInitStorage(objectTree, editorTree)
+        const storage = useInitStorage(objectTree, editorTree, webrtcTree)
+        const isReady = webrtcTree.isReady && storage.isReady
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 switch (editorItem.type) {
@@ -58,6 +59,7 @@ export const Layout = () => {
                                         editorTree,
                                         webrtcTree,
                                         storage,
+                                        isReady,
                                 }}
                         >
                                 <Head>

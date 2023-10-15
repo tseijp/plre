@@ -14,7 +14,7 @@ export interface ViewLayerProps {
 }
 export const ViewLayer = (props: ViewLayerProps) => {
         const { editorItem } = props
-        const { objectTree, webrtcTree } = useCtx()
+        const { objectTree, isReady } = useCtx()
         const { selected, hovered, handlers } = useViewLayer()
 
         // useOnce(() => sortObject(objectTree))
@@ -47,7 +47,7 @@ export const ViewLayer = (props: ViewLayerProps) => {
                                 justifyContent="start"
                                 color="#fff"
                         >
-                                {webrtcTree.isReady && (
+                                {isReady && (
                                         <Tree tree={objectTree}>{render}</Tree>
                                 )}
                         </Flex>

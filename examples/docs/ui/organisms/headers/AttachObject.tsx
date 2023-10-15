@@ -19,7 +19,7 @@ import { ObjectTypes } from 'plre/types'
 type AttachObjectHandles = Record<keyof typeof ATTACH_ICONS, () => void>
 
 export const AttachObject = () => {
-        const { editorTree, objectTree } = useCtx()
+        const { editorTree, objectTree, storage } = useCtx()
         const compile = useCompile()
 
         const add = useCall((f, type: ObjectTypes) => {
@@ -39,6 +39,10 @@ export const AttachObject = () => {
                         editorTree.changeActive?.(child)
                 })
                 deactivateAll(objectTree)
+
+                // Cache only own changes in localStorage
+                storage.isCacheable = true
+
                 compile()
         })
         const handles = useMutable<AttachObjectHandles>({
@@ -49,6 +53,10 @@ export const AttachObject = () => {
                         })
                         deactivateAll(objectTree)
                         editorTree.changeActive?.(null)
+
+                        // Cache only own changes in localStorage
+                        storage.isCacheable = true
+
                         compile()
                 },
                 'Add Union'() {

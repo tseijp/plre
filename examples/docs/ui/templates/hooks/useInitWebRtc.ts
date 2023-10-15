@@ -9,9 +9,10 @@ import { useEffect, useState } from 'react'
 import { EditorState, PLObject } from 'plre/types'
 import { useCompile_ } from '../../organisms'
 import { createURL } from '../../organisms/headers/utils'
+import { createChecker } from './utils'
 
 let isDev = false
-isDev = process.env.NODE_ENV === 'development'
+// isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false
@@ -45,21 +46,7 @@ const TICK_TIMEOUT_MS = 1000
 
 const CONNECTED_TIMEOUT_MS = 100
 
-const createChecker = (key: string, callback = (_key: string) => {}) => {
-        let timeoutId = 0 as any
-        let listeners = () => {}
-        const fun = () => callback(key)
-        return () => {
-                listeners()
-                timeoutId = setTimeout(fun, TICK_TIMEOUT_MS * 5)
-                listeners = () => clearTimeout(timeoutId)
-        }
-}
-
-export const createWebrtc = (
-        objectTree: PLObject,
-        _editorTree: EditorState
-) => {
+export const createWebrtc = (objectTree: PLObject) => {
         const username = USER_NAMES[floor(random() * USER_NAMES.length)]
 
         /**
@@ -203,7 +190,7 @@ export const useInitWebrtc = (
         })
 
         const webrtcTree = useOnce(() => {
-                const self = createWebrtc(objectTree, editorTree)
+                const self = createWebrtc(objectTree)
                 self('connected', () => set(true))
                 // @ts-ignore
                 editorTree({ trySuccess })

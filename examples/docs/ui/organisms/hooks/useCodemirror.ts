@@ -83,7 +83,7 @@ interface UseCodemirrorCache {
 }
 
 export const useCodemirror = () => {
-        const { editorTree, objectTree } = useCtx()
+        const { editorTree, objectTree, storage } = useCtx()
         const cache = useOnce<UseCodemirrorCache>(() => ({
                 obj: getActiveObjects(objectTree)[0],
         }))
@@ -111,6 +111,9 @@ export const useCodemirror = () => {
                 cache.obj.shader = code
                 if (!cache.obj.isEditted) cache.obj.forceUpdate()
                 cache.obj.isEditted = true
+
+                // Cache only own changes in localStorage
+                storage.isCacheable = true
         })
 
         // update editor code if subscribe object change

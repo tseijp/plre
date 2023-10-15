@@ -4,21 +4,23 @@ import { Drop, useForceUpdate } from '../../atoms'
 import { DropItems } from '../../molecules'
 import { useCtx } from '../../ctx'
 import { TimerIcon } from '../../atoms'
-import { byteSize, makeRecentName } from '.'
+import { byteSize, createURL, makeRecentName } from '.'
 import type { CacheState } from 'plre/cache'
 
 export const OpenRecent = () => {
         const { storage } = useCtx()
-        const forceUpdate = useForceUpdate()
+        const tryCached = useForceUpdate()
 
         const handleClick = (cache: CacheState) => () => {
-                storage.changeCache?.(cache)
+                const url = createURL()
+                url.set('id', cache.id)
+                window.open(url + '', '_blank')
         }
 
         useEffect(() => {
                 const tick = () => {
                         // @ts-ignore for init storage
-                        storage({ trySuccess: forceUpdate })
+                        storage({ tryCached })
                 }
                 tick()
                 return tick
@@ -64,7 +66,14 @@ export const OpenRecent = () => {
                                 >
                                         {makeRecentName(cache)}
                                 </span>
-                                <span style={{ fontSize: '0.75rem' }}>
+                                <span
+                                        style={{
+                                                width: '2.1rem',
+                                                fontSize: '0.75rem',
+                                                overflow: 'hidden',
+                                                textOverflow: 'ellipsis',
+                                        }}
+                                >
                                         {byteSize(cache.byte)}
                                 </span>
                                 <span

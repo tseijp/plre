@@ -13,7 +13,7 @@ import type { ObjectTypes } from 'plre/types'
 const objectTypes = Object.keys(Objects) as ObjectTypes[]
 
 export const AddObject = () => {
-        const { editorTree, objectTree } = useCtx()
+        const { editorTree, objectTree, storage } = useCtx()
         const compile = useCompile()
 
         // @TODO useAsync
@@ -36,6 +36,10 @@ export const AddObject = () => {
                         }
                 })
                 deactivateAll(objectTree)
+
+                // Cache only own changes in localStorage
+                storage.isCacheable = true
+
                 compile()
         }
 

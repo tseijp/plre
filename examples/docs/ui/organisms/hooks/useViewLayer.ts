@@ -22,7 +22,7 @@ interface ViewLayerCache {
 
 export const useViewLayer = () => {
         const compile = useCompile()
-        const { editorTree, objectTree } = useCtx()
+        const { editorTree, objectTree, storage } = useCtx()
         const [hovered, setHovered] = useState<PLObject | null>(null)
         const [selected, setSelected] = useState<PLObject | null>(
                 getActiveObjects(objectTree)[0]
@@ -89,6 +89,9 @@ export const useViewLayer = () => {
                         initConnectAll(grabbed)
                         pubConnectAll(grabbed)
                         subConnectAll(grabbed)
+
+                        // Cache only own changes in localStorage
+                        storage.isCacheable = true
 
                         // finish
                         compile()

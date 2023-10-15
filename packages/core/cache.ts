@@ -7,15 +7,20 @@ export type CacheValue = string | number | (string | number)[]
 
 export interface CacheState {
         _all?: { [key: string]: CacheState }
-        isCached?: boolean
+        isReady: boolean
+        isCached: boolean
+        isCacheable: boolean
+        isDuplicate: boolean
+        isInitMount: boolean
         id: string
         byte: string
         data: string
         createdAt: string
         updatedAt: string
-        trySuccess?(str: string): void
-        catchError?(e: Error): void
+        init(): void
         changeCache?(target: CacheState): void
+        tryCached?(str: string): void
+        cacheError?(e: Error): void
         memo: any
 }
 

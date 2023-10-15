@@ -2,9 +2,6 @@ import { createObject } from 'plre'
 import { getLayerKey } from 'plre/utils'
 import { compile } from 'plre/compile'
 import { useOnce } from '../../atoms'
-import { useState } from 'react'
-import { PLObject } from 'plre/types'
-import { encodeObject } from 'plre/cache'
 
 const boxSDF = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
@@ -123,7 +120,5 @@ export const createInitPLObject = () => {
 // }
 
 export const useInitPLObject = () => {
-        const [obj, set] = useState<PLObject>(createInitPLObject)
-        obj.memo.set = set
-        return obj
+        return useOnce(createInitPLObject)
 }

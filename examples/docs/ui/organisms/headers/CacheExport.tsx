@@ -9,7 +9,7 @@ export const CacheExport = () => {
         const { storage } = useCtx()
         const ref = useRef<HTMLLinkElement | null>(null)
 
-        const trySuccess = useCall((str?: string) => {
+        const tryCached = useCall((str?: string) => {
                 const el = ref.current
                 if (!el) return
                 if (!str) throw new Error('Cache Export Error: no cache')
@@ -21,7 +21,7 @@ export const CacheExport = () => {
         useEffect(() => {
                 const tick = () => {
                         // @ts-ignore for init storage
-                        storage({ trySuccess })
+                        storage({ tryCached })
                 }
                 tick()
                 return tick

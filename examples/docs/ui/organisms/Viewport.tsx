@@ -15,8 +15,9 @@ export interface ViewportProps {
 
 export const Viewport = (props: ViewportProps) => {
         const { editorItem } = props
-        const { webrtcTree } = useCtx()
-        if (webrtcTree.isReady) return <ViewportImpl {...props} />
+        const { isReady } = useCtx()
+        if (isReady) return <ViewportImpl {...props} />
+
         return (
                 <Flex backgroundColor="#303030" transformStyle="preserve-3d">
                         <Header editorItem={editorItem}>
