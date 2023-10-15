@@ -140,11 +140,6 @@ export const createWebrtc = (objectTree: PLObject) => {
                 self.user.set('username', username)
                 self.user.set('color', self.color)
 
-                // init objects
-                objectTree.memo.ydoc = self.ydoc
-                initConnectAll(objectTree)
-                subConnectAll(objectTree)
-
                 const tick = () => {
                         self.users.set(self.userId, self.roomId)
                         setTimeout(tick, TICK_TIMEOUT_MS)

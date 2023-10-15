@@ -18,6 +18,10 @@ export interface CacheState {
         createdAt: string
         updatedAt: string
         init(): void
+        cacheObject(): void
+        updateCache(objectTree: PLObject): void
+        initObject(objectTree: PLObject): void
+        changeObject(objectTree: PLObject, obj: PLObject): void
         changeCache?(target: CacheState): void
         tryCached?(str: string): void
         cacheError?(e: Error): void
@@ -67,7 +71,7 @@ export const encodeObject = (obj: PLObject) => {
 export const decodeObject = (cache: CachedObject) => {
         const ret = { children: [] } as PLObject
         if (!cache.type) {
-                throw Error('decodeObject: cache._type is undefined')
+                throw Error('decodeObject: cache.type is undefined')
         }
         for (const key in cache) {
                 const value = cache[key]

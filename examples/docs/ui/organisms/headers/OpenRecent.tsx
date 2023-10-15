@@ -44,7 +44,7 @@ export const OpenRecent = () => {
                 return (
                         <div
                                 onClick={handleClick(cache)}
-                                key={cache.id}
+                                key={cache.id || Math.random()}
                                 style={{
                                         gap: '0.5rem',
                                         width: '100%',

@@ -58,7 +58,7 @@ const { floor } = Math
 
 export const byteSize = (byte: number | string) => {
         if (typeof byte === 'string') byte = parseInt(byte)
-        if (isNaN(byte)) throw Error('byteSize: byte is NaN')
+        if (isNaN(byte)) return `byte is NaN`
 
         if (byte < 1024) return byte + ' B'
         byte /= 1024

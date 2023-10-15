@@ -10,7 +10,6 @@ import { WebrtcState } from '.'
 import {
         delConnectAll,
         initConnectAll,
-        pubConnect,
         pubConnectAll,
         subConnectAll,
 } from 'plre/connect'
@@ -27,6 +26,16 @@ export const createStorage = () => {
                         self.isInitMount = updatedAt === createdAt
                         self.createdAt = createdAt
                         self.updatedAt = updatedAt
+                },
+                initObject(objectTree: PLObject) {
+                        initConnectAll(objectTree)
+                        subConnectAll(objectTree)
+                },
+                changeObject(objectTree: PLObject, obj: PLObject) {
+                        delConnectAll(objectTree)
+                        Object.assign(objectTree, obj)
+                        self.initObject(objectTree)
+                        pubConnectAll(objectTree)
                 },
                 changeCache(cache: CacheState) {
                         try {
@@ -45,6 +54,22 @@ export const createStorage = () => {
                                 if (!isCachedKey(key)) continue
                                 self[key] = cache[key]
                         }
+                },
+                updateCache(objectTree: PLObject) {
+                        self.id = createURL().get('id')
+                        self.data = encode(objectTree)
+                        self.byte = new Blob([self.data]).size + ''
+                },
+                cacheObject() {
+                        self.isCached = true
+                        self.isCacheable = false
+                        const item = setCache(self)
+
+                        /**
+                         * orgs/headers/CacheExport.tsx to make cache file
+                         * orgs/headers/OpenRecent.tsx to update recent info
+                         */
+                        self.tryCached?.(item)
                 },
                 memo: {},
         }) as unknown as CacheState
@@ -67,17 +92,7 @@ export const useInitStorage = (
                 storage.init()
                 storage._all = getCacheAll()
                 const id = 'PLRE' + createURL().get('id')
-                const recent = storage._all[id]
-                if (recent) {
-                        const obj = decode(recent.data)
-                        console.log({ ...obj })
-                        delConnectAll(objectTree)
-                        initConnectAll(obj)
-                        subConnectAll(obj)
-                        pubConnectAll(obj)
-                        Object.assign(objectTree, obj)
-                }
-
+                const recent = storage._all?.[id]
                 /**
                  * orgs/headers/OpenRecent.tsx to force update UI
                  */
@@ -85,7 +100,15 @@ export const useInitStorage = (
                         ? localStorage.getItem(id)
                         : strCache(storage)
                 storage.tryCached?.(str)
+
                 set(true)
+                objectTree.memo.ydoc = webrtcTree.ydoc
+                storage.initObject(objectTree)
+
+                if (!recent) return
+
+                const obj = decode(recent.data)
+                storage.changeObject(objectTree, obj)
         })
 
         const trySuccess = useCall(() => {
@@ -97,23 +120,14 @@ export const useInitStorage = (
                 try {
                         if (isDev) return
                         /**
-                         * calc data if init mount
                          * create a cache on init mount to export a cache
                          * but it does not store cache in localStorage
                          */
-                        storage.id = createURL().get('id')
-                        storage.data = encode(objectTree)
-                        storage.byte = new Blob([storage.data]).size + ''
+                        storage.updateCache(objectTree)
 
                         if (storage.isInitMount) return
-                        storage.isCached = true
-                        const item = setCache(storage)
 
-                        /**
-                         * orgs/headers/CacheExport.tsx to make cache file
-                         * orgs/headers/OpenRecent.tsx to update recent info
-                         */
-                        storage.tryCached?.(item)
+                        storage.cacheObject()
                 } catch (e) {
                         if (e.name === 'QuotaExceededError') {
                                 alert('Local storage quota exceeded')
