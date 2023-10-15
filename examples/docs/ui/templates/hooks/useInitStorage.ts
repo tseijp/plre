@@ -38,18 +38,6 @@ export const createStorage = () => {
                         pubConnectAll(objectTree)
                 },
                 changeCache(cache: CacheState) {
-                        try {
-                                // this code is to compile from local storage
-                                // const obj = decode(cache.data)
-                                // const url = createURL()
-                                // url.set('id', cache.id)
-                                // url.replaceState() // @TODO DELETE
-                                // objectTree.memo.set(() => obj)
-                                // self.memo.compileShader(obj)
-                        } catch (e) {
-                                console.warn(e)
-                                return
-                        }
                         for (const key in cache) {
                                 if (!isCachedKey(key)) continue
                                 self[key] = cache[key]
@@ -60,7 +48,7 @@ export const createStorage = () => {
                         self.data = encode(objectTree)
                         self.byte = new Blob([self.data]).size + ''
                 },
-                cacheObject() {
+                setCache() {
                         self.isCached = true
                         self.isCacheable = false
                         const item = setCache(self)
@@ -93,9 +81,6 @@ export const useInitStorage = (
                 storage._all = getCacheAll()
                 const id = 'PLRE' + createURL().get('id')
                 const recent = storage._all?.[id]
-                /**
-                 * orgs/headers/OpenRecent.tsx to force update UI
-                 */
                 const str = recent
                         ? localStorage.getItem(id)
                         : strCache(storage)
@@ -113,7 +98,6 @@ export const useInitStorage = (
 
         const trySuccess = useCall(() => {
                 storage.init()
-
                 if (storage.isDuplicate) return
                 if (!storage.isCacheable) return
 
@@ -124,10 +108,8 @@ export const useInitStorage = (
                          * but it does not store cache in localStorage
                          */
                         storage.updateCache(objectTree)
-
                         if (storage.isInitMount) return
-
-                        storage.cacheObject()
+                        storage.setCache()
                 } catch (e) {
                         if (e.name === 'QuotaExceededError') {
                                 alert('Local storage quota exceeded')

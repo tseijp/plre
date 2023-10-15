@@ -18,7 +18,7 @@ export interface CacheState {
         createdAt: string
         updatedAt: string
         init(): void
-        cacheObject(): void
+        setCache(): void
         updateCache(objectTree: PLObject): void
         initObject(objectTree: PLObject): void
         changeObject(objectTree: PLObject, obj: PLObject): void
