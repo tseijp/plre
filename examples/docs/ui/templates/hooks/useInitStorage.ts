@@ -72,10 +72,7 @@ export const useInitStorage = (
 ) => {
         const [isReady, set] = useState(false)
         const storage = useOnce<CacheState>(() => createStorage())
-        const compileShader = useCompile_(objectTree, editorTree)
-
         storage.isReady = isReady
-        storage.memo.compileShader = compileShader
 
         const connected = useCall(() => {
                 storage.init()
