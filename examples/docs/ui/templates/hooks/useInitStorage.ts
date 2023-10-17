@@ -22,6 +22,7 @@ export const createStorage = () => {
                 init() {
                         const updatedAt = new Date().toISOString()
                         const createdAt = self.createdAt || updatedAt
+                        self.id = createURL().get('id')
                         self.isDuplicate = updatedAt === self.updatedAt
                         self.isInitMount = updatedAt === createdAt
                         self.createdAt = createdAt
@@ -44,7 +45,7 @@ export const createStorage = () => {
                         }
                 },
                 updateCache(objectTree: PLObject) {
-                        self.id = createURL().get('id')
+                        console.log(self.id)
                         self.data = encode(objectTree)
                         self.byte = new Blob([self.data]).size + ''
                 },
@@ -88,12 +89,12 @@ export const useInitStorage = (
 
                 set(true)
                 objectTree.memo.ydoc = webrtcTree.ydoc
-                storage.initObject(objectTree)
+                storage.initObject(objectTree) // !!!!!!!!!!!!!!!!!1
 
                 if (!recent) return
 
                 const obj = decode(recent.data)
-                storage.changeObject(objectTree, obj)
+                storage.changeObject(objectTree, obj) // !!!!!!!!!!!
         })
 
         const trySuccess = useCall(() => {

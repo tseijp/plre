@@ -87,6 +87,7 @@ export const useCodemirror = () => {
         const cache = useOnce<UseCodemirrorCache>(() => ({
                 obj: getActiveObjects(objectTree)[0],
         }))
+
         const self = useOnce(() => codemirrorEvent(cache.obj?.shader))
 
         // change code when user click other object

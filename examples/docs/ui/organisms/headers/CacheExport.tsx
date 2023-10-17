@@ -1,19 +1,21 @@
 import * as React from 'react'
 import { useRef, useEffect } from 'react'
-import { DownloadIcon, useCall } from '../../atoms'
+import { DownloadIcon, useCall, useHoverEvent } from '../../atoms'
 import { Button } from '../../atoms/Button'
 import { useCtx } from '../../ctx'
 import { makeFileName } from '.'
 
 export const CacheExport = () => {
         const { storage } = useCtx()
-        const ref = useRef<HTMLLinkElement | null>(null)
-
+        const [background, set] = React.useState('transparent')
+        const hover = useHoverEvent((state) => {
+                set(state.active ? 'rgba(255,255,255,0.1)' : 'transparent')
+        })
         const tryCached = useCall((str?: string) => {
-                const el = ref.current
+                const el = hover.target
                 if (!el) return
                 if (!str) throw new Error('Cache Export Error: no cache')
-                const blob = new Blob([str], { type: 'text/plain' })
+                const blob = new Blob([str], { type: 'text/plain' }) // @ts-ignore
                 el.href = URL.createObjectURL(blob) // @ts-ignore
                 el.download = makeFileName()
         })
@@ -27,7 +29,13 @@ export const CacheExport = () => {
                 return tick
         }, [])
         return (
-                <Button as="a" ref={ref} padding="0 6px 0px 3px" gap="3px">
+                <Button
+                        as="a"
+                        ref={hover.ref}
+                        padding="0 6px 0px 3px"
+                        gap="3px"
+                        background={background}
+                >
                         <DownloadIcon />
                         Export
                 </Button>

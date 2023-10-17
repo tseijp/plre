@@ -12,7 +12,7 @@ import {
 import { addFractal } from './fractal'
 import { addLandscape } from './landscape'
 import { getActiveObjects, isAddable } from 'plre/utils'
-import { DropItems } from '../../molecules'
+import { DropItems, HeaderButton, HeaderItem } from '../../molecules'
 import { delConnectAll, initConnectAll, pubConnectAll } from 'plre/connect'
 import { ObjectTypes } from 'plre/types'
 
@@ -98,34 +98,16 @@ export const AttachObject = () => {
         const render = (key: keyof typeof handles) => {
                 const Icon = ATTACH_ICONS[key]
                 return (
-                        <div
-                                onClick={() => handles[key]()}
-                                key={key}
-                                style={{
-                                        gap: '0.5rem',
-                                        width: '100%',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                }}
-                        >
+                        <HeaderItem onClick={() => handles[key]()} key={key}>
                                 {Icon && <Icon />}
                                 {key}
-                        </div>
+                        </HeaderItem>
                 )
         }
 
         return (
                 <Drop>
-                        <span
-                                style={{
-                                        height: 18,
-                                        padding: '0 0.25rem',
-                                        textAlign: 'center',
-                                }}
-                        >
-                                Object
-                        </span>
+                        <HeaderButton>Object</HeaderButton>
                         <DropItems items={Object.keys(handles)}>
                                 {render}
                         </DropItems>

@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { useEffect } from 'react'
 import { Drop, useForceUpdate } from '../../atoms'
-import { DropItems } from '../../molecules'
+import { DropItems, HeaderButton } from '../../molecules'
 import { useCtx } from '../../ctx'
-import { TimerIcon } from '../../atoms'
 import { byteSize, createURL, makeRecentName } from '.'
 import type { CacheState } from 'plre/cache'
+import { CacheItem } from '../../molecules/headers/CacheItem'
 
 export const OpenRecent = () => {
         const { storage } = useCtx()
@@ -41,51 +41,20 @@ export const OpenRecent = () => {
         }
 
         const render = (cache: CacheState) => {
+                console.log(cache.id === storage.id, cache.id, storage.id)
                 return (
-                        <div
-                                onClick={handleClick(cache)}
+                        <CacheItem
                                 key={cache.id || Math.random()}
-                                style={{
-                                        gap: '0.5rem',
-                                        width: '100%',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        background:
-                                                cache.id === storage.id
-                                                        ? 'rgba(255,255,255,0.1)'
-                                                        : 'transparent',
-                                }}
-                        >
-                                <TimerIcon />
-                                <span
-                                        style={{
-                                                width: '8rem',
-                                                textOverflow: 'ellipsis',
-                                        }}
-                                >
-                                        {makeRecentName(cache)}
-                                </span>
-                                <span
-                                        style={{
-                                                width: '2.1rem',
-                                                fontSize: '0.75rem',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                        }}
-                                >
-                                        {byteSize(cache.byte)}
-                                </span>
-                                <span
-                                        style={{
-                                                width: '5rem',
-                                                overflow: 'hidden',
-                                                textOverflow: 'ellipsis',
-                                        }}
-                                >
-                                        {cache.id}
-                                </span>
-                        </div>
+                                cacheId={cache.id}
+                                onClick={handleClick(cache)}
+                                fileName={makeRecentName(cache)}
+                                byteSize={byteSize(cache.byte)}
+                                background={
+                                        cache.id === storage.id
+                                                ? 'rgba(255,255,255,0.1)'
+                                                : 'transparent'
+                                }
+                        />
                 )
         }
 
@@ -96,6 +65,7 @@ export const OpenRecent = () => {
                                 style={{
                                         width: '100%',
                                         textAlign: 'center',
+                                        padding: '0.25rem 0.5rem',
                                         color: 'rgba(255,255,255,0.5)',
                                 }}
                         >
@@ -106,18 +76,7 @@ export const OpenRecent = () => {
 
         return (
                 <Drop>
-                        <span
-                                style={{
-                                        height: 18,
-                                        padding: '0 0.25rem',
-                                        textAlign: 'center',
-                                        pointerEvents: storage._all
-                                                ? 'auto'
-                                                : 'none',
-                                }}
-                        >
-                                Open Recent
-                        </span>
+                        <HeaderButton>Open Recent</HeaderButton>
                         <DropItems items={items.length === 0 ? [1] : items}>
                                 {items.length === 0 ? noRender : render}
                         </DropItems>

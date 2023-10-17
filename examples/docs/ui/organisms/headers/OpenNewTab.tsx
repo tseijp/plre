@@ -1,27 +1,22 @@
 import * as React from 'react'
-
 import { Button } from '../../atoms/Button'
 import { createURL } from './utils'
+import { HeaderLink } from '../../molecules'
 
 export const OpenNewTab = () => {
-        const [ws, set] = React.useState([])
-
+        const [ws, setWs] = React.useState([])
         const handleOpen = () => {
                 const url = createURL()
                 const w = window.open(url + '', '_blank')
                 w.focus()
-                set((p) => [...p, w])
+                setWs((p) => [...p, w])
         }
 
         return (
                 <>
-                        <Button
-                                fontSize="16px"
-                                padding="0 3px"
-                                onClick={handleOpen}
-                        >
+                        <HeaderLink onClick={handleOpen}>
                                 Open New Tab
-                        </Button>
+                        </HeaderLink>
                         <Button
                                 fontSize="16px"
                                 padding="0 2px"
@@ -30,7 +25,7 @@ export const OpenNewTab = () => {
                                         ws.forEach((w) => {
                                                 w.close()
                                         })
-                                        set([])
+                                        setWs([])
                                 }}
                         >
                                 Close new window
