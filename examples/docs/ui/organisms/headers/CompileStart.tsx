@@ -1,14 +1,17 @@
 import * as React from 'react'
-import { LayerItemIcon } from '../layers'
 import { useCompile } from '../hooks'
+import { HeaderButton } from '../../molecules'
+import { Button } from '../../atoms/Button'
 
 export const CompileStart = () => {
         const compile = useCompile()
         const handleClick = () => void compile()
 
         return (
-                <div style={{ cursor: 'pointer' }} onClick={handleClick}>
-                        <LayerItemIcon active children="▶️" />
-                </div>
+                <Button onClick={handleClick}>
+                        <HeaderButton>
+                                <div children="▶️"></div>
+                        </HeaderButton>
+                </Button>
         )
 }

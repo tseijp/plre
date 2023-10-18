@@ -35,6 +35,7 @@ export const createStorage = () => {
                 changeObject(objectTree: PLObject, obj: PLObject) {
                         delConnectAll(objectTree)
                         Object.assign(objectTree, obj)
+                        console.log({ ...objectTree })
                         self.initObject(objectTree)
                         pubConnectAll(objectTree)
                 },

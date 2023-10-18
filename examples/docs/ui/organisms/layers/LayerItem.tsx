@@ -49,7 +49,7 @@ export const LayerItem = (props: LayerItemProps) => {
         const handleChange = useCall((value: string) => {
                 if (!value) value = 'Object'
                 obj.id = value
-                obj.forceUpdate()
+                obj.forceUpdate?.()
                 // connect
                 obj.memo.ymap.set('id', value)
         })

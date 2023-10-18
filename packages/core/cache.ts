@@ -91,13 +91,11 @@ export const decodeObject = (cache: CachedObject) => {
 
 export const getCacheAll = () => {
         const ret = {}
-        let count = 0 // @ts-ignore
         for (const key in localStorage) {
                 if (!key.startsWith('PLRE')) continue
                 ret[key] = getCache(key)
-                count++
         }
-        return count > 0 ? ret : null
+        return ret
 }
 
 export const getCache = (key: string) => {

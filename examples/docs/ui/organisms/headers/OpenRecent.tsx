@@ -17,6 +17,19 @@ export const OpenRecent = () => {
                 window.open(url + '', '_blank')
         }
 
+        const handleDelete = (cache: CacheState) => () => {
+                const key = 'PLRE' + cache.id
+                if (!localStorage[key] || !storage._all[key]) return
+                try {
+                        localStorage.removeItem(key)
+                } catch (e) {
+                        console.warn(e)
+                }
+
+                delete storage._all[key]
+                tryCached()
+        }
+
         useEffect(() => {
                 const tick = () => {
                         // @ts-ignore for init storage
@@ -41,12 +54,12 @@ export const OpenRecent = () => {
         }
 
         const render = (cache: CacheState) => {
-                console.log(cache.id === storage.id, cache.id, storage.id)
                 return (
                         <CacheItem
                                 key={cache.id || Math.random()}
                                 cacheId={cache.id}
                                 onClick={handleClick(cache)}
+                                onDelete={handleDelete(cache)}
                                 fileName={makeRecentName(cache)}
                                 byteSize={byteSize(cache.byte)}
                                 background={
