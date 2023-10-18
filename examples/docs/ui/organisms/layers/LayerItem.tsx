@@ -122,7 +122,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                                 <div data-id={id}>{obj.id}</div>
                                         </Draggable>
                                 </LayerItemField>
-                                {/* <div
+                                <div
                                         style={{
                                                 color: 'red',
                                                 marginLeft: '5rem',
@@ -143,7 +143,7 @@ export const LayerItem = (props: LayerItemProps) => {
                                 <div style={{ marginLeft: '5rem' }}>
                                         YMapSize: {obj.memo.ymap?.size}
                                         YArrSize: {obj.memo.yarr?.size}
-                                </div> */}
+                                </div>
                         </Flex>
                         <div
                                 style={{

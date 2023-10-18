@@ -47,7 +47,7 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
 
                         try {
                                 const { gl, pg } = self
-                                gl.deleteProgram(pg)
+                                gl?.deleteProgram?.(pg)
                         } catch (e) {
                                 console.warn(e)
                                 editorTree.catchError?.(e)
@@ -81,6 +81,7 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
         }
 
         useEffect(() => {
+                console.log('MOUNT')
                 // @ts-ignore register event to update uniform by subscribe
                 editorTree({ updateUniform, compileShader })
                 ;(async () => {
@@ -99,6 +100,7 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
                         }
                 })()
                 return () => {
+                        console.log('CLEAN')
                         // @ts-ignore
                         editorTree({ updateUniform, compileShader })
                 }

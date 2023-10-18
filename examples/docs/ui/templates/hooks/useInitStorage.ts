@@ -1,9 +1,15 @@
 import { EditorState, PLObject } from 'plre/types'
 import { useCall, useOnce } from '../../atoms'
 import { decode, encode } from './utils'
-import { getCacheAll, isCachedKey, setCache, strCache } from 'plre/cache'
+import {
+        assignObject,
+        getCacheAll,
+        isCachedKey,
+        setCache,
+        strCache,
+} from 'plre/cache'
 import { useEffect, useState } from 'react'
-import { createURL, useCompile_ } from '../../organisms'
+import { createURL } from '../../organisms'
 import type { CacheState } from 'plre/cache'
 import event from 'reev'
 import { WebrtcState } from '.'
@@ -13,6 +19,7 @@ import {
         pubConnectAll,
         subConnectAll,
 } from 'plre/connect'
+import { attachParent } from 'plre/utils'
 
 let isDev = false
 // isDev = process.env.NODE_ENV === 'development'
@@ -28,16 +35,18 @@ export const createStorage = () => {
                         self.createdAt = createdAt
                         self.updatedAt = updatedAt
                 },
-                initObject(objectTree: PLObject) {
+                initObject(objectTree: PLObject, ydoc: any) {
+                        objectTree.memo.ydoc = ydoc
                         initConnectAll(objectTree)
                         subConnectAll(objectTree)
                 },
                 changeObject(objectTree: PLObject, obj: PLObject) {
                         delConnectAll(objectTree)
-                        Object.assign(objectTree, obj)
-                        console.log({ ...objectTree })
-                        self.initObject(objectTree)
+                        assignObject(objectTree, obj)
+                        attachParent(objectTree)
+                        initConnectAll(objectTree)
                         pubConnectAll(objectTree)
+                        subConnectAll(objectTree)
                 },
                 changeCache(cache: CacheState) {
                         for (const key in cache) {
@@ -86,8 +95,7 @@ export const useInitStorage = (
                 storage.tryCached?.(str)
 
                 set(true)
-                objectTree.memo.ydoc = webrtcTree.ydoc
-                storage.initObject(objectTree) // !!!!!!!!!!!!!!!!!1
+                storage.initObject(objectTree, webrtcTree.ydoc)
 
                 if (!recent) return
 

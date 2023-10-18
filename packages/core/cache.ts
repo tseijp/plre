@@ -20,7 +20,7 @@ export interface CacheState {
         init(): void
         setCache(): void
         updateCache(objectTree: PLObject): void
-        initObject(objectTree: PLObject): void
+        initObject(objectTree: PLObject, ydoc: any): void
         changeObject(objectTree: PLObject, obj: PLObject): void
         changeCache?(target: CacheState): void
         tryCached?(str: string): void
@@ -87,6 +87,15 @@ export const decodeObject = (cache: CachedObject) => {
                 ret[key] = value
         }
         return createObject(cache.type as ObjectTypes, ret)
+}
+
+export const assignObject = (objectTree: PLObject, target: PLObject) => {
+        for (const key in target) {
+                const value = target[key]
+                if (isIgnoreCache(key, value)) continue
+                objectTree[key] = value
+        }
+        return objectTree
 }
 
 export const getCacheAll = () => {
