@@ -153,8 +153,8 @@ export const createWebrtc = (objectTree: ObjectState) => {
         const clean = () => {
                 window.removeEventListener('mousemove', mousemove)
                 self.users.unobserve(observeUsers)
-                self.provider.disconnect()
                 self.provider.destroy()
+                self.provider.disconnect()
         }
 
         const self = event<WebrtcState>({
