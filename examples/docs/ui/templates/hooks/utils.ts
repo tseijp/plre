@@ -19,7 +19,7 @@ export const decode = (str?: string) => {
         str = deCompress(str)
         const cache = JSON.parse(str) as CachedObject
         const ret = decodeObject(cache)
-        return ret
+        return ret as ObjectState
 }
 
 // for webrtc

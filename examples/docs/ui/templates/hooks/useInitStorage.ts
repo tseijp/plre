@@ -1,11 +1,16 @@
+import event from 'reev'
 import { EditorState, ObjectState } from 'plre/types'
 import { useCall, useOnce } from '../../atoms'
 import { decode, encode } from './utils'
-import { assignObject, getCacheAll, isCachedKey, setCache } from 'plre/cache'
+import {
+        assignObject,
+        encodeObject,
+        getCacheAll,
+        isCachedKey,
+        setCache,
+} from 'plre/cache'
 import { useEffect, useState } from 'react'
 import { createURL } from '../../organisms'
-import type { CacheState } from 'plre/cache'
-import event from 'reev'
 import { WebrtcState } from '.'
 import {
         delConnectAll,
@@ -15,6 +20,7 @@ import {
 } from 'plre/connect'
 import { attachParent } from 'plre/utils'
 import { deleteObject } from 'plre/control'
+import type { CacheState } from 'plre/cache'
 
 let isDev = false
 // isDev = process.env.NODE_ENV === 'development'
@@ -30,27 +36,36 @@ export const createStorage = () => {
                 self.updatedAt = updatedAt
         }
 
-        const initObject = (objectTree: ObjectState, ydoc: any) => {
+        const initPreferSubscribe = (objectTree: ObjectState, ydoc: any) => {
+                objectTree.memo.ydoc = ydoc
+                /**
+                 * @TODO Do not subscribe deleted object
+                 * but Delete by yourself, data will be lost
+                 */
+                objectTree.children.forEach(deleteObject) // !!!!!!!!!!!!!!!
+                initConnectAll(objectTree)
+                subConnectAll(objectTree)
+        }
+
+        const initWithoutCache = (objectTree: ObjectState, ydoc: any) => {
                 objectTree.memo.ydoc = ydoc
                 initConnectAll(objectTree)
                 subConnectAll(objectTree)
         }
 
-        const delObject = (objectTree: ObjectState, ydoc: any) => {
-                objectTree.memo.ydoc = ydoc
-                objectTree.children.forEach(deleteObject)
-                initConnectAll(objectTree)
-                subConnectAll(objectTree)
-        }
-
-        const changeObject = (
+        const initWithCache = (
                 objectTree: ObjectState,
                 ydoc: any,
                 obj: ObjectState
         ) => {
                 objectTree.memo.ydoc = ydoc
-                // initConnectAll(objectTree) ??
-                // delConnectAll(objectTree) ??
+                console.log(encodeObject(objectTree))
+                // cleanup
+                initConnectAll(objectTree)
+                subConnectAll(objectTree)
+                delConnectAll(objectTree)
+
+                // clone
                 assignObject(objectTree, obj)
                 attachParent(objectTree)
                 initConnectAll(objectTree)
@@ -66,20 +81,23 @@ export const createStorage = () => {
                 const recent = self._all?.[id]
                 const isFirst = webrtcTree.users.size === 1
 
+                // nothing is done if there is no cache
                 if (!recent) {
-                        self.initObject(objectTree, webrtcTree.ydoc)
+                        self.initWithoutCache(objectTree, webrtcTree.ydoc)
                         return
                 }
 
+                // use subscribe data if someone else is there @TODO fix order ↑
                 if (!isFirst) {
-                        self.delObject(objectTree, webrtcTree.ydoc)
+                        self.initPreferSubscribe(objectTree, webrtcTree.ydoc)
                         return
                 }
 
-                // TODO CEHCK DB
+                // load from cache
+                // @TODO CEHCK DB
                 // const updatedAtDB = await fetch(...)
                 const obj = decode(recent.data)
-                self.changeObject(objectTree, webrtcTree.ydoc, obj)
+                self.initWithCache(objectTree, webrtcTree.ydoc, obj)
         }
         const changeCache = (cache: CacheState) => {
                 for (const key in cache) {
@@ -107,9 +125,9 @@ export const createStorage = () => {
 
         const self = event({
                 initStorage,
-                initObject,
-                delObject,
-                changeObject,
+                initPreferSubscribe,
+                initWithoutCache,
+                initWithCache,
                 changeStorage,
                 changeCache,
                 updateCache,
@@ -141,6 +159,10 @@ export const useInitStorage = (
                 storage.initStorage()
                 storage._all = getCacheAll()
                 storage.changeStorage(objectTree, webrtcTree)
+
+                // notify what is active object
+                editorTree.changeActive?.()
+
                 set(true)
         })
 

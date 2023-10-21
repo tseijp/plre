@@ -18,12 +18,16 @@ export interface CacheState {
         createdAt: string
         updatedAt: string
         initStorage(): void
+        initPreferSubscribe(objectTree: ObjectState, ydoc: any): void
+        initWithoutCache(objectTree: ObjectState, ydoc: any): void
+        initWithCache(
+                objectTree: ObjectState,
+                ydoc: any,
+                obj: ObjectState
+        ): void
         setCache(): void
         changeStorage(objectTree: ObjectState, webrtcTree: any): void
         updateCache(objectTree: ObjectState): void
-        initObject(objectTree: ObjectState, ydoc: any): void
-        delObject(objectTree: ObjectState, ydoc: any): void
-        changeObject(objectTree: ObjectState, ydoc: any, obj: ObjectState): void
         changeCache?(target: CacheState): void
         tryCached?(str: string): void
         cacheError?(e: Error): void

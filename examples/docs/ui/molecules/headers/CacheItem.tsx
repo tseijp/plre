@@ -26,7 +26,7 @@ export const CacheItem = (props: CacheItemProps) => {
         } = props
         const [color, set] = useState('white')
         const hover = useHoverEvent((state) => {
-                const { active, target } = state
+                const { active } = state
                 set(active ? '#3372DB' : 'white')
         })
 
@@ -34,7 +34,6 @@ export const CacheItem = (props: CacheItemProps) => {
                 e.stopPropagation()
                 if (confirm()) {
                         onDelete()
-                        alert('Success')
                 }
         }
 
@@ -64,11 +63,10 @@ export const CacheItem = (props: CacheItemProps) => {
                         </span>
                         <span
                                 style={{
-                                        width: '2.25rem',
+                                        width: '2.5rem',
                                         textAlign: 'right',
                                         fontSize: '0.75rem',
                                         overflow: 'hidden',
-                                        textOverflow: 'ellipsis',
                                 }}
                         >
                                 {byteSize}

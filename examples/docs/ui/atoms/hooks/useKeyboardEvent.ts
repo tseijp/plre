@@ -26,6 +26,9 @@ export const keyboardEvent = <El extends Element = Element>(
         const mount = (el: El | Window) => {
                 if (!el) el = el || window
                 self.target = el
+
+                // @ts-ignore set tabindex to make element focusable
+                el.setAttribute('tabindex', '1')
                 el.addEventListener('keydown', self.on)
         }
 

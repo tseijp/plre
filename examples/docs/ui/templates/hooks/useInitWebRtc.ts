@@ -4,7 +4,7 @@ import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { useCall, useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
-import { initConnectAll, pubShaderAll, subConnectAll } from 'plre/connect'
+import { pubShaderAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
 import { EditorState, ObjectState } from 'plre/types'
 import { useCompile_ } from '../../organisms'
@@ -12,7 +12,7 @@ import { createURL } from '../../organisms/headers/utils'
 import { createChecker } from './utils'
 
 let isDev = false
-isDev = process.env.NODE_ENV === 'development'
+// isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false

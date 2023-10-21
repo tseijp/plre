@@ -84,20 +84,20 @@ interface UseCodemirrorCache {
 
 export const useCodemirror = () => {
         const { editorTree, objectTree, storage } = useCtx()
-        const cache = useOnce<UseCodemirrorCache>(() => ({
-                obj: getActiveObjects(objectTree)[0],
-        }))
+        const _ = useOnce<UseCodemirrorCache>(() => ({}))
 
-        const self = useOnce(() => codemirrorEvent(cache.obj?.shader))
+        const self = useOnce(() => codemirrorEvent(_.obj?.shader))
 
         // change code when user click other object
-        const changeActive = useCall((obj) => {
+        const changeActive = useCall((next) => {
+                if (!next) next = getActiveObjects(objectTree)[0]
+
                 // cache to save changed code
-                cache.obj = obj
+                _.obj = next
 
                 // reset codemirror
                 const { EditorState } = self.libs
-                const doc = obj?.shader || ''
+                const doc = next?.shader || ''
                 const extensions = self.extensions
                 const state = EditorState.create({ doc, extensions })
                 self.view.setState(state)
@@ -107,11 +107,11 @@ export const useCodemirror = () => {
 
         // run if user change editor code
         const changeEditor = useCall((v: any) => {
-                if (!v.docChanged || !cache.obj) return
+                if (!v.docChanged || !_.obj) return
                 const code = v.state.doc.toString()
-                cache.obj.shader = code
-                if (!cache.obj.isEditted) cache.obj.forceUpdate()
-                cache.obj.isEditted = true
+                _.obj.shader = code
+                if (!_.obj.isEditted) _.obj.forceUpdate?.()
+                _.obj.isEditted = true
 
                 // Cache only own changes in localStorage
                 storage.isCacheable = true
@@ -119,8 +119,10 @@ export const useCodemirror = () => {
 
         // update editor code if subscribe object change
         const compileShader = useCall(() => {
-                if (cache.obj && cache.obj.shader !== self.shader)
-                        changeActive(cache.obj)
+                if (!_.obj) return
+                if (_.obj.isEditted) return // ignore if editing is in progress or own compile.
+                if (_.obj.shader === self.shader) return
+                changeActive(_.obj)
         })
 
         useEffect(() => {

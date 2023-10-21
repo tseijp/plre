@@ -41,6 +41,7 @@ export const useTransform = (self: PL) => {
         })
 
         const changeActive = useCall((next) => {
+                if (!next) next = getActiveObjects(objectTree)[0]
                 // cache to save changed code
                 cache.previous = cache.current
                 cache.current = next

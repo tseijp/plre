@@ -52,7 +52,7 @@ export interface EditorState {
         forceUpdate?(): void
         trySuccess?(): void
         catchError?(e: Error): void
-        changeActive?(obj: ObjectState): void
+        changeActive?(obj?: ObjectState): void
         compileShader?(code: string): void
         updateUniform?(obj: ObjectState): void
 }
