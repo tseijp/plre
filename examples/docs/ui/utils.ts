@@ -1,4 +1,4 @@
-import { PL, PLObject } from 'plre/types'
+import { PL, ObjectState } from 'plre/types'
 import { getLayerKey } from 'plre/utils'
 import type { EventState } from 'reev/types'
 

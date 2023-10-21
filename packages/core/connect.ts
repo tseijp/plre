@@ -6,13 +6,13 @@ import {
         isTransformKey,
         setTransformFromKey,
 } from './utils'
-import { PLObject } from './types'
+import { ObjectState } from './types'
 import { createObject } from '.'
 import { deleteObject } from './control'
 
 const TIMEOUT_MS = 1000
 
-export const initConnect = (obj: PLObject) => {
+export const initConnect = (obj: ObjectState) => {
         const { children, parent, memo } = obj
         const _key = getLayerKey(obj)
 
@@ -66,7 +66,7 @@ export const initConnect = (obj: PLObject) => {
         console.log('[plre/conenct] init', { obj: { ...obj } })
 }
 
-export const pubConnect = (obj: PLObject) => {
+export const pubConnect = (obj: ObjectState) => {
         const { parent, memo } = obj
         const { ymap } = memo
 
@@ -93,7 +93,7 @@ export const pubConnect = (obj: PLObject) => {
         console.log('[plre/conenct] pub', { obj: { ...obj } })
 }
 
-export const delConnect = (obj: PLObject) => {
+export const delConnect = (obj: ObjectState) => {
         const { parent, memo } = obj
         const { ymap, yarr } = memo
         const _key = getLayerKey(obj)
@@ -120,7 +120,7 @@ export const delConnect = (obj: PLObject) => {
         console.log('[plre/conenct] del', { obj: { ...obj } })
 }
 
-export const subConnect = (obj: PLObject) => {
+export const subConnect = (obj: ObjectState) => {
         const { memo, children } = obj
         const { ymap, yarr, forceUpdateRoot, compileShader, updateUniform } =
                 memo
@@ -234,7 +234,7 @@ export const subConnect = (obj: PLObject) => {
         memo._sub++
 }
 
-export const pubShader = (obj: PLObject) => {
+export const pubShader = (obj: ObjectState) => {
         const { isEditted, memo, forceUpdate } = obj
         const { ymap } = memo
 
@@ -246,45 +246,45 @@ export const pubShader = (obj: PLObject) => {
         ymap.set('shader', obj.shader)
 }
 
-export const initConnectAll = (obj: PLObject) => {
+export const initConnectAll = (obj: ObjectState) => {
         const { children } = obj
         initConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(initConnectAll)
 }
 
-export const pubConnectAll = (obj: PLObject) => {
+export const pubConnectAll = (obj: ObjectState) => {
         const { children } = obj
         pubConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(pubConnectAll)
 }
 
-export const delConnectAll = (obj: PLObject) => {
+export const delConnectAll = (obj: ObjectState) => {
         const { children } = obj
         delConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(delConnectAll)
 }
 
-export const subConnectAll = (obj: PLObject) => {
+export const subConnectAll = (obj: ObjectState) => {
         const { children } = obj
         subConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(subConnectAll)
 }
 
-export const pubShaderAll = (obj: PLObject) => {
+export const pubShaderAll = (obj: ObjectState) => {
         const { children } = obj
         pubShader(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(pubShaderAll)
 }
 
-const notYDOCWarn = (obj: PLObject) => {
+const notYDOCWarn = (obj: ObjectState) => {
         return `[plre/connect] initConnect Warn: ${obj.id} is not have YDOC`
 }
 
-const notInitWarn = (obj: PLObject, key = '') => {
+const notInitWarn = (obj: ObjectState, key = '') => {
         return `[plre/connect] ${key} Warn: ${obj.id} is not initialized`
 }

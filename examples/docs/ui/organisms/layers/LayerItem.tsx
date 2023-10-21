@@ -9,17 +9,17 @@ import { useCall, useForceUpdate } from '../../atoms'
 import { OBJECT_ICONS } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { DragState } from '../../atoms'
-import type { PLObject } from 'plre/types'
+import type { ObjectState } from 'plre/types'
 
 export interface LayerItemHandlers {
-        mount(obj: PLObject, id: string): void
-        clean(obj: PLObject, id: string): void
-        click(obj: PLObject): void
-        draging(obj: PLObject, drag: DragState): void
-        dragend(obj: PLObject, drag: DragState): void
+        mount(obj: ObjectState, id: string): void
+        clean(obj: ObjectState, id: string): void
+        click(obj: ObjectState): void
+        draging(obj: ObjectState, drag: DragState): void
+        dragend(obj: ObjectState, drag: DragState): void
 }
 export interface LayerItemProps {
-        obj: PLObject
+        obj: ObjectState
         children?: ReactNode
         index?: number
         active?: boolean

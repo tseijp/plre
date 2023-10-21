@@ -8,7 +8,7 @@ import { useMutable } from 'plre/react'
 import { useOnce } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { uniformMat4, uniformMat4All } from 'plre/utils'
-import type { PL, PLObject } from 'plre/types'
+import type { PL, ObjectState } from 'plre/types'
 import type { WheelState } from '../../atoms'
 
 export const usePLImpl = (wheel: WheelState, on = () => {}) => {
@@ -74,7 +74,7 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
         /**
          * update if subscribe uniform or change uniform via slider
          */
-        const updateUniform = (obj: PLObject) => {
+        const updateUniform = (obj: ObjectState) => {
                 uniformMat4(self as PL, obj)
                 // @ts-ignore
                 self.on?.()

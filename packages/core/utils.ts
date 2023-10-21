@@ -1,5 +1,5 @@
 import * as ShaderChunk from './shader'
-import { ObjectTypes, PL, PLObject, Vec3 } from './types'
+import { ObjectTypes, PL, ObjectState, Vec3 } from './types'
 
 export const isMaterial = (type: ObjectTypes) => type === 'Material'
 
@@ -16,7 +16,7 @@ export const isAddable = (target: ObjectTypes, type: ObjectTypes) => {
         return false
 }
 
-export const attachParent = (self: PLObject) => {
+export const attachParent = (self: ObjectState) => {
         const ids = [] as string[]
         self.children.forEach((child) => {
                 child.parent = self
@@ -60,7 +60,11 @@ const isFun = (a: unknown): a is Function => typeof a === 'function'
 
 type Value = number | ((prev: number) => number)
 
-export const setTransformFromKey = (obj: PLObject, key = '', value: Value) => {
+export const setTransformFromKey = (
+        obj: ObjectState,
+        key = '',
+        value: Value
+) => {
         const [p, x] = key.split('')
         let target: Vec3
         if (p === 'p') target = obj.position
@@ -101,7 +105,7 @@ export const addSuffix = (ids = [''], id = '') => {
         return id + suffix
 }
 
-export const getLayerKey = (obj: PLObject) => {
+export const getLayerKey = (obj: ObjectState) => {
         if (!obj.parent) return obj.key
         return getLayerKey(obj.parent) + '_' + obj.key
 }
@@ -114,8 +118,8 @@ export const withMat = (key: string) => key + '_Material'
 
 export const withoutMat = (key: string) => replaceAll(key, '_Material', '')
 
-export const getActiveObjects = (obj: PLObject) => {
-        const ret = [] as PLObject[]
+export const getActiveObjects = (obj: ObjectState) => {
+        const ret = [] as ObjectState[]
         if (obj.active) ret.push(obj)
         obj.children.forEach((child) => {
                 getActiveObjects(child).forEach((_obj) => {
@@ -156,7 +160,7 @@ export const mat4 = (
         return ret
 }
 
-export const uniformMat4 = (self: PL, obj: PLObject) => {
+export const uniformMat4 = (self: PL, obj: ObjectState) => {
         const { parent, position, rotation, scale } = obj
 
         // @NOTE function name of obj in top is fixed in map
@@ -166,7 +170,7 @@ export const uniformMat4 = (self: PL, obj: PLObject) => {
         self.uniform(_key + '_M', _mat, true)
 }
 
-export const uniformMat4All = (self: PL, obj: PLObject) => {
+export const uniformMat4All = (self: PL, obj: ObjectState) => {
         const { children } = obj
         uniformMat4(self, obj)
         if (!Array.isArray(children) || children.length === 0) return

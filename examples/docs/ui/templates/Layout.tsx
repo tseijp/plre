@@ -13,8 +13,8 @@ import {
         UserCursors,
 } from '../organisms'
 import {
-        useInitPLObject,
-        useInitPLEditor,
+        useInitObjectTree,
+        useInitEditorTree,
         useInitWebrtc,
         useInitStorage,
 } from './hooks'
@@ -22,14 +22,16 @@ import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
 import type { ReactNode } from 'react'
 import { CtxProvider } from '../ctx'
+import { useKeyboardCompile } from './hooks/useKeyboardCompile'
 
 export const Layout = () => {
         const { siteConfig } = useDocusaurusContext()
-        const objectTree = useInitPLObject()
-        const editorTree = useInitPLEditor()
+        const objectTree = useInitObjectTree()
+        const editorTree = useInitEditorTree()
         const webrtcTree = useInitWebrtc(objectTree, editorTree)
         const storage = useInitStorage(objectTree, editorTree, webrtcTree)
         const isReady = webrtcTree.isReady && storage.isReady
+        const keyboard = useKeyboardCompile(objectTree, editorTree)
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 switch (editorItem.type) {
@@ -73,6 +75,7 @@ export const Layout = () => {
                                         {webrtcTree && <UserCursors />}
                                 </Flex>
                                 <Flex
+                                        ref={keyboard.ref}
                                         position="absolute"
                                         paddingTop={HEADER_PADDING_SIZE}
                                         padding={LAYOUT_PADDING_STYLE}

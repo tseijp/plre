@@ -1,4 +1,4 @@
-import { PLObject } from 'plre/types'
+import { ObjectState } from 'plre/types'
 import { MutableRefObject, useEffect } from 'react'
 import { event } from 'reev'
 import { useCall, useOnce } from '../../atoms'
@@ -79,7 +79,7 @@ export const codemirrorEvent = (doc = '') => {
 }
 
 interface UseCodemirrorCache {
-        obj?: PLObject
+        obj?: ObjectState
 }
 
 export const useCodemirror = () => {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { PLObject } from 'plre/types'
+import { ObjectState } from 'plre/types'
 import { Header } from './headers/Header'
 import { Flex, Tree } from '../atoms'
 import { useViewLayer } from './hooks'
@@ -19,7 +19,7 @@ export const ViewLayer = (props: ViewLayerProps) => {
 
         // useOnce(() => sortObject(objectTree))
 
-        const render = (obj: PLObject, grand: ReactNode, index = 0) => (
+        const render = (obj: ObjectState, grand: ReactNode, index = 0) => (
                 <LayerItem
                         /**
                          * Mismatch occurs if yjs create and delete at the same time,

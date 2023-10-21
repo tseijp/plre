@@ -1,9 +1,9 @@
 import { createObject } from 'plre'
 import { addMaterial } from 'plre/control'
-import { ObjectTypes, PLObject } from 'plre/types'
+import { ObjectTypes, ObjectState } from 'plre/types'
 import { addSuffix, attachParent, getLayerKey } from 'plre/utils'
 
-export const addLandscape = (obj: PLObject, type: ObjectTypes) => {
+export const addLandscape = (obj: ObjectState, type: ObjectTypes) => {
         const ids = obj.children.map((c) => c.id) // get ids before attach to parent
         const child = createObject(type)
 

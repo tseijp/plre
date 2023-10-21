@@ -1,7 +1,7 @@
 import { useForceUpdate, useOnce } from '../../atoms'
 import { createEditor } from 'plre'
 
-export const createPLEditor = (forceUpdate = () => {}) => {
+export const createEditorTree = (forceUpdate = () => {}) => {
         // const viewport = createEditor('tutorial')
         const viewport = createEditor('viewport')
         const timeline = createEditor('timeline')
@@ -25,7 +25,7 @@ export const createPLEditor = (forceUpdate = () => {}) => {
         return top
 }
 
-export const useInitPLEditor = () => {
+export const useInitEditorTree = () => {
         const forceUpdate = useForceUpdate()
-        return useOnce(() => createPLEditor(forceUpdate))
+        return useOnce(() => createEditorTree(forceUpdate))
 }

@@ -53,5 +53,5 @@ export const Flex = forwardRef((props: FlexProps, ref) => {
                 ...other,
         }
 
-        return createElement(as, { ref, style }, children)
+        return createElement(as, { ref, style, tabIndex: '1' }, children)
 })

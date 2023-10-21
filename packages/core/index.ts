@@ -3,14 +3,14 @@ import { event } from 'reev'
 import { createGL } from 'glre'
 import { fs, vs } from './shader'
 import { EventState } from 'reev'
-import { PL, PLObject, ObjectTypes, EditorType, EditorState } from './types'
+import { PL, ObjectState, ObjectTypes, EditorType, EditorState } from './types'
 
 let currentIndex = 1
 
 export const createObject = (
         type: ObjectTypes,
-        props: Partial<PLObject> = {},
-        _children: PLObject | PLObject[] = []
+        props: Partial<ObjectState> = {},
+        _children: ObjectState | ObjectState[] = []
 ) => {
         const {
                 // type = _type
@@ -44,7 +44,7 @@ export const createObject = (
                 index,
                 memo,
                 ...other,
-        }) as EventState<PLObject>
+        }) as EventState<ObjectState>
 
         attachParent(self)
 

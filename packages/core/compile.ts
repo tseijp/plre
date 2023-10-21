@@ -1,4 +1,4 @@
-import { PLObject } from './types'
+import { ObjectState } from './types'
 import * as ShaderChunk from './shader'
 import {
         getLayerKey,
@@ -17,7 +17,7 @@ export const withDirective = (shader = '', key = '') => {
 
 const NEW_LINE = '\n        '
 
-export const compileCollection = (obj: PLObject) => {
+export const compileCollection = (obj: ObjectState) => {
         const { parent, children, type } = obj
         const _key = parent ? getLayerKey(obj) : 'map'
         const _mat = _key + '_M'
@@ -40,13 +40,13 @@ export const compileCollection = (obj: PLObject) => {
         return ret
 }
 
-export const compileObject = (obj: PLObject) => {
+export const compileObject = (obj: ObjectState) => {
         let ret = obj.shader.trim()
         // ret = withDirective(ret, _key)
         return ret
 }
 
-export const compileMaterial = (obj: PLObject) => {
+export const compileMaterial = (obj: ObjectState) => {
         let ret = obj.shader.trim()
         // const _key = getLayerKey(obj)
         // ret = withDirective(ret, _key)
@@ -64,17 +64,17 @@ export const complieVector = (arr: number[]) => {
         return `vec${arr.length}(` + arr.map(compileFloat) + ')'
 }
 
-export const compile = (obj: PLObject) => {
+export const compile = (obj: ObjectState) => {
         if (isMaterial(obj.type)) return compileMaterial(obj)
         if (isCollection(obj.type)) return (obj.shader = compileCollection(obj))
         return compileObject(obj)
 }
 
-const getMaterial = (obj: PLObject) => {
+const getMaterial = (obj: ObjectState) => {
         return obj.children.find((child) => child.type === 'Material')
 }
 
-export const collectAll = (obj: PLObject) => {
+export const collectAll = (obj: ObjectState) => {
         const { children, memo: _ } = obj
         // obj.shader = compile(obj)
         let min = compileFloat(obj.index - 0.01)

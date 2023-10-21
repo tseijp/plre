@@ -1,7 +1,7 @@
 import { createObject } from '.'
-import type { ObjectTypes, PLObject } from './types'
+import type { ObjectTypes, ObjectState } from './types'
 
-export type CacheKey = keyof PLObject
+export type CacheKey = keyof ObjectState
 
 export type CacheValue = string | number | (string | number)[]
 
@@ -19,11 +19,11 @@ export interface CacheState {
         updatedAt: string
         initStorage(): void
         setCache(): void
-        changeStorage(objectTree: PLObject, webrtcTree: any): void
-        updateCache(objectTree: PLObject): void
-        initObject(objectTree: PLObject, ydoc: any): void
-        delObject(objectTree: PLObject, ydoc: any): void
-        changeObject(objectTree: PLObject, ydoc: any, obj: PLObject): void
+        changeStorage(objectTree: ObjectState, webrtcTree: any): void
+        updateCache(objectTree: ObjectState): void
+        initObject(objectTree: ObjectState, ydoc: any): void
+        delObject(objectTree: ObjectState, ydoc: any): void
+        changeObject(objectTree: ObjectState, ydoc: any, obj: ObjectState): void
         changeCache?(target: CacheState): void
         tryCached?(str: string): void
         cacheError?(e: Error): void
@@ -50,7 +50,7 @@ export const isIgnoreCache = (key: string, value: unknown) => {
         return false
 }
 
-export const encodeObject = (obj: PLObject) => {
+export const encodeObject = (obj: ObjectState) => {
         const ret = {} as CachedObject
         for (const key in obj) {
                 const value = obj[key]
@@ -71,7 +71,7 @@ export const encodeObject = (obj: PLObject) => {
 }
 
 export const decodeObject = (cache: CachedObject) => {
-        const ret = { children: [] } as PLObject
+        const ret = { children: [] } as ObjectState
         if (!cache.type) {
                 throw Error('decodeObject: cache.type is undefined')
         }
@@ -91,7 +91,7 @@ export const decodeObject = (cache: CachedObject) => {
         return createObject(cache.type as ObjectTypes, ret)
 }
 
-export const assignObject = (objectTree: PLObject, target: PLObject) => {
+export const assignObject = (objectTree: ObjectState, target: ObjectState) => {
         for (const key in target) {
                 const value = target[key]
                 if (isIgnoreCache(key, value)) continue

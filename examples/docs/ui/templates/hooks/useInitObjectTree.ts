@@ -77,7 +77,7 @@ vec3 ${key}(vec3 pos, vec3 nor) {
   return col;
 }
 `
-export const createInitPLObject = () => {
+export const createObjectTree = () => {
         // X^2 + y^2 formula
         const M1 = createObject('Material', { id: 'Material' })
         const formula = createObject('formula', {
@@ -103,7 +103,7 @@ export const createInitPLObject = () => {
         return U
 }
 
-// export const createInitPLObject = () => {
+// export const createObjectTree = () => {
 //         const Camera = createObject('I', { id: 'Camera' })
 //         const Cube = createObject('I', { id: 'Cube', active: true })
 //         const Light = createObject('I', { id: 'Light' })
@@ -119,6 +119,6 @@ export const createInitPLObject = () => {
 //         return SceneCollection
 // }
 
-export const useInitPLObject = () => {
-        return useOnce(createInitPLObject)
+export const useInitObjectTree = () => {
+        return useOnce(createObjectTree)
 }

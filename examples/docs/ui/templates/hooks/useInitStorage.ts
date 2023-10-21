@@ -1,4 +1,4 @@
-import { EditorState, PLObject } from 'plre/types'
+import { EditorState, ObjectState } from 'plre/types'
 import { useCall, useOnce } from '../../atoms'
 import { decode, encode } from './utils'
 import { assignObject, getCacheAll, isCachedKey, setCache } from 'plre/cache'
@@ -30,13 +30,13 @@ export const createStorage = () => {
                 self.updatedAt = updatedAt
         }
 
-        const initObject = (objectTree: PLObject, ydoc: any) => {
+        const initObject = (objectTree: ObjectState, ydoc: any) => {
                 objectTree.memo.ydoc = ydoc
                 initConnectAll(objectTree)
                 subConnectAll(objectTree)
         }
 
-        const delObject = (objectTree: PLObject, ydoc: any) => {
+        const delObject = (objectTree: ObjectState, ydoc: any) => {
                 objectTree.memo.ydoc = ydoc
                 objectTree.children.forEach(deleteObject)
                 initConnectAll(objectTree)
@@ -44,9 +44,9 @@ export const createStorage = () => {
         }
 
         const changeObject = (
-                objectTree: PLObject,
+                objectTree: ObjectState,
                 ydoc: any,
-                obj: PLObject
+                obj: ObjectState
         ) => {
                 objectTree.memo.ydoc = ydoc
                 // initConnectAll(objectTree) ??
@@ -59,7 +59,7 @@ export const createStorage = () => {
         }
 
         const changeStorage = (
-                objectTree: PLObject,
+                objectTree: ObjectState,
                 webrtcTree: WebrtcState
         ) => {
                 const id = 'PLRE' + createURL().get('id')
@@ -88,7 +88,7 @@ export const createStorage = () => {
                 }
         }
 
-        const updateCache = (objectTree: PLObject) => {
+        const updateCache = (objectTree: ObjectState) => {
                 self.data = encode(objectTree)
                 self.byte = new Blob([self.data]).size + ''
 
@@ -129,7 +129,7 @@ export const createStorage = () => {
 }
 
 export const useInitStorage = (
-        objectTree: PLObject,
+        objectTree: ObjectState,
         editorTree: EditorState,
         webrtcTree: WebrtcState
 ) => {
