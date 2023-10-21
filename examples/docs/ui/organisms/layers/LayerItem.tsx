@@ -122,6 +122,14 @@ export const LayerItem = (props: LayerItemProps) => {
                                                 <div data-id={id}>{obj.id}</div>
                                         </Draggable>
                                 </LayerItemField>
+                                {/* <div
+                                        style={{
+                                                color: 'green',
+                                                marginLeft: '5rem',
+                                        }}
+                                >
+                                        {_.xxx}
+                                </div> */}
                                 <div
                                         style={{
                                                 color: 'red',
@@ -132,7 +140,12 @@ export const LayerItem = (props: LayerItemProps) => {
                                         {!_.ymap && 'NO YARR'}
                                         {!_.yarr && 'NO YMAP'}
                                 </div>
-                                <div style={{ color: '#e2e2e2' }}>
+                                <div
+                                        style={{
+                                                color: '#e2e2e2',
+                                                marginLeft: '5rem',
+                                        }}
+                                >
                                         {_._init ? ' Init:' + _._init : ''}
                                         {_._pub ? ' Pub:' + _._pub : ''}
                                         {_._del ? ' Del:' + _._del : ''}

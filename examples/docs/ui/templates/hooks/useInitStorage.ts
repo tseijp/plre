@@ -1,13 +1,7 @@
 import { EditorState, PLObject } from 'plre/types'
 import { useCall, useOnce } from '../../atoms'
 import { decode, encode } from './utils'
-import {
-        assignObject,
-        getCacheAll,
-        isCachedKey,
-        setCache,
-        strCache,
-} from 'plre/cache'
+import { assignObject, getCacheAll, isCachedKey, setCache } from 'plre/cache'
 import { useEffect, useState } from 'react'
 import { createURL } from '../../organisms'
 import type { CacheState } from 'plre/cache'
@@ -20,56 +14,115 @@ import {
         subConnectAll,
 } from 'plre/connect'
 import { attachParent } from 'plre/utils'
+import { deleteObject } from 'plre/control'
 
 let isDev = false
 // isDev = process.env.NODE_ENV === 'development'
 
 export const createStorage = () => {
-        const self = event({
-                init() {
-                        const updatedAt = new Date().toISOString()
-                        const createdAt = self.createdAt || updatedAt
-                        self.id = createURL().get('id')
-                        self.isDuplicate = updatedAt === self.updatedAt
-                        self.isInitMount = updatedAt === createdAt
-                        self.createdAt = createdAt
-                        self.updatedAt = updatedAt
-                },
-                initObject(objectTree: PLObject, ydoc: any) {
-                        objectTree.memo.ydoc = ydoc
-                        initConnectAll(objectTree)
-                        subConnectAll(objectTree)
-                },
-                changeObject(objectTree: PLObject, obj: PLObject) {
-                        delConnectAll(objectTree)
-                        assignObject(objectTree, obj)
-                        attachParent(objectTree)
-                        initConnectAll(objectTree)
-                        pubConnectAll(objectTree)
-                        subConnectAll(objectTree)
-                },
-                changeCache(cache: CacheState) {
-                        for (const key in cache) {
-                                if (!isCachedKey(key)) continue
-                                self[key] = cache[key]
-                        }
-                },
-                updateCache(objectTree: PLObject) {
-                        console.log(self.id)
-                        self.data = encode(objectTree)
-                        self.byte = new Blob([self.data]).size + ''
-                },
-                setCache() {
-                        self.isCached = true
-                        self.isCacheable = false
-                        const item = setCache(self)
+        const initStorage = () => {
+                const updatedAt = new Date().toISOString()
+                const createdAt = self.createdAt || updatedAt
+                self.id = createURL().get('id')
+                self.isDuplicate = updatedAt === self.updatedAt
+                self.isInitMount = updatedAt === createdAt
+                self.createdAt = createdAt
+                self.updatedAt = updatedAt
+        }
 
-                        /**
-                         * orgs/headers/CacheExport.tsx to make cache file
-                         * orgs/headers/OpenRecent.tsx to update recent info
-                         */
-                        self.tryCached?.(item)
-                },
+        const initObject = (objectTree: PLObject, ydoc: any) => {
+                objectTree.memo.ydoc = ydoc
+                initConnectAll(objectTree)
+                subConnectAll(objectTree)
+        }
+
+        const delObject = (objectTree: PLObject, ydoc: any) => {
+                objectTree.memo.ydoc = ydoc
+                objectTree.children.forEach(deleteObject)
+                initConnectAll(objectTree)
+                subConnectAll(objectTree)
+        }
+
+        const changeObject = (
+                objectTree: PLObject,
+                ydoc: any,
+                obj: PLObject
+        ) => {
+                objectTree.memo.ydoc = ydoc
+                // initConnectAll(objectTree) ??
+                // delConnectAll(objectTree) ??
+                assignObject(objectTree, obj)
+                attachParent(objectTree)
+                initConnectAll(objectTree)
+                pubConnectAll(objectTree)
+                subConnectAll(objectTree)
+        }
+
+        const changeStorage = (
+                objectTree: PLObject,
+                webrtcTree: WebrtcState
+        ) => {
+                const id = 'PLRE' + createURL().get('id')
+                const recent = self._all?.[id]
+                const isFirst = webrtcTree.users.size === 1
+
+                if (!recent) {
+                        self.initObject(objectTree, webrtcTree.ydoc)
+                        return
+                }
+
+                if (!isFirst) {
+                        self.delObject(objectTree, webrtcTree.ydoc)
+                        return
+                }
+
+                // TODO CEHCK DB
+                // const updatedAtDB = await fetch(...)
+                const obj = decode(recent.data)
+                self.changeObject(objectTree, webrtcTree.ydoc, obj)
+        }
+        const changeCache = (cache: CacheState) => {
+                for (const key in cache) {
+                        if (!isCachedKey(key)) continue
+                        self[key] = cache[key]
+                }
+        }
+
+        const updateCache = (objectTree: PLObject) => {
+                self.data = encode(objectTree)
+                self.byte = new Blob([self.data]).size + ''
+
+                if (self.isInitMount) return
+
+                self.isCached = true
+                self.isCacheable = false
+                const item = setCache(self)
+
+                /**
+                 * orgs/headers/CacheExport.tsx to make cache file
+                 * orgs/headers/OpenRecent.tsx to update recent info
+                 */
+                self.tryCached?.(item)
+        }
+
+        const self = event({
+                initStorage,
+                initObject,
+                delObject,
+                changeObject,
+                changeStorage,
+                changeCache,
+                updateCache,
+                isCached: false,
+                isCacheable: false,
+                isDuplicate: false,
+                isInitMount: false,
+                createdAt: '',
+                updatedAt: '',
+                data: '',
+                byte: '',
+                id: '',
+                _all: {},
                 memo: {},
         }) as unknown as CacheState
         return self
@@ -85,26 +138,14 @@ export const useInitStorage = (
         storage.isReady = isReady
 
         const connected = useCall(() => {
-                storage.init()
+                storage.initStorage()
                 storage._all = getCacheAll()
-                const id = 'PLRE' + createURL().get('id')
-                const recent = storage._all?.[id]
-                const str = recent
-                        ? localStorage.getItem(id)
-                        : strCache(storage)
-                storage.tryCached?.(str)
-
+                storage.changeStorage(objectTree, webrtcTree)
                 set(true)
-                storage.initObject(objectTree, webrtcTree.ydoc)
-
-                if (!recent) return
-
-                const obj = decode(recent.data)
-                storage.changeObject(objectTree, obj) // !!!!!!!!!!!
         })
 
         const trySuccess = useCall(() => {
-                storage.init()
+                storage.initStorage()
                 if (storage.isDuplicate) return
                 if (!storage.isCacheable) return
 
@@ -115,8 +156,6 @@ export const useInitStorage = (
                          * but it does not store cache in localStorage
                          */
                         storage.updateCache(objectTree)
-                        if (storage.isInitMount) return
-                        storage.setCache()
                 } catch (e) {
                         if (e.name === 'QuotaExceededError') {
                                 alert('Local storage quota exceeded')

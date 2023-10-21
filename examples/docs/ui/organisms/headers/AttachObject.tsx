@@ -13,7 +13,12 @@ import { addFractal } from './fractal'
 import { addLandscape } from './landscape'
 import { getActiveObjects, isAddable } from 'plre/utils'
 import { DropItems, HeaderButton, HeaderItem } from '../../molecules'
-import { delConnectAll, initConnectAll, pubConnectAll } from 'plre/connect'
+import {
+        delConnectAll,
+        initConnectAll,
+        pubConnectAll,
+        subConnectAll,
+} from 'plre/connect'
 import { ObjectTypes } from 'plre/types'
 
 type AttachObjectHandles = Record<keyof typeof ATTACH_ICONS, () => void>
@@ -33,6 +38,7 @@ export const AttachObject = () => {
 
                         initConnectAll(child)
                         pubConnectAll(child)
+                        subConnectAll(child)
 
                         if (i !== 0) return
                         child.active = true

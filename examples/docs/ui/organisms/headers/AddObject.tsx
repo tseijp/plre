@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as Objects from 'plre/objects'
 import { Up } from '../../utils'
-import { Drop, OBJECT_ICONS, useHoverEvent } from '../../atoms'
+import { Drop, OBJECT_ICONS } from '../../atoms'
 import { useCtx } from '../../ctx'
 import { useCompile } from '../hooks'
 import { addObject, deactivateAll } from 'plre/control'

@@ -48,6 +48,8 @@ export const createObject = (
 
         attachParent(self)
 
+        self.memo.xxx = new Date().toISOString()
+
         return self
 }
 

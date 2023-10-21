@@ -17,11 +17,13 @@ export interface CacheState {
         data: string
         createdAt: string
         updatedAt: string
-        init(): void
+        initStorage(): void
         setCache(): void
+        changeStorage(objectTree: PLObject, webrtcTree: any): void
         updateCache(objectTree: PLObject): void
         initObject(objectTree: PLObject, ydoc: any): void
-        changeObject(objectTree: PLObject, obj: PLObject): void
+        delObject(objectTree: PLObject, ydoc: any): void
+        changeObject(objectTree: PLObject, ydoc: any, obj: PLObject): void
         changeCache?(target: CacheState): void
         tryCached?(str: string): void
         cacheError?(e: Error): void

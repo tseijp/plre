@@ -18,7 +18,6 @@ export const initConnect = (obj: PLObject) => {
 
         // if (memo._init) return console.warn(initWarn(obj))
 
-        console.log(parent?.memo, !!parent, !!parent?.memo?.ydoc, !!memo.ydoc)
         if (parent) {
                 memo.ydoc = parent.memo.ydoc
                 memo.updateUniform = parent.memo.updateUniform
@@ -97,23 +96,23 @@ export const pubConnect = (obj: PLObject) => {
 export const delConnect = (obj: PLObject) => {
         const { parent, memo } = obj
         const { ymap, yarr } = memo
+        const _key = getLayerKey(obj)
 
         if (!ymap || !yarr) return console.warn(notInitWarn(obj, 'delConnect'))
 
-        for (const key in obj) {
-                if (isIgnoreProp(obj[key], key)) continue
-                ymap.set(key, void 0)
+        // top object does not delete connections
+        if (parent) {
+                for (const key in obj) {
+                        if (isIgnoreProp(obj[key], key)) continue
+                        ymap.set(key, void 0)
+                }
+                parent.memo.yarr.set(_key, void 0)
+                memo.unobserveListener?.forEach((f: any) => f())
         }
 
         yarr.forEach((key: string) => {
                 if (yarr.get(key)) yarr.set(key, void 0)
         })
-
-        const _key = getLayerKey(obj)
-
-        if (parent) parent.memo.yarr.set(_key, void 0)
-
-        memo.unobserveListener?.forEach((f: any) => f())
 
         // debug
         if (!memo._del) memo._del = 0

@@ -21,6 +21,10 @@ export const ViewLayer = (props: ViewLayerProps) => {
 
         const render = (obj: PLObject, grand: ReactNode, index = 0) => (
                 <LayerItem
+                        /**
+                         * Mismatch occurs if yjs create and delete at the same time,
+                         * the obj is not updated and the old obj is referred to.
+                         */
                         key={obj.id}
                         obj={obj}
                         index={index}
