@@ -12,14 +12,19 @@ import {
 import { addFractal } from './fractal'
 import { addLandscape } from './landscape'
 import { getActiveObjects, isAddable } from 'plre/utils'
-import { DropItems } from '../../molecules'
-import { delConnectAll, initConnectAll, pubConnectAll } from 'plre/connect'
+import { DropItems, HeaderButton, HeaderItem } from '../../molecules'
+import {
+        delConnectAll,
+        initConnectAll,
+        pubConnectAll,
+        subConnectAll,
+} from 'plre/connect'
 import { ObjectTypes } from 'plre/types'
 
 type AttachObjectHandles = Record<keyof typeof ATTACH_ICONS, () => void>
 
 export const AttachObject = () => {
-        const { editorTree, objectTree } = useCtx()
+        const { editorTree, objectTree, storage } = useCtx()
         const compile = useCompile()
 
         const add = useCall((f, type: ObjectTypes) => {
@@ -33,12 +38,17 @@ export const AttachObject = () => {
 
                         initConnectAll(child)
                         pubConnectAll(child)
+                        subConnectAll(child)
 
                         if (i !== 0) return
                         child.active = true
                         editorTree.changeActive?.(child)
                 })
                 deactivateAll(objectTree)
+
+                // Cache only own changes in localStorage
+                storage.isCacheable = true
+
                 compile()
         })
         const handles = useMutable<AttachObjectHandles>({
@@ -49,6 +59,10 @@ export const AttachObject = () => {
                         })
                         deactivateAll(objectTree)
                         editorTree.changeActive?.(null)
+
+                        // Cache only own changes in localStorage
+                        storage.isCacheable = true
+
                         compile()
                 },
                 'Add Union'() {
@@ -90,34 +104,16 @@ export const AttachObject = () => {
         const render = (key: keyof typeof handles) => {
                 const Icon = ATTACH_ICONS[key]
                 return (
-                        <div
-                                onClick={() => handles[key]()}
-                                key={key}
-                                style={{
-                                        gap: '0.5rem',
-                                        width: '100%',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                }}
-                        >
+                        <HeaderItem onClick={() => handles[key]()} key={key}>
                                 {Icon && <Icon />}
                                 {key}
-                        </div>
+                        </HeaderItem>
                 )
         }
 
         return (
                 <Drop>
-                        <span
-                                style={{
-                                        height: 18,
-                                        padding: '0 0.25rem',
-                                        textAlign: 'center',
-                                }}
-                        >
-                                Object
-                        </span>
+                        <HeaderButton>Object</HeaderButton>
                         <DropItems items={Object.keys(handles)}>
                                 {render}
                         </DropItems>

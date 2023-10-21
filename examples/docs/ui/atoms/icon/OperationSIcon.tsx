@@ -119,14 +119,14 @@ export const OperationSIcon = (props: React.CSSProperties) => {
                                 fill="white"
                         />
                         <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M7 7.5C7 7.22386 7.22386 7 7.5 7H12V8H8V12H7V7.5Z"
                                 fill="white"
                         />
                         <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M1 1.5C1 1.22386 1.22386 1 1.5 1H6V2H2V6H1V1.5ZM13 2H9V1H13.5C13.7761 1 14 1.22386 14 1.5V6H13V2ZM1 13.5V9H2V13H6V14H1.5C1.22386 14 1 13.7762 1 13.5Z"
                                 fill="white"
                         />

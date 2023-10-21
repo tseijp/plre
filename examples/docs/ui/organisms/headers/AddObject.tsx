@@ -6,14 +6,14 @@ import { useCtx } from '../../ctx'
 import { useCompile } from '../hooks'
 import { addObject, deactivateAll } from 'plre/control'
 import { getActiveObjects, isAddable } from 'plre/utils'
-import { DropItems } from '../../molecules'
+import { DropItems, HeaderButton, HeaderItem } from '../../molecules'
 import { initConnectAll, pubConnectAll, subConnectAll } from 'plre/connect'
 import type { ObjectTypes } from 'plre/types'
 
 const objectTypes = Object.keys(Objects) as ObjectTypes[]
 
 export const AddObject = () => {
-        const { editorTree, objectTree } = useCtx()
+        const { editorTree, objectTree, storage } = useCtx()
         const compile = useCompile()
 
         // @TODO useAsync
@@ -36,40 +36,29 @@ export const AddObject = () => {
                         }
                 })
                 deactivateAll(objectTree)
+
+                // Cache only own changes in localStorage
+                storage.isCacheable = true
+
                 compile()
         }
 
         const render = (type: ObjectTypes) => {
                 const Icon = OBJECT_ICONS[type]
                 return (
-                        <div
+                        <HeaderItem
                                 onClick={() => handleClick(type)}
                                 key={type}
-                                style={{
-                                        gap: '0.5rem',
-                                        width: '100%',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                }}
                         >
                                 {Icon && <Icon />}
                                 {Up(type)}
-                        </div>
+                        </HeaderItem>
                 )
         }
 
         return (
                 <Drop>
-                        <span
-                                style={{
-                                        height: 18,
-                                        padding: '0 0.25rem',
-                                        textAlign: 'center',
-                                }}
-                        >
-                                Add
-                        </span>
+                        <HeaderButton>Add</HeaderButton>
                         <DropItems items={objectTypes}>{render}</DropItems>
                 </Drop>
         )

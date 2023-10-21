@@ -14,13 +14,17 @@ export interface ViewLayerProps {
 }
 export const ViewLayer = (props: ViewLayerProps) => {
         const { editorItem } = props
-        const { objectTree, webrtcTree } = useCtx()
+        const { objectTree, isReady } = useCtx()
         const { selected, hovered, handlers } = useViewLayer()
 
         // useOnce(() => sortObject(objectTree))
 
         const render = (obj: PLObject, grand: ReactNode, index = 0) => (
                 <LayerItem
+                        /**
+                         * Mismatch occurs if yjs create and delete at the same time,
+                         * the obj is not updated and the old obj is referred to.
+                         */
                         key={obj.id}
                         obj={obj}
                         index={index}
@@ -47,7 +51,7 @@ export const ViewLayer = (props: ViewLayerProps) => {
                                 justifyContent="start"
                                 color="#fff"
                         >
-                                {webrtcTree.isReady && (
+                                {isReady && (
                                         <Tree tree={objectTree}>{render}</Tree>
                                 )}
                         </Flex>

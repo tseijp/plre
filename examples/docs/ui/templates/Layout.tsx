@@ -2,7 +2,7 @@ import * as React from 'react'
 import Head from '@docusaurus/Head'
 import LayoutImpl from '@theme/Layout'
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext'
-import { Debug } from '../atoms'
+// import { Debug } from '../atoms'
 import { Tree, Flex } from '../atoms'
 import { Separate } from '../molecules'
 import {
@@ -12,7 +12,12 @@ import {
         Viewport,
         UserCursors,
 } from '../organisms'
-import { useInitPLObject, useInitPLEditor, useInitWebrtc } from './hooks'
+import {
+        useInitPLObject,
+        useInitPLEditor,
+        useInitWebrtc,
+        useInitStorage,
+} from './hooks'
 import { HEADER_PADDING_SIZE, LAYOUT_PADDING_STYLE } from '../utils'
 import type { EditorState } from 'plre/types'
 import type { ReactNode } from 'react'
@@ -23,6 +28,8 @@ export const Layout = () => {
         const objectTree = useInitPLObject()
         const editorTree = useInitPLEditor()
         const webrtcTree = useInitWebrtc(objectTree, editorTree)
+        const storage = useInitStorage(objectTree, editorTree, webrtcTree)
+        const isReady = webrtcTree.isReady && storage.isReady
 
         const render = (editorItem: EditorState, grandChild: ReactNode) => {
                 switch (editorItem.type) {
@@ -44,11 +51,16 @@ export const Layout = () => {
                                 return <Flex background="#3A3A3A" />
                 }
         }
-
         return (
                 <LayoutImpl noFooter>
                         <CtxProvider
-                                value={{ objectTree, editorTree, webrtcTree }}
+                                value={{
+                                        objectTree,
+                                        editorTree,
+                                        webrtcTree,
+                                        storage,
+                                        isReady,
+                                }}
                         >
                                 <Head>
                                         <title>
@@ -68,7 +80,7 @@ export const Layout = () => {
                                 >
                                         <Tree tree={editorTree}>{render}</Tree>
                                 </Flex>
-                                <Debug />
+                                {/* <Debug /> */}
                         </CtxProvider>
                 </LayoutImpl>
         )

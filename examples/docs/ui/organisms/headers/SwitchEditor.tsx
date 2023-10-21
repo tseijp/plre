@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Drop } from '../../atoms'
-import { DropItems } from '../../molecules'
+import { DropItems, HeaderButton, HeaderItem } from '../../molecules'
 import { Up } from '../../utils'
 import { WINDOW_ICONS } from '../../atoms'
 import type { EditorType } from 'plre/types'
@@ -26,37 +26,16 @@ export const SwitchEditor = (props: SwitchEditorProps) => {
         const render = (type: EditorType) => {
                 const Icon_ = WINDOW_ICONS[type]
                 return (
-                        <div
-                                onClick={() => onClick(type)}
-                                key={type}
-                                style={{
-                                        gap: '0.5rem',
-                                        width: '100%',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                }}
-                        >
+                        <HeaderItem onClick={() => onClick(type)} key={type}>
                                 {Icon_ && <Icon_ />}
                                 {Up(type)}
-                        </div>
+                        </HeaderItem>
                 )
         }
 
         return (
                 <Drop>
-                        <span
-                                style={{
-                                        display: 'flex',
-                                        height: 18,
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        padding: '0 0.25rem',
-                                        textAlign: 'center',
-                                }}
-                        >
-                                {Icon && <Icon />}
-                        </span>
+                        <HeaderButton>{Icon && <Icon />}</HeaderButton>
                         <DropItems items={editorItems}>{render}</DropItems>
                 </Drop>
         )

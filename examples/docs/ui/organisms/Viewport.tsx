@@ -6,8 +6,8 @@ import { Viewpoint, ZoomIn, ZoomOut } from '../molecules'
 import { ErrorMessage } from './ErrorMessage'
 import { Tools } from './tools'
 import { useCtx } from '../ctx'
+import { OpenRecent } from './headers'
 import type { EditorState } from 'plre/types'
-import { useZoom } from './hooks/useZOom'
 
 export interface ViewportProps {
         editorItem: EditorState
@@ -15,13 +15,15 @@ export interface ViewportProps {
 
 export const Viewport = (props: ViewportProps) => {
         const { editorItem } = props
-        const { webrtcTree } = useCtx()
-        if (webrtcTree.isReady) return <ViewportImpl {...props} />
+        const { isReady } = useCtx()
+        if (isReady) return <ViewportImpl {...props} />
+
         return (
                 <Flex backgroundColor="#303030" transformStyle="preserve-3d">
                         <Header editorItem={editorItem}>
                                 <AddObject />
-                                <AttachObject />
+                                {/* <AttachObject /> */}
+                                <OpenRecent />
                         </Header>
                         <Tools self={{} as any} />
                         <Flex background="#3A3A3A" />
@@ -42,6 +44,7 @@ const ViewportImpl = (props: ViewportProps) => {
                         <Header editorItem={editorItem}>
                                 <AddObject />
                                 <AttachObject />
+                                <OpenRecent />
                         </Header>
                         <Flex background="#3A3A3A">
                                 <canvas ref={wheel.ref} />

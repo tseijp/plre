@@ -47,7 +47,7 @@ export const usePLImpl = (wheel: WheelState, on = () => {}) => {
 
                         try {
                                 const { gl, pg } = self
-                                gl.deleteProgram(pg)
+                                gl?.deleteProgram?.(pg)
                         } catch (e) {
                                 console.warn(e)
                                 editorTree.catchError?.(e)

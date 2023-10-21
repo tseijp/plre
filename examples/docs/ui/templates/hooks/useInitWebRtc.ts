@@ -6,14 +6,17 @@ import { useCall, useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
 import { initConnectAll, pubShaderAll, subConnectAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
-import { EditorState, PL, PLObject } from 'plre/types'
+import { EditorState, PLObject } from 'plre/types'
 import { useCompile_ } from '../../organisms'
+import { createURL } from '../../organisms/headers/utils'
+import { createChecker } from './utils'
 
 let isDev = false
 isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false
+// @TODO move to connection
 
 export interface WebrtcState {
         isDev: boolean
@@ -43,21 +46,7 @@ const TICK_TIMEOUT_MS = 1000
 
 const CONNECTED_TIMEOUT_MS = 100
 
-const createChecker = (key: string, callback = (_key: string) => {}) => {
-        let timeoutId = 0 as any
-        let listeners = () => {}
-        const fun = () => callback(key)
-        return () => {
-                listeners()
-                timeoutId = setTimeout(fun, TICK_TIMEOUT_MS * 5)
-                listeners = () => clearTimeout(timeoutId)
-        }
-}
-
-export const createWebrtc = (
-        objectTree: PLObject,
-        _editorTree: EditorState
-) => {
+export const createWebrtc = (objectTree: PLObject) => {
         const username = USER_NAMES[floor(random() * USER_NAMES.length)]
 
         /**
@@ -123,14 +112,15 @@ export const createWebrtc = (
         const mount = () => {
                 if (!isPubSub) return self.connected?.()
 
-                const params = new URLSearchParams(window.location.search)
-                self.roomId = params.get('roomId') || floor(random() * 100) + ''
-                self.userId = params.get('userId') || floor(random() * 100) + ''
+                const url = createURL()
+
+                self.roomId = url.get('id') || floor(random() * 100) + ''
+                self.userId = url.get('userId') || floor(random() * 100000) + ''
 
                 // random roomId if dev
-                if (self.isDev) self.roomId = floor(random() * 100) + ''
+                if (self.isDev) self.roomId = floor(random() * 100) + 'DEV'
 
-                const query = `?userId=${self.userId}&roomId=${self.roomId}`
+                url.set('id', self.roomId)
 
                 if (self.isInit) return
                 self.isInit = true
@@ -150,18 +140,13 @@ export const createWebrtc = (
                 self.user.set('username', username)
                 self.user.set('color', self.color)
 
-                // init objects
-                objectTree.memo.ydoc = self.ydoc
-                initConnectAll(objectTree)
-                subConnectAll(objectTree)
-
                 const tick = () => {
                         self.users.set(self.userId, self.roomId)
                         setTimeout(tick, TICK_TIMEOUT_MS)
                 }
 
                 setTimeout(tick, TICK_TIMEOUT_MS)
-                window.history.replaceState(null, '', query)
+                url.replaceState()
                 window.addEventListener('mousemove', mousemove)
         }
 
@@ -200,7 +185,7 @@ export const useInitWebrtc = (
         })
 
         const webrtcTree = useOnce(() => {
-                const self = createWebrtc(objectTree, editorTree)
+                const self = createWebrtc(objectTree)
                 self('connected', () => set(true))
                 // @ts-ignore
                 editorTree({ trySuccess })

@@ -7,8 +7,6 @@ import {
         getLayerKey,
         addSuffix,
         replaceAll,
-        isMaterial,
-        isObject,
 } from './utils'
 import type { ObjectTypes, PLObject } from './types'
 import { compileCollection } from './compile'

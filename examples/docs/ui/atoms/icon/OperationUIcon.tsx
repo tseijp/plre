@@ -83,14 +83,14 @@ export const OperationUIcon = (props: React.CSSProperties) => {
                                 fill="white"
                         />
                         <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M1.5 1C1.22386 1 1 1.22386 1 1.5V6H2V2H6V1H1.5ZM9 2H13V6H14V1.5C14 1.22386 13.7761 1 13.5 1H9V2ZM1 9V13.5C1 13.7762 1.22386 14 1.5 14H6V13H2V9H1Z"
                                 fill="white"
                         />
                         <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M15 8H19V12H20V7.5C20 7.22386 19.7761 7 19.5 7H15V8ZM7 15V19.5C7 19.7762 7.22386 20 7.5 20H12V19H8V15H7ZM19 15V19H15.5V20H19.5C19.7761 20 20 19.7762 20 19.5V15H19Z"
                                 fill="white"
                         />

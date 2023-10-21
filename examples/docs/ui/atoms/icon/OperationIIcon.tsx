@@ -163,14 +163,14 @@ export const OperationIIcon = (props: React.CSSProperties) => {
                                 fill="white"
                         />
                         <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M7 7.5C7 7.22386 7.22386 7 7.5 7H12V8H8V12H7V7.5Z"
                                 fill="white"
                         />
                         <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
+                                fillRule="evenodd"
+                                clipRule="evenodd"
                                 d="M13 13V9H14V13.5C14 13.7762 13.7761 14 13.5 14H9.5V13H13Z"
                                 fill="white"
                         />

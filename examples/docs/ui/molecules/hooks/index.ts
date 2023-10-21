@@ -1,5 +1,6 @@
 export * from './useAxisEvent'
 export * from './useFieldEvent'
+export * from './useFileSelect'
 export * from './useSplitterEvent'
 export * from './useSeparatorEvent'
 export * from './useSliderEvent'

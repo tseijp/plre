@@ -62,14 +62,15 @@ export const initConnect = (obj: PLObject) => {
         // debug
         if (!memo._init) memo._init = 0
         memo._init++
+
+        console.log('[plre/conenct] init', { obj: { ...obj } })
 }
 
 export const pubConnect = (obj: PLObject) => {
         const { parent, memo } = obj
         const { ymap } = memo
 
-        if (!ymap) return console.warn(notInitWarn(obj))
-        if (memo._pub) return console.warn(notInitWarn(obj))
+        if (!ymap) return console.warn(notInitWarn(obj, 'pubConnect'))
 
         const _key = getLayerKey(obj)
         if (parent) parent.memo.yarr.set(_key, obj.type)
@@ -89,34 +90,34 @@ export const pubConnect = (obj: PLObject) => {
         // debug
         if (!memo._pub) memo._pub = 0
         memo._pub++
-        console.log('plre/conenct pub', { ...obj })
+        console.log('[plre/conenct] pub', { obj: { ...obj } })
 }
 
 export const delConnect = (obj: PLObject) => {
         const { parent, memo } = obj
         const { ymap, yarr } = memo
+        const _key = getLayerKey(obj)
 
-        if (!ymap || !yarr) return console.warn(notInitWarn(obj))
+        if (!ymap || !yarr) return console.warn(notInitWarn(obj, 'delConnect'))
 
-        for (const key in obj) {
-                if (isIgnoreProp(obj[key], key)) continue
-                ymap.set(key, void 0)
+        // top object does not delete connections
+        if (parent) {
+                for (const key in obj) {
+                        if (isIgnoreProp(obj[key], key)) continue
+                        ymap.set(key, void 0)
+                }
+                parent.memo.yarr.set(_key, void 0)
+                memo.unobserveListener?.forEach((f: any) => f())
         }
 
         yarr.forEach((key: string) => {
                 if (yarr.get(key)) yarr.set(key, void 0)
         })
 
-        const _key = getLayerKey(obj)
-
-        if (parent) parent.memo.yarr.set(_key, void 0)
-
-        memo.unobserveListener?.forEach((f: any) => f())
-
         // debug
         if (!memo._del) memo._del = 0
         memo._del++
-        console.log('plre/conenct del', { ...obj })
+        console.log('[plre/conenct] del', { obj: { ...obj } })
 }
 
 export const subConnect = (obj: PLObject) => {
@@ -124,19 +125,20 @@ export const subConnect = (obj: PLObject) => {
         const { ymap, yarr, forceUpdateRoot, compileShader, updateUniform } =
                 memo
 
-        if (!ymap || !yarr) return console.warn(notInitWarn(obj))
-        if (memo._sub) return console.warn(subWarn(obj))
+        if (!ymap || !yarr) return console.warn(notInitWarn(obj, 'subConnect'))
 
         const _forceUpdate = () => {
                 const id = setTimeout(forceUpdateRoot, TIMEOUT_MS)
                 memo._forceUpdateRoot?.()
                 memo._forceUpdateRoot = () => window.clearTimeout(id)
         }
+
         const _compileShader = () => {
                 const id = setTimeout(compileShader, TIMEOUT_MS)
                 memo._compileShader?.()
                 memo._compileShader = () => window.clearTimeout(id)
         }
+
         /**
          * subscribe children
          */
@@ -150,11 +152,11 @@ export const subConnect = (obj: PLObject) => {
                 let isUpdated = false
                 let isCompile = false
 
-                console.log(`plre/conenct sub yarr START`)
+                console.log(`[plre/conenct] sub yarr forEach START`)
                 e.changes.keys.forEach((_: any, key: string) => {
                         const type = yarr.get(key)
                         // prettier-ignore
-                        console.log(`plre/conenct sub _yarr { key: ${key}, type: ${type} } `, _)
+                        console.log(`[plre/conenct] sub _yarr \t { key: ${key}, type: ${type} } `, _)
                         if (type) {
                                 // create object
                                 const child = createObject(type)
@@ -196,11 +198,11 @@ export const subConnect = (obj: PLObject) => {
                 let isUpdated = false
                 let isCompile = false
 
-                console.log(`plre/conenct sub ymap START`)
+                console.log(`[plre/conenct] sub ymap forEach START`)
                 e.changes.keys.forEach((_: any, key: string) => {
                         const value = ymap.get(key)
                         // prettier-ignore
-                        console.log(`plre/conenct sub _ymap { key: ${key}, value: ${value} }`)
+                        console.log(`[plre/conenct] sub _ymap \t { key: ${key}, value: ${value} }`)
                         if (isIgnoreProp(value, key)) return
 
                         // update transform
@@ -237,7 +239,7 @@ export const pubShader = (obj: PLObject) => {
         const { ymap } = memo
 
         if (!isEditted) return
-        if (!ymap) return console.warn(notInitWarn(obj))
+        if (!ymap) return console.warn(notInitWarn(obj, 'pubShader'))
 
         obj.isEditted = false
         forceUpdate()
@@ -280,17 +282,9 @@ export const pubShaderAll = (obj: PLObject) => {
 }
 
 const notYDOCWarn = (obj: PLObject) => {
-        return `plre/connect subConnect Warn: ${obj.id} is not YDOC`
+        return `[plre/connect] initConnect Warn: ${obj.id} is not have YDOC`
 }
 
-const notInitWarn = (obj: PLObject) => {
-        return `plre/connect pubConnect Warn: ${obj.id} is not initialized`
-}
-
-const initWarn = (obj: PLObject) => {
-        return `plre/connect subConnect Warn: ${obj.id} is already initialized`
-}
-
-const subWarn = (obj: PLObject) => {
-        return `plre/connect subConnect Warn: ${obj.id} is already subscribed`
+const notInitWarn = (obj: PLObject, key = '') => {
+        return `[plre/connect] ${key} Warn: ${obj.id} is not initialized`
 }

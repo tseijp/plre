@@ -32,6 +32,7 @@ export const Header = (props: HeaderProps) => {
                         justifyContent="start"
                         paddingLeft="6px"
                         color="#fff"
+                        whiteSpace="nowrap"
                 >
                         <SwitchEditor type={type} onClick={handleClickEditor} />
                         {children}
