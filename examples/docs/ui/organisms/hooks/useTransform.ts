@@ -4,7 +4,7 @@ import { useCtx } from '../../ctx'
 import { useMutable } from 'plre/react'
 import { setTransformFromKey, uniformMat4 } from 'plre/utils'
 import { getActiveObjects } from 'plre/utils'
-import type { PL, PLObject } from 'plre/types'
+import type { PL, ObjectState } from 'plre/types'
 
 const toNum = (a: string) => parseFloat(a)
 const isStr = (a: unknown): a is string => typeof a === 'string'
@@ -41,6 +41,7 @@ export const useTransform = (self: PL) => {
         })
 
         const changeActive = useCall((next) => {
+                if (!next) next = getActiveObjects(objectTree)[0]
                 // cache to save changed code
                 cache.previous = cache.current
                 cache.current = next

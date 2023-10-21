@@ -8,7 +8,7 @@ import { useCompile } from '..'
 import { pubConnectAll } from 'plre/connect'
 
 export const CacheUpload = () => {
-        const { objectTree, storage } = useCtx()
+        const { objectTree, webrtcTree, storage } = useCtx()
         const compile = useCompile()
         const [background, set] = React.useState('transparent')
         const hover = useHoverEvent((state) => {
@@ -23,7 +23,7 @@ export const CacheUpload = () => {
                         if (!reader.result) return
                         const cache = JSON.parse(reader.result as string)
                         const obj = decode(cache.data as string)
-                        storage.changeObject(objectTree, obj)
+                        storage.initWithCache(objectTree, webrtcTree.ydoc, obj)
                         compile()
                         storage.updateCache(objectTree)
                         // storage.cacheObject() !!!!!!!!!!!!!!!

@@ -14,6 +14,7 @@ export const ZoomOut = (props: ZoomOutProps) => {
                         <ZoomOutIcon
                                 s={25}
                                 top="185px"
+                                color="white"
                                 right="10px"
                                 padding="2px"
                                 position="absolute"

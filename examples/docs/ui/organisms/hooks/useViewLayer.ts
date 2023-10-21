@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PLObject } from 'plre/types'
+import { ObjectState } from 'plre/types'
 import { useMutable } from 'plre/react'
 import { deactivateAll, moveObject } from 'plre/control'
 import { useOnce } from '../../atoms'
@@ -15,16 +15,16 @@ import {
 } from 'plre/connect'
 
 interface ViewLayerCache {
-        grabbed?: PLObject | null
-        hovered?: PLObject | null
-        id2Item: Map<string, PLObject>
+        grabbed?: ObjectState | null
+        hovered?: ObjectState | null
+        id2Item: Map<string, ObjectState>
 }
 
 export const useViewLayer = () => {
         const compile = useCompile()
         const { editorTree, objectTree, storage } = useCtx()
-        const [hovered, setHovered] = useState<PLObject | null>(null)
-        const [selected, setSelected] = useState<PLObject | null>(
+        const [hovered, setHovered] = useState<ObjectState | null>(null)
+        const [selected, setSelected] = useState<ObjectState | null>(
                 getActiveObjects(objectTree)[0]
         )
         const cache = useOnce<ViewLayerCache>(() => ({ id2Item: new Map() }))

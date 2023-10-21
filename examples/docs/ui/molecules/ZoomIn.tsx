@@ -14,6 +14,7 @@ export const ZoomIn = (props: ZoomInProps) => {
                         <ZoomInIcon
                                 s={25}
                                 top="155px"
+                                color="white"
                                 right="10px"
                                 padding="2px"
                                 position="absolute"

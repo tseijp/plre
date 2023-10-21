@@ -52,12 +52,12 @@ export interface EditorState {
         forceUpdate?(): void
         trySuccess?(): void
         catchError?(e: Error): void
-        changeActive?(obj: PLObject): void
+        changeActive?(obj?: ObjectState): void
         compileShader?(code: string): void
-        updateUniform?(obj: PLObject): void
+        updateUniform?(obj: ObjectState): void
 }
 
-export interface PLObject {
+export interface ObjectState {
         type: ObjectTypes
         id: string
         key: string
@@ -65,12 +65,12 @@ export interface PLObject {
         matrixWorld: Mat4
         position: Vec3
         rotation: Vec3
-        parent: PLObject | null
+        parent: ObjectState | null
         scale: Vec3
         color: Vec3
         index: number
         active: boolean
-        children: PLObject[]
+        children: ObjectState[]
         to: 'U' | 'I' | 'S'
         memo: any
 
@@ -88,8 +88,8 @@ export interface PLObject {
 
 export interface PL extends GL {
         error: Error
-        object: PLObject
-        collection: PLObject | null
+        object: ObjectState
+        collection: ObjectState | null
         memo: any
         /**
          * Events

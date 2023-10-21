@@ -4,15 +4,15 @@ import * as Y from 'yjs'
 import { WebrtcProvider } from 'y-webrtc'
 import { useCall, useForceUpdate, useOnce } from '../../atoms'
 import event from 'reev'
-import { initConnectAll, pubShaderAll, subConnectAll } from 'plre/connect'
+import { pubShaderAll } from 'plre/connect'
 import { useEffect, useState } from 'react'
-import { EditorState, PLObject } from 'plre/types'
+import { EditorState, ObjectState } from 'plre/types'
 import { useCompile_ } from '../../organisms'
 import { createURL } from '../../organisms/headers/utils'
 import { createChecker } from './utils'
 
 let isDev = false
-isDev = process.env.NODE_ENV === 'development'
+// isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false
@@ -46,7 +46,7 @@ const TICK_TIMEOUT_MS = 1000
 
 const CONNECTED_TIMEOUT_MS = 100
 
-export const createWebrtc = (objectTree: PLObject) => {
+export const createWebrtc = (objectTree: ObjectState) => {
         const username = USER_NAMES[floor(random() * USER_NAMES.length)]
 
         /**
@@ -153,8 +153,8 @@ export const createWebrtc = (objectTree: PLObject) => {
         const clean = () => {
                 window.removeEventListener('mousemove', mousemove)
                 self.users.unobserve(observeUsers)
-                self.provider.disconnect()
                 self.provider.destroy()
+                self.provider.disconnect()
         }
 
         const self = event<WebrtcState>({
@@ -174,7 +174,7 @@ export const createWebrtc = (objectTree: PLObject) => {
 const { floor, random } = Math
 
 export const useInitWebrtc = (
-        objectTree: PLObject,
+        objectTree: ObjectState,
         editorTree: EditorState
 ) => {
         const [isReady, set] = useState(false)

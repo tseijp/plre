@@ -8,20 +8,20 @@ import {
         addSuffix,
         replaceAll,
 } from './utils'
-import type { ObjectTypes, PLObject } from './types'
+import type { ObjectTypes, ObjectState } from './types'
 import { compileCollection } from './compile'
 
-export const activateAll = (obj: PLObject) => {
+export const activateAll = (obj: ObjectState) => {
         obj.children.forEach(activateAll)
         obj.active = true
 }
 
-export const deactivateAll = (obj: PLObject) => {
+export const deactivateAll = (obj: ObjectState) => {
         obj.children.forEach(deactivateAll)
         obj.active = false
 }
 
-export const addObject = (obj: PLObject, type: ObjectTypes) => {
+export const addObject = (obj: ObjectState, type: ObjectTypes) => {
         const ids = obj.children.map((c) => c.id) // get ids before attach to parent
         const child = createObject(type)
         const shader = Objects[type]
@@ -39,7 +39,7 @@ export const addObject = (obj: PLObject, type: ObjectTypes) => {
         return child
 }
 
-export const addMaterial = (obj: PLObject) => {
+export const addMaterial = (obj: ObjectState) => {
         const child = createObject('Material')
         const shader = Materials['basicMaterial']
         const ids = obj.children.map((c) => c.id)
@@ -51,7 +51,7 @@ export const addMaterial = (obj: PLObject) => {
         return child
 }
 
-export const addCollection = (obj: PLObject, type: ObjectTypes) => {
+export const addCollection = (obj: ObjectState, type: ObjectTypes) => {
         const child = createObject(type)
         const shader = compileCollection(child)
         const ids = obj.children.map((c) => c.id)
@@ -62,14 +62,14 @@ export const addCollection = (obj: PLObject, type: ObjectTypes) => {
         return child
 }
 
-export const deleteObject = (obj: PLObject) => {
+export const deleteObject = (obj: ObjectState) => {
         const parent = obj.parent
         if (!parent || !parent.children) return
         const index = parent.children.indexOf(obj)
         parent.children.splice(index, 1)
 }
 
-export const moveObject = (grabbed: PLObject, hovered: PLObject) => {
+export const moveObject = (grabbed: ObjectState, hovered: ObjectState) => {
         if (isOffspring(grabbed, hovered)) return alert(ALRT())
 
         // save previous layer key
@@ -86,7 +86,7 @@ export const moveObject = (grabbed: PLObject, hovered: PLObject) => {
         return grabbed
 }
 
-export const registerFix = (obj: PLObject, set = new Set<Function>()) => {
+export const registerFix = (obj: ObjectState, set = new Set<Function>()) => {
         const prev = getLayerKey(obj)
         // const _prev =
         //         obj.parent && isMaterial(obj.type)
@@ -104,7 +104,10 @@ export const registerFix = (obj: PLObject, set = new Set<Function>()) => {
         return set
 }
 
-export const registerFixAll = (obj: PLObject, _set = new Set<Function>()) => {
+export const registerFixAll = (
+        obj: ObjectState,
+        _set = new Set<Function>()
+) => {
         const set = registerFix(obj, _set)
         if (!Array.isArray(obj.children) || obj.children.length <= 0) return set
         obj.children.forEach((child) => registerFixAll(child, set))
@@ -114,7 +117,7 @@ export const registerFixAll = (obj: PLObject, _set = new Set<Function>()) => {
 const ALRT = () => `Can't move object to its offspring.`
 
 // Don't sort because the order is also important.
-// export const sortObject = (obj: PLObject) => {
+// export const sortObject = (obj: ObjectState) => {
 //         const { children } = obj
 //         if (!children) return
 //         children.sort((a, b) => (a.id < b.id ? -1 : 1))

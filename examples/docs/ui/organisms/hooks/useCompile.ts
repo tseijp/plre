@@ -2,7 +2,7 @@ import frame from 'refr'
 import { useCtx } from '../../ctx'
 import { collectAll } from 'plre/compile'
 
-import type { EditorState, PLObject } from 'plre/types'
+import type { EditorState, ObjectState } from 'plre/types'
 import { useCall } from '../../atoms'
 
 export const useCompile = () => {
@@ -15,7 +15,10 @@ export const useCompile = () => {
         })
 }
 
-export const useCompile_ = (objectTree: PLObject, editorTree: EditorState) => {
+export const useCompile_ = (
+        objectTree: ObjectState,
+        editorTree: EditorState
+) => {
         return useCall((_objectTree = objectTree, _editorTree = editorTree) => {
                 frame.clear() // @TODO FIX: current cannot stop glre render: `frame(() => self.render() || 1)`
                 let code = collectAll(_objectTree)

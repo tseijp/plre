@@ -42,6 +42,10 @@ export const AttachObject = () => {
 
                         if (i !== 0) return
                         child.active = true
+                        /**
+                         * for organisms/hooks/useCodemirror.ts to update code
+                         * for organisms/hooks/useTransform.ts to update transform UI
+                         */
                         editorTree.changeActive?.(child)
                 })
                 deactivateAll(objectTree)

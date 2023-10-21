@@ -1,5 +1,5 @@
 import { CachedObject, encodeObject, decodeObject } from 'plre/cache'
-import { PLObject } from 'plre/types'
+import { ObjectState } from 'plre/types'
 import LZString from 'lz-string'
 
 // for storage
@@ -7,7 +7,7 @@ export const compress = (s: string) => LZString.compress(s)
 
 export const deCompress = (s: string) => LZString.decompress(s)
 
-export const encode = (obj: PLObject) => {
+export const encode = (obj: ObjectState) => {
         const cache = encodeObject(obj)
         let ret = JSON.stringify(cache)
         ret = compress(ret)
@@ -19,7 +19,7 @@ export const decode = (str?: string) => {
         str = deCompress(str)
         const cache = JSON.parse(str) as CachedObject
         const ret = decodeObject(cache)
-        return ret
+        return ret as ObjectState
 }
 
 // for webrtc
