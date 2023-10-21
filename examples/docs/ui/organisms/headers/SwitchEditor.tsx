@@ -10,13 +10,7 @@ export interface SwitchEditorProps {
         onClick(type: EditorType): void
 }
 
-const editorItems = [
-        'viewport',
-        'viewlayer',
-        'timeline',
-        'properties',
-        'tutorial',
-]
+const editorItems = ['viewport', 'viewlayer', 'timeline', 'properties']
 
 export const SwitchEditor = (props: SwitchEditorProps) => {
         const { type, onClick } = props

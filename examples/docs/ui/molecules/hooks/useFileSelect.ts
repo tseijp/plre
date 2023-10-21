@@ -11,7 +11,8 @@ export const useFileSelect = (_on = (_: any) => {}) => {
                                 self.on(...Array.from(e.target.files))
                 },
                 ref(el: Element) {
-                        el.addEventListener('change', self.change)
+                        if (el) el.addEventListener('change', self.change)
+                        else el?.removeEventListener('change', self.change)
                 },
         }))
 

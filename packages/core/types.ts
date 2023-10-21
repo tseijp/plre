@@ -37,7 +37,6 @@ export type EditorType =
         | 'timeline'
         | 'viewlayer'
         | 'properties'
-        | 'tutorial'
         | 'I'
 
 export interface EditorState {
