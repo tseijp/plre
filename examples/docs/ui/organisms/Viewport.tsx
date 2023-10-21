@@ -22,7 +22,7 @@ export const Viewport = (props: ViewportProps) => {
                 <Flex backgroundColor="#303030" transformStyle="preserve-3d">
                         <Header editorItem={editorItem}>
                                 <AddObject />
-                                <AttachObject />
+                                {/* <AttachObject /> */}
                                 <OpenRecent />
                         </Header>
                         <Tools self={{} as any} />

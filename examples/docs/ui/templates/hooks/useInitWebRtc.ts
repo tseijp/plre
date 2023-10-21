@@ -12,7 +12,7 @@ import { createURL } from '../../organisms/headers/utils'
 import { createChecker } from './utils'
 
 let isDev = false
-// isDev = process.env.NODE_ENV === 'development'
+isDev = process.env.NODE_ENV === 'development'
 
 let isPubSub = true
 // isPubSub = false

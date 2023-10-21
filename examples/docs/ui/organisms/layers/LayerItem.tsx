@@ -9,7 +9,7 @@ import { useCall, useForceUpdate } from '../../atoms'
 import { OBJECT_ICONS } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { DragState } from '../../atoms'
-import type { EditorType, PLObject } from 'plre/types'
+import type { PLObject } from 'plre/types'
 
 export interface LayerItemHandlers {
         mount(obj: PLObject, id: string): void
@@ -26,6 +26,10 @@ export interface LayerItemProps {
         disable?: boolean
         handlers: LayerItemHandlers
 }
+
+let isDev = false
+// isDev = process.env.NODE_ENV === 'development'
+const display = isDev ? '' : 'none'
 
 export const LayerItem = (props: LayerItemProps) => {
         const { children, obj, index = 0, active, disable, handlers } = props
@@ -122,40 +126,38 @@ export const LayerItem = (props: LayerItemProps) => {
                                                 <div data-id={id}>{obj.id}</div>
                                         </Draggable>
                                 </LayerItemField>
-                                {/* <div
-                                        style={{
-                                                color: 'green',
-                                                marginLeft: '5rem',
-                                        }}
-                                >
-                                        {_.xxx}
-                                </div> */}
                                 <div
                                         style={{
                                                 color: 'red',
                                                 marginLeft: '5rem',
                                         }}
                                 >
-                                        {!_.ydoc && 'NO YDOC'}
-                                        {!_.ymap && 'NO YARR'}
-                                        {!_.yarr && 'NO YMAP'}
+                                        {!_.ydoc || !_.ymap || !_.yarr
+                                                ? 'Error: '
+                                                : ''}
+                                        {!_.ydoc && 'NO Y.Doc '}
+                                        {!_.ymap && 'NO Y.Arr '}
+                                        {!_.yarr && 'NO Y.Map '}
                                 </div>
                                 <div
                                         style={{
+                                                display,
                                                 color: '#e2e2e2',
                                                 marginLeft: '5rem',
                                         }}
                                 >
-                                        {_._init ? ' Init:' + _._init : ''}
-                                        {_._pub ? ' Pub:' + _._pub : ''}
-                                        {_._del ? ' Del:' + _._del : ''}
-                                        {_._sub ? ' Sub:' + _._sub : ''}
-                                        {_._ymap ? ' Ymap:' + _._ymap : ''}
-                                        {_._yarr ? ' Yarr' + _._yarr : ''}
+                                        {_._init ? ' Init:' + _._init : ' '}
+                                        {_._pub ? ' Pub:' + _._pub : ' '}
+                                        {_._del ? ' Del:' + _._del : ' '}
+                                        {_._sub ? ' Sub:' + _._sub : ' '}
                                 </div>
-                                <div style={{ marginLeft: '5rem' }}>
-                                        YMapSize: {obj.memo.ymap?.size}
-                                        YArrSize: {obj.memo.yarr?.size}
+                                <div style={{ marginLeft: '5rem', display }}>
+                                        {_.ymap
+                                                ? 'YMap:' + _.ymap?.size + ' '
+                                                : ''}
+                                        {_.yarr
+                                                ? 'YArr:' + _.yarr?.size + ' '
+                                                : ''}
                                 </div>
                         </Flex>
                         <div
