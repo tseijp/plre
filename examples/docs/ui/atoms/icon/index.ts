@@ -17,7 +17,6 @@ export const WINDOW_ICONS: Partial<Record<EditorType, any>> = {
         timeline: AvatarIcon,
         viewlayer: LayersIcon,
         properties: CodeIcon,
-        tutorial: LaptopIcon,
 }
 
 export const OBJECT_ICONS: Partial<Record<ObjectTypes, any>> = {
