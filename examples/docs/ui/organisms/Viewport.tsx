@@ -22,8 +22,8 @@ export const Viewport = (props: ViewportProps) => {
                 <Flex backgroundColor="#303030" transformStyle="preserve-3d">
                         <Header editorItem={editorItem}>
                                 <AddObject />
-                                {/* <AttachObject /> */}
-                                <OpenRecent />
+                                <AttachObject />
+                                {/* <OpenRecent /> */}
                         </Header>
                         <Tools self={{} as any} />
                         <Flex background="#3A3A3A" />
@@ -44,7 +44,7 @@ const ViewportImpl = (props: ViewportProps) => {
                         <Header editorItem={editorItem}>
                                 <AddObject />
                                 <AttachObject />
-                                <OpenRecent />
+                                {/* <OpenRecent /> */}
                         </Header>
                         <Flex background="#3A3A3A">
                                 <canvas ref={wheel.ref} />
