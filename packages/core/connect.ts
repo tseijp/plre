@@ -10,62 +10,24 @@ import { ObjectState } from './types'
 import { createObject } from '.'
 import { deleteObject } from './control'
 
+/**
+ * utils
+ */
 const TIMEOUT_MS = 1000
 
-export const initConnect = (obj: ObjectState) => {
-        const { children, parent, memo } = obj
-        const _key = getLayerKey(obj)
+const DELETED = 'DELETED'
 
-        // if (memo._init) return console.warn(initWarn(obj))
-
-        if (parent) {
-                memo.ydoc = parent.memo.ydoc
-                memo.updateUniform = parent.memo.updateUniform
-                memo.compileShader = parent.memo.compileShader
-                memo.forceUpdateRoot = parent.memo.forceUpdateRoot
-        }
-
-        if (!memo.ydoc) return console.warn(notYDOCWarn(obj))
-
-        const ydoc = memo.ydoc
-        const ymap = (memo.ymap = ydoc.getMap(_key))
-        const yarr = (memo.yarr = ydoc.getMap(_key + '_'))
-
-        for (const key in obj) {
-                const value = ymap.get(key)
-                if (value === void 0) continue
-                if (isIgnoreProp(value, key)) continue
-                obj[key] = value
-        }
-
-        yarr.forEach((type: string) => {
-                // @TODO FIX if type is multipled
-                let child = children.find((c) => c.type === type)
-                if (type) {
-                        if (child) return
-                        const ids = children.map((c) => c.id) // get ids before attach to parent
-                        child = createObject(type as any)
-                        child.id = addSuffix(ids, child.id)
-
-                        children.push(child)
-                        attachParent(obj)
-
-                        // initialize when open page
-                        initConnect(child)
-                        subConnect(child)
-                } else {
-                        if (!child) return
-                        deleteObject(child)
-                }
-        })
-
-        // debug
-        if (!memo._init) memo._init = 0
-        memo._init++
-
-        console.log('[plre/conenct] init', { obj: { ...obj } })
+const notYDOCWarn = (obj: ObjectState) => {
+        return `[plre/connect] initConnect Warn: ${obj.id} is not have YDOC`
 }
 
+const notInitWarn = (obj: ObjectState, key = '') => {
+        return `[plre/connect] ${key} Warn: ${obj.id} is not initialized`
+}
+
+/**
+ * Set a value in own ymap and register self in the parent's yarr
+ */
 export const pubConnect = (obj: ObjectState) => {
         const { parent, memo } = obj
         const { ymap } = memo
@@ -93,6 +55,10 @@ export const pubConnect = (obj: ObjectState) => {
         console.log('[plre/conenct] pub', { obj: { ...obj } })
 }
 
+/**
+ *
+ * Also, cleanup subscriptions
+ */
 export const delConnect = (obj: ObjectState) => {
         const { parent, memo } = obj
         const { ymap, yarr } = memo
@@ -104,20 +70,91 @@ export const delConnect = (obj: ObjectState) => {
         if (parent) {
                 for (const key in obj) {
                         if (isIgnoreProp(obj[key], key)) continue
-                        ymap.set(key, void 0)
+                        ymap.set(key, DELETED) // !!! not undefined
                 }
-                parent.memo.yarr.set(_key, void 0)
+                parent.memo.yarr.set(_key, DELETED) // !!! not undefined
                 memo.unobserveListener?.forEach((f: any) => f())
         }
 
         yarr.forEach((key: string) => {
-                if (yarr.get(key)) yarr.set(key, void 0)
+                if (yarr.get(key)) yarr.set(key, DELETED) // !!! not undefined
         })
 
         // debug
         if (!memo._del) memo._del = 0
         memo._del++
         console.log('[plre/conenct] del', { obj: { ...obj } })
+}
+
+/**
+ * Attach ydoc, ymap, yarr and control the object from changes in ymap and yarr
+ */
+export const initConnect = (obj: ObjectState) => {
+        const { children, parent, memo } = obj
+        const _key = getLayerKey(obj)
+
+        if (parent) {
+                memo.ydoc = parent.memo.ydoc
+                memo.updateUniform = parent.memo.updateUniform
+                memo.compileShader = parent.memo.compileShader
+                memo.forceUpdateRoot = parent.memo.forceUpdateRoot
+        }
+
+        if (!memo.ydoc) return console.warn(notYDOCWarn(obj))
+
+        const ydoc = memo.ydoc
+        const ymap = (memo.ymap = ydoc.getMap(_key))
+        const yarr = (memo.yarr = ydoc.getMap(_key + '_'))
+
+        for (const key in obj) {
+                const value = ymap.get(key)
+                if (isIgnoreProp(value, key)) continue
+                obj[key] = value
+        }
+
+        for (const key of yarr.keys()) {
+                const type = yarr.get(key)
+                /**
+                 * Some object disappears when type is duplicated if check isExisted with type.
+                 */
+                // let child = children.find((c) => c.type === type)
+                let child = children.find((c) => getLayerKey(c) === key)
+                const isExisted = !!child
+                const isDeleted = type === DELETED
+                console.log({
+                        isExisted,
+                        isDeleted,
+                        key,
+                        type,
+                })
+
+                /**
+                 *                  | isExisted
+                 *                  | true   | false
+                 *  :-------------- | :----- | :------
+                 *  isDeleted true  | delete | x
+                 *            false | x      | create
+                 */
+                if (!isExisted && !isDeleted) {
+                        const ids = children.map((c) => c.id) // get ids before attach to parent
+                        child = createObject(type as any)
+                        child.id = addSuffix(ids, child.id)
+
+                        children.push(child)
+                        attachParent(obj)
+
+                        // initialize when open page
+                        initConnect(child)
+                        subConnect(child)
+                }
+                if (isExisted && isDeleted) deleteObject(child!)
+        }
+
+        // debug
+        if (!memo._init) memo._init = 0
+        memo._init++
+
+        console.log('[plre/conenct] init', { obj: { ...obj } })
 }
 
 export const subConnect = (obj: ObjectState) => {
@@ -157,7 +194,7 @@ export const subConnect = (obj: ObjectState) => {
                         const type = yarr.get(key)
                         // prettier-ignore
                         console.log(`[plre/conenct] sub _yarr \t { key: ${key}, type: ${type} } `, _)
-                        if (type) {
+                        if (type !== DELETED) {
                                 // create object
                                 const child = createObject(type)
                                 const ids = children.map((c) => c.id)
@@ -246,13 +283,6 @@ export const pubShader = (obj: ObjectState) => {
         ymap.set('shader', obj.shader)
 }
 
-export const initConnectAll = (obj: ObjectState) => {
-        const { children } = obj
-        initConnect(obj)
-        if (!Array.isArray(children) || children.length === 0) return
-        children.forEach(initConnectAll)
-}
-
 export const pubConnectAll = (obj: ObjectState) => {
         const { children } = obj
         pubConnect(obj)
@@ -265,6 +295,13 @@ export const delConnectAll = (obj: ObjectState) => {
         delConnect(obj)
         if (!Array.isArray(children) || children.length === 0) return
         children.forEach(delConnectAll)
+}
+
+export const initConnectAll = (obj: ObjectState) => {
+        const { children } = obj
+        initConnect(obj)
+        if (!Array.isArray(children) || children.length === 0) return
+        children.forEach(initConnectAll)
 }
 
 export const subConnectAll = (obj: ObjectState) => {
@@ -281,10 +318,24 @@ export const pubShaderAll = (obj: ObjectState) => {
         children.forEach(pubShaderAll)
 }
 
-const notYDOCWarn = (obj: ObjectState) => {
-        return `[plre/connect] initConnect Warn: ${obj.id} is not have YDOC`
-}
+export const delConnectDiff = (obj: ObjectState, targetParent: any) => {
+        const { children } = obj
+        // for objectTree top
+        if (!obj.parent)
+                return children.forEach((child) => {
+                        delConnectDiff(child, targetParent)
+                })
 
-const notInitWarn = (obj: ObjectState, key = '') => {
-        return `[plre/connect] ${key} Warn: ${obj.id} is not initialized`
+        const target = targetParent.children?.some(
+                ({ type }) => type === obj.type
+        )
+        if (!target) {
+                delConnectAll(obj)
+                return
+        }
+        if (!Array.isArray(children) || children.length === 0) return
+
+        children.forEach((child) => {
+                delConnectDiff(child, target)
+        })
 }
