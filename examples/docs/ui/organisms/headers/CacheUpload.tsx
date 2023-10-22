@@ -4,8 +4,9 @@ import { Button } from '../../atoms/Button'
 import { FileSelect } from '../../molecules/FileSelect'
 import { decode } from '../../templates/hooks/utils'
 import { useCtx } from '../../ctx'
-import { useCompile } from '..'
+import { createURL, useCompile } from '..'
 import { pubConnectAll } from 'plre/connect'
+import { setCache } from 'plre/cache'
 
 export const CacheUpload = () => {
         const { objectTree, webrtcTree, storage } = useCtx()
@@ -21,13 +22,25 @@ export const CacheUpload = () => {
                 reader.readAsText(blob)
                 reader.onload = () => {
                         if (!reader.result) return
-                        const cache = JSON.parse(reader.result as string)
-                        const obj = decode(cache.data as string)
-                        storage.initWithCache(objectTree, webrtcTree.ydoc, obj)
-                        compile()
-                        storage.updateCache(objectTree)
-                        // storage.cacheObject() !!!!!!!!!!!!!!!
-                        pubConnectAll(objectTree)
+                        try {
+                                const cache = JSON.parse(reader.result as any)
+                                const id = cache.id
+                                if (!decode(cache.data as string)) return
+                                setCache(cache)
+                                const url = createURL()
+                                url.set('id', id)
+                                window.open(url + '', '_blank')
+                        } catch (e) {
+                                console.warn(e)
+                        }
+                        /**
+                         * DO NOT COMPILE SAME PAGE
+                         */
+                        // storage.initWithCache(objectTree, webrtcTree.ydoc, obj)
+                        // compile()
+                        // storage.updateCache(objectTree)
+                        // // storage.cacheObject() !!!!!!!!!!!!!!!
+                        // pubConnectAll(objectTree)
                 }
         }
 
