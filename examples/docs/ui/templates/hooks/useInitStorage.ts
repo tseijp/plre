@@ -8,6 +8,7 @@ import {
         getCacheAll,
         isCachedKey,
         setCache,
+        strCache,
 } from 'plre/cache'
 import { useEffect, useState } from 'react'
 import { createURL } from '../../organisms'
@@ -21,9 +22,6 @@ import {
 import { attachParent } from 'plre/utils'
 import { deleteObject } from 'plre/control'
 import type { CacheState } from 'plre/cache'
-
-let isDev = false
-// isDev = process.env.NODE_ENV === 'development'
 
 export const createStorage = () => {
         const initStorage = () => {
@@ -99,6 +97,7 @@ export const createStorage = () => {
                 const obj = decode(recent.data)
                 self.initWithCache(objectTree, webrtcTree.ydoc, obj)
         }
+
         const changeCache = (cache: CacheState) => {
                 for (const key in cache) {
                         if (!isCachedKey(key)) continue
@@ -107,14 +106,21 @@ export const createStorage = () => {
         }
 
         const updateCache = (objectTree: ObjectState) => {
+                if (self.isDuplicate) return
                 self.data = encode(objectTree)
                 self.byte = new Blob([self.data]).size + ''
 
-                if (self.isInitMount) return
-
-                self.isCached = true
-                self.isCacheable = false
-                const item = setCache(self)
+                let item: string
+                if (self.isInitMount) {
+                        // encode the first time cache from the initial state
+                        item = strCache(self)
+                } else if (self.isCacheable) {
+                        // Set cache if user updates work and canvas compiles successfully
+                        item = setCache(self)
+                        self.isCached = true
+                        self.isCacheable = false
+                }
+                if (!item) return
 
                 /**
                  * orgs/headers/CacheExport.tsx to make cache file
@@ -134,7 +140,7 @@ export const createStorage = () => {
                 isCached: false,
                 isCacheable: false,
                 isDuplicate: false,
-                isInitMount: false,
+                isInitMount: true,
                 createdAt: '',
                 updatedAt: '',
                 data: '',
@@ -158,9 +164,14 @@ export const useInitStorage = (
         const connected = useCall(() => {
                 storage.initStorage()
                 storage._all = getCacheAll()
-                storage.changeStorage(objectTree, webrtcTree)
+                storage.changeStorage(objectTree, webrtcTree) // switch with other users and cache storage status
+                storage.updateCache(objectTree) // Pass cache data to CacheExport.tsx
 
-                // notify what is active object
+                /**
+                 * notify what is active object
+                 * for organisms/hooks/useCodemirror.ts to update editor code
+                 * for organisms/hooks/useTransform.ts to update transform UI
+                 */
                 editorTree.changeActive?.()
 
                 set(true)
@@ -168,11 +179,7 @@ export const useInitStorage = (
 
         const trySuccess = useCall(() => {
                 storage.initStorage()
-                if (storage.isDuplicate) return
-                if (!storage.isCacheable) return
-
                 try {
-                        if (isDev) return
                         /**
                          * create a cache on init mount to export a cache
                          * but it does not store cache in localStorage
