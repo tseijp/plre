@@ -8,19 +8,21 @@ import type { EditorState } from '@codemirror/state'
 import { getActiveObjects } from 'plre/utils'
 
 export interface CodemirrorEvent {
-        mount?(): void
-        clean?(): void
         target?: HTMLElement
-        extensions: any[]
-        libs: any
-        shader: string
-        changeEditor(v: any): void
         state?: EditorState
         view?: EditorView & any
         ref: MutableRefObject<HTMLElement>
+        extensions: any[]
+        isMounted: boolean
+        shader: string
+        libs: any
+        changeEditor(v: any): void
+        mount?(): void
+        clean?(): void
 }
+// const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
-export const codemirrorEvent = (doc = '') => {
+export const codemirrorEvent = (shader = '') => {
         const mount = async () => {
                 const [
                         { cpp },
@@ -33,6 +35,8 @@ export const codemirrorEvent = (doc = '') => {
                         import('@codemirror/view'),
                         import('@uiw/codemirror-theme-github'),
                 ])
+                // dynamic import load may take a long time: Issue #7
+                // await sleep(5000) // for edge case test
                 const parent = self.target
                 const myTheme = EditorView.theme(theme, { dark: true })
                 const listenner = EditorView.updateListener.of((v) => {
@@ -45,6 +49,7 @@ export const codemirrorEvent = (doc = '') => {
                         myTheme,
                         listenner,
                 ]
+                const doc = self.shader || shader
                 const state = EditorState.create({ doc, extensions })
 
                 const view = new EditorView({ state, parent })
@@ -58,6 +63,7 @@ export const codemirrorEvent = (doc = '') => {
                 self.extensions = extensions
                 self.state = state
                 self.view = view
+                self.isMounted = true
         }
 
         const clean = () => {}
@@ -74,6 +80,10 @@ export const codemirrorEvent = (doc = '') => {
                 mount,
                 clean,
                 ref,
+                isMounted: false,
+                extensions: [],
+                libs: {},
+                shader,
         })
         return self
 }
@@ -90,6 +100,14 @@ export const useCodemirror = () => {
 
         // change code when user click other object
         const changeActive = useCall((next) => {
+                if (!next) next = getActiveObjects(objectTree)[0]
+
+                // dynamic import may take a long time: Issue #7
+                if (!self.isMounted) {
+                        if (next?.shader) self.shader = next?.shader
+                        return
+                }
+
                 if (!next) next = getActiveObjects(objectTree)[0]
 
                 // cache to save changed code
@@ -135,6 +153,7 @@ export const useCodemirror = () => {
                         self({ changeEditor })
                 }
         }, [])
+
         return self
 }
 

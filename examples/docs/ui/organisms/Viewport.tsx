@@ -6,7 +6,6 @@ import { Viewpoint, ZoomIn, ZoomOut } from '../molecules'
 import { ErrorMessage } from './ErrorMessage'
 import { Tools } from './tools'
 import { useCtx } from '../ctx'
-import { OpenRecent } from './headers'
 import type { EditorState } from 'plre/types'
 
 export interface ViewportProps {

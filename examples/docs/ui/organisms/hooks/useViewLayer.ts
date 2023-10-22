@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ObjectState } from 'plre/types'
 import { useMutable } from 'plre/react'
 import { deactivateAll, moveObject } from 'plre/control'
-import { useOnce } from '../../atoms'
+import { useCall, useOnce } from '../../atoms'
 import { getActiveObjects, isAddable } from 'plre/utils'
 import { useCtx } from '../../ctx'
 import { useCompile } from '.'
@@ -28,6 +28,18 @@ export const useViewLayer = () => {
                 getActiveObjects(objectTree)[0]
         )
         const cache = useOnce<ViewLayerCache>(() => ({ id2Item: new Map() }))
+
+        const changeActive = useCall((next: ObjectState) => {
+                if (!next) next = getActiveObjects(objectTree)[0]
+                setSelected((p) => (p === next ? p : next))
+        })
+
+        useEffect(() => {
+                // @ts-ignore
+                const tick = () => editorTree({ changeActive })
+                tick()
+                return tick
+        })
 
         const handlers = useMutable<LayerItemHandlers>({
                 mount: (obj, id) => cache.id2Item.set(id, obj),
