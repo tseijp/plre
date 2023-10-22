@@ -3,14 +3,10 @@ import { UploadIcon, useHoverEvent } from '../../atoms'
 import { Button } from '../../atoms/Button'
 import { FileSelect } from '../../molecules/FileSelect'
 import { decode } from '../../templates/hooks/utils'
-import { useCtx } from '../../ctx'
-import { createURL, useCompile } from '..'
-import { pubConnectAll } from 'plre/connect'
+import { createURL } from '..'
 import { setCache } from 'plre/cache'
 
 export const CacheUpload = () => {
-        const { objectTree, webrtcTree, storage } = useCtx()
-        const compile = useCompile()
         const [background, set] = React.useState('transparent')
         const hover = useHoverEvent((state) => {
                 set(state.active ? 'rgba(255,255,255,0.1)' : 'transparent')
