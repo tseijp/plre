@@ -3,6 +3,9 @@ import { getLayerKey } from 'plre/utils'
 import { compile } from 'plre/compile'
 import { useOnce } from '../../atoms'
 
+let isDev = false
+// isDev = process.env.NODE_ENV === 'development'
+
 const boxSDF = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;
 
@@ -99,6 +102,9 @@ export const createObjectTree = () => {
         boxFrame.shader = boxFrameSDF(getLayerKey(boxFrame)).trim()
         I.shader = compile(I).trim()
         U.shader = compile(U).trim()
+
+        // @ts-ignore
+        if (isDev) window.U = { ...U }
 
         return U
 }

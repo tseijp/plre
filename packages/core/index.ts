@@ -7,6 +7,9 @@ import { PL, ObjectState, ObjectTypes, EditorType, EditorState } from './types'
 
 let currentIndex = 1
 
+let isDev = false
+// isDev = process.env.NODE_ENV === 'development'
+
 export const createObject = (
         type: ObjectTypes,
         props: Partial<ObjectState> = {},
@@ -48,7 +51,15 @@ export const createObject = (
 
         attachParent(self)
 
-        self.memo.xxx = new Date().toISOString()
+        // for debug
+        if (isDev) {
+                self.memo.createdAt = new Date().toISOString()
+                Object.defineProperty(self.memo, 'children', {
+                        get: () => {
+                                return self.children.map((v) => ({ ...v }))
+                        },
+                })
+        }
 
         return self
 }

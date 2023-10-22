@@ -18,9 +18,9 @@ import {
         initConnectAll,
         pubConnectAll,
         subConnectAll,
+        delConnectDiff,
 } from 'plre/connect'
 import { attachParent } from 'plre/utils'
-import { deleteObject } from 'plre/control'
 import type { CacheState } from 'plre/cache'
 
 export const createStorage = () => {
@@ -40,7 +40,10 @@ export const createStorage = () => {
                  * @TODO Do not subscribe deleted object
                  * but Delete by yourself, data will be lost
                  */
-                objectTree.children.forEach(deleteObject) // !!!!!!!!!!!!!!!
+                // objectTree.children.forEach((child) => {
+                // delConnectAll(child)
+                // deleteObject(child) // !!!!!!!!!!!!!!
+                // }) // !!!!!!!!!!!!!!!
                 initConnectAll(objectTree)
                 subConnectAll(objectTree)
         }
@@ -57,11 +60,10 @@ export const createStorage = () => {
                 obj: ObjectState
         ) => {
                 objectTree.memo.ydoc = ydoc
-                console.log(encodeObject(objectTree))
                 // cleanup
                 initConnectAll(objectTree)
-                subConnectAll(objectTree)
-                delConnectAll(objectTree)
+                subConnectAll(objectTree) // ????
+                delConnectDiff(objectTree, obj) // !!!!
 
                 // clone
                 assignObject(objectTree, obj)
@@ -85,9 +87,9 @@ export const createStorage = () => {
                         return
                 }
 
-                // use subscribe data if someone else is there @TODO fix order ↑
+                // use subscribe data if someone else is there
                 if (!isFirst) {
-                        self.initPreferSubscribe(objectTree, webrtcTree.ydoc)
+                        self.initPreferSubscribe(objectTree, webrtcTree.ydoc) // !!!!!!!!!!!!!!!!!
                         return
                 }
 
@@ -95,7 +97,7 @@ export const createStorage = () => {
                 // @TODO CEHCK DB
                 // const updatedAtDB = await fetch(...)
                 const obj = decode(recent.data)
-                self.initWithCache(objectTree, webrtcTree.ydoc, obj)
+                self.initWithCache(objectTree, webrtcTree.ydoc, obj) // we can not check
         }
 
         const changeCache = (cache: CacheState) => {
