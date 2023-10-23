@@ -121,12 +121,6 @@ export const initConnect = (obj: ObjectState) => {
                 let child = children.find((c) => getLayerKey(c) === key)
                 const isExisted = !!child
                 const isDeleted = type === DELETED
-                console.log({
-                        isExisted,
-                        isDeleted,
-                        key,
-                        type,
-                })
 
                 /**
                  *                  | isExisted
