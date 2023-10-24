@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 import { createURL } from '../../organisms'
 import { WebrtcState } from '.'
 import {
-        delConnectAll,
+        initConnectAllDel,
         initConnectAll,
         pubConnectAll,
         subConnectAll,
@@ -34,17 +34,9 @@ export const createStorage = () => {
                 self.updatedAt = updatedAt
         }
 
-        const initPreferSubscribe = (objectTree: ObjectState, ydoc: any) => {
+        const initWithSubscribe = (objectTree: ObjectState, ydoc: any) => {
                 objectTree.memo.ydoc = ydoc
-                /**
-                 * @TODO Do not subscribe deleted object
-                 * but Delete by yourself, data will be lost
-                 */
-                // objectTree.children.forEach((child) => {
-                // delConnectAll(child)
-                // deleteObject(child) // !!!!!!!!!!!!!!
-                // }) // !!!!!!!!!!!!!!!
-                initConnectAll(objectTree)
+                initConnectAllDel(objectTree)
                 subConnectAll(objectTree)
         }
 
@@ -68,7 +60,7 @@ export const createStorage = () => {
                 // clone
                 assignObject(objectTree, obj)
                 attachParent(objectTree)
-                initConnectAll(objectTree)
+                initConnectAllDel(objectTree)
                 pubConnectAll(objectTree)
                 subConnectAll(objectTree)
         }
@@ -89,7 +81,7 @@ export const createStorage = () => {
 
                 // use subscribe data if someone else is there
                 if (!isFirst) {
-                        self.initPreferSubscribe(objectTree, webrtcTree.ydoc) // !!!!!!!!!!!!!!!!!
+                        self.initWithSubscribe(objectTree, webrtcTree.ydoc) // !!!!!!!!!!!!!!!!!
                         return
                 }
 
@@ -133,7 +125,7 @@ export const createStorage = () => {
 
         const self = event({
                 initStorage,
-                initPreferSubscribe,
+                initWithSubscribe,
                 initWithoutCache,
                 initWithCache,
                 changeStorage,

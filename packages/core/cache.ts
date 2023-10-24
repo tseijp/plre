@@ -18,7 +18,7 @@ export interface CacheState {
         createdAt: string
         updatedAt: string
         initStorage(): void
-        initPreferSubscribe(objectTree: ObjectState, ydoc: any): void
+        initWithSubscribe(objectTree: ObjectState, ydoc: any): void
         initWithoutCache(objectTree: ObjectState, ydoc: any): void
         initWithCache(
                 objectTree: ObjectState,

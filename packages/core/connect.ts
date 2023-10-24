@@ -34,6 +34,11 @@ export const pubConnect = (obj: ObjectState) => {
 
         if (!ymap) return console.warn(notInitWarn(obj, 'pubConnect'))
 
+        // debug
+        if (!memo._pub) memo._pub = 0
+        memo._pub++
+        console.log('[plre/conenct] pub', { obj: { ...obj } })
+
         const _key = getLayerKey(obj)
         if (parent) parent.memo.yarr.set(_key, obj.type)
 
@@ -48,11 +53,6 @@ export const pubConnect = (obj: ObjectState) => {
         //         const key = getLayerKey(child)
         //         yarr.set(key, child.type)
         // })
-
-        // debug
-        if (!memo._pub) memo._pub = 0
-        memo._pub++
-        console.log('[plre/conenct] pub', { obj: { ...obj } })
 }
 
 /**
@@ -65,6 +65,11 @@ export const delConnect = (obj: ObjectState) => {
         const _key = getLayerKey(obj)
 
         if (!ymap || !yarr) return console.warn(notInitWarn(obj, 'delConnect'))
+
+        // debug
+        if (!memo._del) memo._del = 0
+        memo._del++
+        console.log('[plre/conenct] del', { obj: { ...obj } })
 
         // top object does not delete connections
         if (parent) {
@@ -79,17 +84,12 @@ export const delConnect = (obj: ObjectState) => {
         yarr.forEach((key: string) => {
                 if (yarr.get(key)) yarr.set(key, DELETED) // !!! not undefined
         })
-
-        // debug
-        if (!memo._del) memo._del = 0
-        memo._del++
-        console.log('[plre/conenct] del', { obj: { ...obj } })
 }
 
 /**
  * Attach ydoc, ymap, yarr and control the object from changes in ymap and yarr
  */
-export const initConnect = (obj: ObjectState) => {
+export const initConnect = (obj: ObjectState, isDel?: boolean) => {
         const { children, parent, memo } = obj
         const _key = getLayerKey(obj)
 
@@ -102,6 +102,12 @@ export const initConnect = (obj: ObjectState) => {
 
         if (!memo.ydoc) return console.warn(notYDOCWarn(obj))
 
+        // debug
+        if (!memo._init) memo._init = 0
+        memo._init++
+
+        console.log('[plre/conenct] init', { obj: { ...obj } })
+
         const ydoc = memo.ydoc
         const ymap = (memo.ymap = ydoc.getMap(_key))
         const yarr = (memo.yarr = ydoc.getMap(_key + '_'))
@@ -112,6 +118,8 @@ export const initConnect = (obj: ObjectState) => {
                 obj[key] = value
         }
 
+        if (!isDel) return
+
         for (const key of yarr.keys()) {
                 const type = yarr.get(key)
                 /**
@@ -121,13 +129,21 @@ export const initConnect = (obj: ObjectState) => {
                 let child = children.find((c) => getLayerKey(c) === key)
                 const isExisted = !!child
                 const isDeleted = type === DELETED
+                console.log({
+                        isExisted,
+                        isDeleted,
+                        type,
+                        key,
+                        child,
+                        children,
+                })
 
                 /**
                  *                  | isExisted
-                 *                  | true   | false
-                 *  :-------------- | :----- | :------
-                 *  isDeleted true  | delete | x
-                 *            false | x      | create
+                 *                  | true    | false
+                 *  :-------------- | :------ | :------
+                 *  isDeleted true  | delete? | x
+                 *            false | x       | create
                  */
                 if (!isExisted && !isDeleted) {
                         const ids = children.map((c) => c.id) // get ids before attach to parent
@@ -143,12 +159,6 @@ export const initConnect = (obj: ObjectState) => {
                 }
                 if (isExisted && isDeleted) deleteObject(child!)
         }
-
-        // debug
-        if (!memo._init) memo._init = 0
-        memo._init++
-
-        console.log('[plre/conenct] init', { obj: { ...obj } })
 }
 
 export const subConnect = (obj: ObjectState) => {
@@ -157,6 +167,9 @@ export const subConnect = (obj: ObjectState) => {
                 memo
 
         if (!ymap || !yarr) return console.warn(notInitWarn(obj, 'subConnect'))
+        // debug
+        if (!memo._sub) memo._sub = 0
+        memo._sub++
 
         const _forceUpdate = () => {
                 const id = setTimeout(forceUpdateRoot, TIMEOUT_MS)
@@ -259,10 +272,6 @@ export const subConnect = (obj: ObjectState) => {
         if (!memo.unobserveListener) memo.unobserveListener = new Set()
         memo.unobserveListener.add(() => yarr.unobserve(_yarr))
         memo.unobserveListener.add(() => ymap.unobserve(_ymap))
-
-        // debug
-        if (!memo._sub) memo._sub = 0
-        memo._sub++
 }
 
 export const pubShader = (obj: ObjectState) => {
@@ -312,24 +321,20 @@ export const pubShaderAll = (obj: ObjectState) => {
         children.forEach(pubShaderAll)
 }
 
-export const delConnectDiff = (obj: ObjectState, targetParent: any) => {
+export const initConnectAllDel = (obj: ObjectState) => {
         const { children } = obj
-        // for objectTree top
-        if (!obj.parent)
-                return children.forEach((child) => {
-                        delConnectDiff(child, targetParent)
-                })
-
-        const target = targetParent.children?.some(
-                ({ type }) => type === obj.type
-        )
-        if (!target) {
-                delConnectAll(obj)
-                return
-        }
+        initConnect(obj, true)
         if (!Array.isArray(children) || children.length === 0) return
+        children.forEach(initConnectAllDel)
+}
 
+export const delConnectDiff = (obj: ObjectState, target: any) => {
+        const { children } = obj
+        const { children: arr } = target
+        if (!Array.isArray(children) || children.length === 0) return
         children.forEach((child) => {
+                const target = arr.find((t: any) => t.type === child.type)
+                if (!target) return delConnectAll(child)
                 delConnectDiff(child, target)
         })
 }

@@ -18,6 +18,7 @@ export interface LayerItemHandlers {
         draging(obj: ObjectState, drag: DragState): void
         dragend(obj: ObjectState, drag: DragState): void
 }
+
 export interface LayerItemProps {
         obj: ObjectState
         children?: ReactNode
