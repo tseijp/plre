@@ -9,9 +9,9 @@ import { useCompile } from '.'
 import type { LayerItemHandlers } from '../layers'
 import {
         delConnectAll,
-        initConnectAll,
         pubConnectAll,
         subConnectAll,
+        initConnectNoDel,
 } from 'plre/connect'
 
 interface ViewLayerCache {
@@ -98,7 +98,8 @@ export const useViewLayer = () => {
                         moveObject(grabbed, hovered)
 
                         // create connection
-                        initConnectAll(grabbed)
+                        // If ↓initConnectAll, after once drag and set DELETED, obj will disappear when reverting.
+                        initConnectNoDel(grabbed)
                         pubConnectAll(grabbed)
                         subConnectAll(grabbed)
 

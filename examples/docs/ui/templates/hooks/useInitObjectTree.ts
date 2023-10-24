@@ -4,7 +4,7 @@ import { compile } from 'plre/compile'
 import { useOnce } from '../../atoms'
 
 let isDev = false
-// isDev = process.env.NODE_ENV === 'development'
+isDev = process.env.NODE_ENV === 'development'
 
 const boxSDF = (key = '') => /* CPP */ `
 uniform mat4 ${key}_M;

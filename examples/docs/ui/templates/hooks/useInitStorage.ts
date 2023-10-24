@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react'
 import { createURL } from '../../organisms'
 import { WebrtcState } from '.'
 import {
-        delConnectAll,
         initConnectAll,
         pubConnectAll,
         subConnectAll,
