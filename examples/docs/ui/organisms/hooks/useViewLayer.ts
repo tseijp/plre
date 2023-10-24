@@ -11,7 +11,7 @@ import {
         delConnectAll,
         pubConnectAll,
         subConnectAll,
-        initConnectNoDel,
+        initConnectAll,
 } from 'plre/connect'
 
 interface ViewLayerCache {
@@ -98,8 +98,8 @@ export const useViewLayer = () => {
                         moveObject(grabbed, hovered)
 
                         // create connection
-                        // If ↓initConnectAll, after once drag and set DELETED, obj will disappear when reverting.
-                        initConnectNoDel(grabbed)
+                        // If ↓initConnectAllDel, after once drag and set DELETED, obj will disappear when reverting.
+                        initConnectAll(grabbed)
                         pubConnectAll(grabbed)
                         subConnectAll(grabbed)
 

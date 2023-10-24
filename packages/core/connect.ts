@@ -89,7 +89,7 @@ export const delConnect = (obj: ObjectState) => {
 /**
  * Attach ydoc, ymap, yarr and control the object from changes in ymap and yarr
  */
-export const initConnect = (obj: ObjectState, isNoDel = false) => {
+export const initConnect = (obj: ObjectState, isDel?: boolean) => {
         const { children, parent, memo } = obj
         const _key = getLayerKey(obj)
 
@@ -118,7 +118,7 @@ export const initConnect = (obj: ObjectState, isNoDel = false) => {
                 obj[key] = value
         }
 
-        if (isNoDel) return
+        if (!isDel) return
 
         for (const key of yarr.keys()) {
                 const type = yarr.get(key)
@@ -321,11 +321,11 @@ export const pubShaderAll = (obj: ObjectState) => {
         children.forEach(pubShaderAll)
 }
 
-export const initConnectNoDel = (obj: ObjectState) => {
+export const initConnectAllDel = (obj: ObjectState) => {
         const { children } = obj
         initConnect(obj, true)
         if (!Array.isArray(children) || children.length === 0) return
-        children.forEach(initConnectNoDel)
+        children.forEach(initConnectAllDel)
 }
 
 export const delConnectDiff = (obj: ObjectState, target: any) => {
