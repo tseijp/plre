@@ -17,6 +17,7 @@ export interface CacheState {
         data: string
         createdAt: string
         updatedAt: string
+        username: string
         initStorage(): void
         initWithSubscribe(objectTree: ObjectState, ydoc: any): void
         initWithoutCache(objectTree: ObjectState, ydoc: any): void
@@ -27,7 +28,7 @@ export interface CacheState {
         ): void
         setCache(): void
         changeStorage(objectTree: ObjectState, webrtcTree: any): void
-        updateCache(objectTree: ObjectState): void
+        updateCache(objectTree: ObjectState, webrtcTree: any): void
         changeCache?(target: CacheState): void
         tryCached?(str: string): void
         cacheError?(e: Error): void
@@ -75,7 +76,7 @@ export const encodeObject = (obj: ObjectState) => {
 }
 
 export const decodeObject = (cache: CachedObject) => {
-        const ret = { children: [] } as ObjectState
+        const ret = { children: [] as any } as ObjectState
         if (!cache.type) {
                 throw Error('decodeObject: cache.type is undefined')
         }
@@ -120,8 +121,15 @@ export const getCache = (key: string) => {
 }
 
 export const strCache = (cache: CacheState) => {
-        const { id, byte, data, createdAt, updatedAt } = cache
-        const str = JSON.stringify({ id, byte, createdAt, updatedAt, data })
+        const { id, byte, data, createdAt, updatedAt, username } = cache
+        const str = JSON.stringify({
+                id,
+                byte,
+                createdAt,
+                updatedAt,
+                username,
+                data,
+        })
         return str
 }
 

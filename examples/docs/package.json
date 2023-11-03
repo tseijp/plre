@@ -31,10 +31,10 @@
                 "y-webrtc": "10.2.5"
         },
         "devDependencies": {
-                "@docusaurus/core": "3.0.0-alpha.0",
-                "@docusaurus/preset-classic": "3.0.0-alpha.0",
-                "@docusaurus/module-type-aliases": "3.0.0-alpha.0",
-                "@docusaurus/theme-mermaid": "3.0.0-alpha.0",
+                "@docusaurus/core": "3.0.0",
+                "@docusaurus/preset-classic": "3.0.0",
+                "@docusaurus/module-type-aliases": "3.0.0",
+                "@docusaurus/theme-mermaid": "3.0.0",
                 "@tsconfig/docusaurus": "1.0.7",
                 "@mdx-js/react": "2.3.0",
                 "react": "18.2.0",

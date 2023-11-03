@@ -7,6 +7,7 @@ export const UserProfile = () => {
         const { webrtcTree } = useCtx()
         const handleChangeUsername = useCall((value: string) => {
                 webrtcTree.user.set('username', value)
+                webrtcTree.username = value
         })
         const handleChangeProfile = useCall((value: string) => {
                 webrtcTree.user.set('profile', value)

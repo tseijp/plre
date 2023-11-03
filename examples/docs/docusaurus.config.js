@@ -66,6 +66,11 @@ const config = {
                                         label: 'Docs',
                                 },
                                 { position: 'left', to: '/api', label: 'API' },
+                                {
+                                        position: 'left',
+                                        to: '/showcase',
+                                        label: 'Showcase',
+                                },
                                 { position: 'right', type: 'localeDropdown' },
                                 {
                                         position: 'right',
