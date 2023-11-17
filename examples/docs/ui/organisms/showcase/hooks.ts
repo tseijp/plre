@@ -6,7 +6,7 @@ import { collectAll } from 'plre/compile'
 import { resolve } from 'plre/lygia'
 import { uniformMat4All } from 'plre/utils'
 import { useMutable } from 'plre/react'
-import { useWheelEvent } from '../../atoms'
+import { useResizeEvent, useWheelEvent } from '../../atoms'
 import { frame } from 'refr'
 
 const { cos, sin, PI } = Math
@@ -41,10 +41,16 @@ export const usePLImpl2 = (objectTree: ObjectState) => {
                         _.tht += (dy / 300) * (_.rad < 0 ? -1 : 1)
                         _.phi -= (dx / 300) * (sin(_.tht) < 0 ? -1 : 1)
                 }
-                update(self, wheel.memo)
+                update(self, _)
         })
 
-        if (!wheel.memo) wheel.memo = { tht: 1.1, phi: 0.4, rad: 10 }
+        if (!wheel.memo) wheel.memo = { tht: 1.1, phi: 0.4, rad: 5 }
+
+        const resize = useResizeEvent((e: any) => () => {
+                const { width, height } = e.contentRect
+                self.resize(null, width, height)
+                update(self, wheel.memo)
+        })
 
         const memo = useMutable({
                 async mount(el: HTMLCanvasElement) {
@@ -57,7 +63,6 @@ export const usePLImpl2 = (objectTree: ObjectState) => {
                         frame.start()
                         uniformMat4All(self, objectTree)
                         self.gl.useProgram(self.pg)
-                        self.resize(null, 1920, 1080)
                         self.init()
                         update(self, wheel.memo)
                         self.render()
@@ -68,6 +73,7 @@ export const usePLImpl2 = (objectTree: ObjectState) => {
                         wheel.clean(null)
                 },
                 ref(el: HTMLCanvasElement) {
+                        resize.ref(el)
                         if (el) {
                                 self.mount(el)
                         } else self.clean()

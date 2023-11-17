@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Flex } from '../../atoms'
+import { Flex, FlexProps } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { EditorState, EditorType } from 'plre/types'
 import { useCtx } from '../../ctx'
@@ -30,7 +30,7 @@ export const Header = (props: HeaderProps) => {
         )
 }
 
-export const HeaderStyle = (props: { children: ReactNode }) => {
+export const HeaderStyle = (props: FlexProps) => {
         return (
                 <Flex
                         row

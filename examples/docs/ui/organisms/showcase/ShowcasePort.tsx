@@ -5,17 +5,20 @@ import { ObjectState } from 'plre/types'
 
 export interface ShowcasePort {
         objectTree: ObjectState
+        onClick?: () => void
 }
 
 export const ShowcasePort = (props: ShowcasePort) => {
-        const { objectTree } = props
+        const { objectTree, onClick } = props
         const self = usePLImpl2(objectTree)
         return (
                 <CtxProvider value={{ objectTree } as CtxState}>
                         <div
+                                onClick={onClick}
                                 style={{
                                         width: '100%',
                                         height: '256px',
+                                        cursor: 'pointer',
                                 }}
                         >
                                 <canvas
