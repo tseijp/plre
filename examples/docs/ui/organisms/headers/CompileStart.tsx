@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useCompile } from '../hooks'
 import { HeaderButton } from '../../molecules'
-import { Button } from '../../atoms/Button'
+import { Button } from '../../atoms'
 
 export const CompileStart = () => {
         const compile = useCompile()

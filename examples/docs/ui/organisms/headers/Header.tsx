@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Flex } from '../../atoms'
+import { Flex, FlexProps } from '../../atoms'
 import type { ReactNode } from 'react'
 import type { EditorState, EditorType } from 'plre/types'
 import { useCtx } from '../../ctx'
@@ -23,6 +23,15 @@ export const Header = (props: HeaderProps) => {
         const type = editorItem.type
 
         return (
+                <HeaderStyle>
+                        <SwitchEditor type={type} onClick={handleClickEditor} />
+                        {children}
+                </HeaderStyle>
+        )
+}
+
+export const HeaderStyle = (props: FlexProps) => {
+        return (
                 <Flex
                         row
                         gap="1rem"
@@ -33,9 +42,7 @@ export const Header = (props: HeaderProps) => {
                         paddingLeft="6px"
                         color="#fff"
                         whiteSpace="nowrap"
-                >
-                        <SwitchEditor type={type} onClick={handleClickEditor} />
-                        {children}
-                </Flex>
+                        {...props}
+                />
         )
 }

@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { UploadIcon, useHoverEvent } from '../../atoms'
-import { Button } from '../../atoms/Button'
+import { Button, UploadIcon, useHoverEvent } from '../../atoms'
 import { FileSelect } from '../../molecules/FileSelect'
 import { decode } from '../../templates/hooks/utils'
 import { createURL } from '..'

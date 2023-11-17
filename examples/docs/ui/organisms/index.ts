@@ -1,5 +1,6 @@
 export * from './hooks'
 export * from './headers'
+export * from './showcase'
 export * from './users'
 export * from './Properties'
 export * from './Timeline'

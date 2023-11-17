@@ -4,7 +4,6 @@ import { useCall, useOnce } from '../../atoms'
 import { decode, encode } from './utils'
 import {
         assignObject,
-        encodeObject,
         getCacheAll,
         isCachedKey,
         setCache,
@@ -99,10 +98,14 @@ export const createStorage = () => {
                 }
         }
 
-        const updateCache = (objectTree: ObjectState) => {
+        const updateCache = (
+                objectTree: ObjectState,
+                webrtcTree: WebrtcState
+        ) => {
                 if (self.isDuplicate) return
                 self.data = encode(objectTree)
                 self.byte = new Blob([self.data]).size + ''
+                self.username = webrtcTree.username
 
                 let item: string
                 if (self.isInitMount) {
@@ -159,7 +162,7 @@ export const useInitStorage = (
                 storage.initStorage()
                 storage._all = getCacheAll()
                 storage.changeStorage(objectTree, webrtcTree) // switch with other users and cache storage status
-                storage.updateCache(objectTree) // Pass cache data to CacheExport.tsx
+                storage.updateCache(objectTree, webrtcTree) // Pass cache data to CacheExport.tsx
 
                 /**
                  * notify what is active object
@@ -178,7 +181,7 @@ export const useInitStorage = (
                          * create a cache on init mount to export a cache
                          * but it does not store cache in localStorage
                          */
-                        storage.updateCache(objectTree)
+                        storage.updateCache(objectTree, webrtcTree)
                 } catch (e) {
                         if (e.name === 'QuotaExceededError') {
                                 alert('Local storage quota exceeded')

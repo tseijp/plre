@@ -55,7 +55,7 @@ vec2 raymarch(vec3 ro, vec3 rd) {
         for (int i = 0; i < ITERATION; i++) {
                 vec2 h = map(ro + rd * t);
                 if (abs(h.x) < (EPS.x * t)) { res = vec2(t, h.y); break; }
-                t += h.x * 0.42; // 0.5;
+                t += h.x * 0.5;
         }
         return res;
 }

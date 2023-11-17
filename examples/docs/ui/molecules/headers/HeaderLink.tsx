@@ -1,6 +1,5 @@
 import * as React from 'react'
-import { Button } from '../../atoms/Button'
-import { useHoverEvent } from '../../atoms'
+import { Button, useHoverEvent } from '../../atoms'
 
 export interface HeaderLinkProps {
         onClick(): void
