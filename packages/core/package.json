@@ -14,7 +14,7 @@
         },
         "dependencies": {
                 "glre": "0.16.0",
-                "reev": "0.10.0",
+                "reev": "0.12.0",
                 "refr": "0.3.0"
         },
         "keywords": [
