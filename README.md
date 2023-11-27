@@ -1,14 +1,14 @@
-# 📈@tsei/plre
+# 📈plre
 
 <table>
   <td>
     <a href="https://plre.tsei.jp">
-      <img src="https://plre.tsei.jp/img/1_ui_5.gif" />
+      <img alt="📈" src="https://plre.tsei.jp/img/1_ui_5.gif" />
     </a>
   </td>
   <td>
     <a href="https://plre.tsei.jp">
-      <img src="https://plre.tsei.jp/img/1_ui_6.gif"/>
+      <img alt="📈" src="https://plre.tsei.jp/img/1_ui_6.gif"/>
     </a>
   </td>
 </table>
